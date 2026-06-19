@@ -50,34 +50,49 @@ _HEADER_ACRONYMS = {"ECG", "PK"}
 
 
 def _title_case_name(name: str) -> str:
-    """Title-Case a domain full name while preserving known acronyms and '/'.
+    """Title-Case a domain full name while preserving known acronyms.
+
+    Capitalises every maximal alphabetic run (so '/'-joined words like
+    'CONCOMITANT/PRIOR' become 'Concomitant/Prior'); tokens that are known
+    acronyms (e.g. 'ECG') are kept upper-case.
 
     e.g. 'ECG TEST RESULTS' -> 'ECG Test Results',
-         'INCLUSION / EXCLUSION CRITERIA' -> 'Inclusion / Exclusion Criteria'.
+         'INCLUSION/EXCLUSION CRITERIA NOT MET' -> 'Inclusion/Exclusion Criteria Not Met'.
     """
-    out: list[str] = []
-    for tok in name.split(" "):
-        if not tok:
-            out.append(tok)
-        elif tok in _HEADER_ACRONYMS:
-            out.append(tok)
-        elif tok in ("/", "–", "-", "&"):
-            out.append(tok)
-        else:
-            out.append(tok[0].upper() + tok[1:].lower())
-    return " ".join(out)
+    import re
+
+    small_words = {"or", "of", "and", "the", "in", "to", "for", "a", "an"}
+    state = {"first": True}
+
+    def _cap(m: "re.Match") -> str:
+        w = m.group(0)
+        is_first = state["first"]
+        state["first"] = False
+        if w.upper() in _HEADER_ACRONYMS:
+            return w.upper()
+        if not is_first and w.lower() in small_words:
+            return w.lower()
+        return w[0].upper() + w[1:].lower()
+
+    return re.sub(r"[A-Za-z]+", _cap, name)
 
 
 # =============================================================================
 # Style Configuration
 # =============================================================================
 
+# Arial is the SDTM-MSG v2.0 recommended font (Section 3.1.2). PyMuPDF's base-14
+# "helv"/"hebo" are the Helvetica/Arial-equivalent substitutes and render
+# identically in every viewer.
 _FONT_NAME = "helv"
 _FONT_NAME_BOLD = "hebo"
 
-_FONT_SIZE = 7.5
-_FONT_SIZE_DENSE = 6.5
-_HEADER_FONT_SIZE = 8.0
+# SDTM-MSG v2.0 recommends a 12-point font, allowing reduction to fit the page.
+# The AZ production aCRF uses 12pt bold for domain headers and 10pt for variable
+# annotations — matched here, with an automatic reduction on dense pages.
+_FONT_SIZE = 9.5
+_FONT_SIZE_DENSE = 8.0
+_HEADER_FONT_SIZE = 11.0
 _LEGEND_FONT_SIZE = 8.0
 
 _BORDER_WIDTH = 0.6
@@ -91,10 +106,13 @@ _PAGE_TOP_MARGIN = 52.0
 _PAGE_BOTTOM_MARGIN = 28.0
 _DENSE_THRESHOLD = 14
 
-_TEXT_COLOUR = (0.05, 0.05, 0.05)
-_NOT_SUB_TEXT = (0.38, 0.38, 0.38)
-_NOT_SUB_BORDER = (0.55, 0.55, 0.55)
-_NOT_SUB_FILL = (0.96, 0.96, 0.96)
+# SDTM-MSG v2.0 (Section 3.1.2): annotation text is BLACK — bold for domain
+# headers, non-bold for variable annotations. Only the box border is coloured.
+_TEXT_COLOUR = (0.0, 0.0, 0.0)
+_ANNOT_TEXT_COLOUR = (0.0, 0.0, 0.0)
+_NOT_SUB_TEXT = (0.0, 0.0, 0.0)
+_NOT_SUB_BORDER = (0.50, 0.50, 0.50)
+_NOT_SUB_FILL = None  # transparent — MSG style uses no fill
 
 _HEADER_BAR_HEIGHT = 11.0
 
@@ -119,15 +137,15 @@ _NOTE_TEXT = (0.18, 0.28, 0.48)
 
 _DOMAIN_NAMES: dict[str, str] = {
     "AE": "ADVERSE EVENTS", "BE": "BIOSPECIMEN EVENTS",
-    "CE": "CLINICAL EVENTS", "CM": "CONCOMITANT MEDICATIONS",
+    "CE": "CLINICAL EVENTS", "CM": "CONCOMITANT/PRIOR MEDICATIONS",
     "CO": "COMMENTS", "DD": "DEATH DETAILS",
     "DM": "DEMOGRAPHICS", "DS": "DISPOSITION",
     "EC": "EXPOSURE AS COLLECTED", "EG": "ECG TEST RESULTS",
-    "EX": "EXPOSURE", "FA": "FINDINGS ABOUT",
+    "EX": "EXPOSURE", "FA": "FINDINGS ABOUT EVENTS OR INTERVENTIONS",
     "FACE": "FINDINGS ABOUT – CLINICAL EVENTS",
     "FAHO": "FINDINGS ABOUT – HEALTHCARE ENCOUNTERS",
     "HO": "HEALTHCARE ENCOUNTERS",
-    "IE": "INCLUSION / EXCLUSION CRITERIA",
+    "IE": "INCLUSION/EXCLUSION CRITERIA NOT MET",
     "IS": "IMMUNOGENICITY SPECIMEN", "LB": "LABORATORY TEST RESULTS",
     "MB": "MICROBIOLOGY SPECIMEN", "MH": "MEDICAL HISTORY",
     "PC": "PHARMACOKINETICS CONCENTRATIONS",
@@ -180,9 +198,34 @@ def _get_domain_full_name(domain: str) -> str:
 
 
 # =============================================================================
-# Domain Colour Map — UNIQUE colour per domain (border_rgb, fill_rgb)
+# SDTM-MSG v2.0 Colour Sequence (Section 3.1.2, point 7)
 # =============================================================================
+#
+# The MSG specifies a fixed, colour-blindness-tested sequence to be applied to
+# the domains appearing on a page (1st domain → blue, 2nd → yellow, 3rd → green,
+# 4th → orange). Colours are positional per page, NOT a fixed colour per domain.
+# These are the exact RGB values from the MSG sample (and the AZ production
+# aCRF): the colour is used for the box BORDER; the fill is transparent.
+_MSG_COLOUR_SEQUENCE: list[tuple[float, float, float]] = [
+    (191 / 255, 255 / 255, 255 / 255),  # 1. BLUE   191,255,255
+    (255 / 255, 255 / 255, 150 / 255),  # 2. YELLOW 255,255,150
+    (150 / 255, 255 / 255, 150 / 255),  # 3. GREEN  150,255,150
+    (255 / 255, 190 / 255, 155 / 255),  # 4. ORANGE 255,190,155
+]
 
+
+def _seq_colour(index: int) -> tuple[float, float, float]:
+    """Return the MSG sequence colour for a 0-based domain position on a page."""
+    return _MSG_COLOUR_SEQUENCE[index % len(_MSG_COLOUR_SEQUENCE)]
+
+
+def _build_page_colour_map(domains: list[str]) -> dict[str, tuple[float, float, float]]:
+    """Map each domain on a page to its positional MSG sequence colour."""
+    return {dom: _seq_colour(i) for i, dom in enumerate(domains)}
+
+
+# Retained for backward compatibility / the colour legend only. The live
+# annotation colours now come from the positional MSG sequence above.
 _DOMAIN_COLOURS: dict[str, tuple[tuple[float, float, float], tuple[float, float, float]]] = {
     "AE": ((0.80, 0.05, 0.05), (1.00, 0.85, 0.85)),
     "CE": ((0.75, 0.35, 0.00), (1.00, 0.90, 0.78)),
@@ -513,37 +556,42 @@ def _freetext(
         pass
 
 
-def _draw_domain_name_top_left(page: fitz.Page, domains: list[str]) -> None:
-    """Draw coloured domain-name boxes at the top-left of the page."""
+def _draw_domain_name_top_left(
+    page: fitz.Page,
+    domains: list[str],
+    colour_map: dict[str, tuple[float, float, float]] | None = None,
+) -> None:
+    """Draw domain-name header boxes at the top-left of the page.
+
+    Per SDTM-MSG v2.0: domain annotations are BLACK BOLD text in the format
+    ``XX = Domain Label`` (AZ house style), inside a box whose BORDER carries
+    the domain's positional MSG sequence colour; the fill is transparent.
+    """
     if not domains:
         return
 
+    colour_map = colour_map or _build_page_colour_map(domains)
     y = _DOMAIN_HEADER_Y
     for domain in domains:
         full_name = _get_domain_full_name(domain)
         label_text = f"{domain} = {full_name}"
-        border_c, fill_c = _get_domain_colours(domain)
-
-        bar_fill = (
-            max(0.0, fill_c[0] - 0.06),
-            max(0.0, fill_c[1] - 0.06),
-            max(0.0, fill_c[2] - 0.06),
-        )
+        border_c = colour_map.get(domain) or _seq_colour(0)
 
         tw = fitz.get_text_length(label_text, fontname=_FONT_NAME_BOLD, fontsize=_HEADER_FONT_SIZE)
+        box_h = _HEADER_FONT_SIZE * _FT_LINE_FACTOR + 2 * _BOX_PADDING_Y
         box_rect = fitz.Rect(
             _DOMAIN_HEADER_LEFT_X - 2,
-            y - _HEADER_BAR_HEIGHT + 1,
-            _DOMAIN_HEADER_LEFT_X + tw + 6,
+            y - box_h + 1,
+            _DOMAIN_HEADER_LEFT_X + tw + 2 * _BOX_PADDING_X + _FT_SIDE_INSET,
             y + 2,
         )
         _freetext(
             page, box_rect, label_text,
             fontsize=_HEADER_FONT_SIZE, fontname=_FONT_NAME_BOLD,
-            text_color=border_c, fill_color=bar_fill, border_color=border_c,
-            border_width=0.9,
+            text_color=_TEXT_COLOUR, fill_color=None, border_color=border_c,
+            border_width=1.0,
         )
-        y += _HEADER_BAR_HEIGHT + 2.0
+        y += box_h + 2.0
 
 
 def _draw_note(page: fitz.Page, text: str, ann_x: float, y_top: float) -> None:
@@ -622,67 +670,76 @@ class _PlacementTracker:
 # =============================================================================
 
 def _append_legend_page(doc: fitz.Document, page_width: float, page_height: float):
-    """Append a colour-legend page at the end of the PDF."""
+    """Append an annotation-conventions legend page following SDTM-MSG v2.0."""
     page = doc.new_page(width=page_width, height=page_height)
 
-    page.insert_text(fitz.Point(36, 44), "SDTM Annotation Colour Legend",
-                     fontsize=14, fontname=_FONT_NAME_BOLD, color=(0.10, 0.10, 0.10))
+    page.insert_text(fitz.Point(36, 44), "Annotation Conventions (SDTM-MSG v2.0)",
+                     fontsize=14, fontname=_FONT_NAME_BOLD, color=(0.0, 0.0, 0.0))
     page.insert_text(fitz.Point(36, 56),
-                     "Colour coding applied to annotated CRF (aCRF) variable annotations by SDTM domain class",
+                     "Annotations follow the CDISC SDTM Metadata Submission Guidelines v2.0, Section 3.1.2.",
                      fontsize=8, fontname=_FONT_NAME, color=(0.40, 0.40, 0.40))
     page.draw_line(fitz.Point(36, 60), fitz.Point(page_width - 36, 60),
                    color=(0.70, 0.70, 0.70), width=0.5)
 
-    col_x = [38.0, 310.0]
-    row_height = 16.0
-    box_w, box_h = 18.0, 10.0
-    y, col = 76.0, 0
-    class_label_written: set[str] = set()
+    x = 38.0
+    box_w, box_h = 26.0, 12.0
+    row_height = 20.0
+    y = 84.0
 
-    for cls_name, members in _DOMAIN_CLASSES.items():
-        if cls_name not in class_label_written:
-            x = col_x[col]
-            page.insert_text(fitz.Point(x, y), cls_name.upper(),
-                             fontsize=8, fontname=_FONT_NAME_BOLD, color=(0.20, 0.20, 0.20))
-            y += row_height * 0.7
-            class_label_written.add(cls_name)
+    page.insert_text(fitz.Point(x, y), "Domain colour sequence (applied per page)",
+                     fontsize=9, fontname=_FONT_NAME_BOLD, color=(0.0, 0.0, 0.0))
+    y += row_height
+    seq_labels = [
+        "1st domain on page", "2nd domain on page",
+        "3rd domain on page", "4th domain on page",
+    ]
+    rgb_labels = ["191, 255, 255", "255, 255, 150", "150, 255, 150", "255, 190, 155"]
+    for i, colour in enumerate(_MSG_COLOUR_SEQUENCE):
+        swatch = fitz.Rect(x, y - box_h + 1, x + box_w, y + 1)
+        page.draw_rect(swatch, color=colour, fill=None, width=1.0)
+        page.insert_text(fitz.Point(x + box_w + 8, y),
+                         f"{seq_labels[i]}   (RGB {rgb_labels[i]})",
+                         fontsize=8.5, fontname=_FONT_NAME, color=(0.0, 0.0, 0.0))
+        y += row_height
 
-        for domain in members:
-            if y > page_height - 50:
-                col = min(col + 1, len(col_x) - 1)
-                y = 76.0
-            x = col_x[col]
-            border_c, fill_c = _get_domain_colours(domain)
-            swatch_rect = fitz.Rect(x, y - box_h + 1, x + box_w, y + 1)
-            page.draw_rect(swatch_rect, color=border_c, fill=fill_c, width=0.7)
-            full = _get_domain_full_name(domain)
-            page.insert_text(fitz.Point(x + box_w + 5, y), f"{domain}  —  {full}",
-                             fontsize=7.5, fontname=_FONT_NAME, color=(0.10, 0.10, 0.10))
-            y += row_height
-        y += row_height * 0.5
+    y += row_height * 0.4
+    page.insert_text(fitz.Point(x, y), "Annotation styles", fontsize=9,
+                     fontname=_FONT_NAME_BOLD, color=(0.0, 0.0, 0.0))
+    y += row_height
 
-    x = col_x[col]
-    if y > page_height - 50:
-        col = min(col + 1, len(col_x) - 1)
-        y = 76.0
-        x = col_x[col]
-    page.insert_text(fitz.Point(x, y), "OTHER", fontsize=8, fontname=_FONT_NAME_BOLD,
-                     color=(0.20, 0.20, 0.20))
-    y += row_height * 0.7
-    ns_rect = fitz.Rect(x, y - box_h + 1, x + box_w, y + 1)
-    page.draw_rect(ns_rect, color=_NOT_SUB_BORDER, fill=_NOT_SUB_FILL, width=0.7, dashes="[2 2] 0")
-    page.insert_text(fitz.Point(x + box_w + 5, y),
-                     "[NOT SUBMITTED]  —  Field not collected / derived / internal",
-                     fontsize=7.5, fontname=_FONT_NAME, color=(0.10, 0.10, 0.10))
+    # Domain header sample
+    page.insert_text(fitz.Point(x, y), "XX = Domain Label",
+                     fontsize=9, fontname=_FONT_NAME_BOLD, color=(0.0, 0.0, 0.0))
+    page.insert_text(fitz.Point(x + 160, y),
+                     "Domain annotation — black, bold (XX = Domain Label).",
+                     fontsize=8.5, fontname=_FONT_NAME, color=(0.0, 0.0, 0.0))
+    y += row_height
+    page.insert_text(fitz.Point(x, y), "VARIABLE",
+                     fontsize=9, fontname=_FONT_NAME, color=(0.0, 0.0, 0.0))
+    page.insert_text(fitz.Point(x + 160, y),
+                     "Variable annotation — black, non-bold, coloured box border.",
+                     fontsize=8.5, fontname=_FONT_NAME, color=(0.0, 0.0, 0.0))
+    y += row_height
+    ns_rect = fitz.Rect(x, y - box_h + 1, x + box_w + 40, y + 1)
+    page.draw_rect(ns_rect, color=_NOT_SUB_BORDER, fill=None, width=0.8, dashes="[2 2] 0")
+    page.insert_text(fitz.Point(x + box_w + 48, y),
+                     "Dashed border — [NOT SUBMITTED] or non-collected / derived variable.",
+                     fontsize=8.5, fontname=_FONT_NAME, color=(0.0, 0.0, 0.0))
+    y += row_height
 
-    page.draw_line(fitz.Point(36, page_height - 42), fitz.Point(page_width - 36, page_height - 42),
+    page.draw_line(fitz.Point(36, page_height - 56), fitz.Point(page_width - 36, page_height - 56),
                    color=(0.75, 0.75, 0.75), width=0.4)
-    page.insert_text(fitz.Point(36, page_height - 32),
-                     "Supplemental Qualifier variables are annotated with the SUPP-prefixed dataset name (e.g. SUPPVS.QVAL).",
-                     fontsize=7, fontname=_FONT_NAME, color=(0.45, 0.45, 0.45))
-    page.insert_text(fitz.Point(36, page_height - 22),
-                     "This aCRF was generated automatically. Verify all annotations against the study SDTM specification.",
-                     fontsize=7, fontname=_FONT_NAME, color=(0.45, 0.45, 0.45))
+    notes = [
+        "Variables and dataset codes are capitalised; multiple variables are separated by \" / \".",
+        "Supplemental Qualifier variables are annotated as SUPPxx.QVAL where QNAM = <variable>.",
+        "Findings use the \"--ORRES where --TESTCD = <value>\" format; explicit values are not quoted.",
+        "This aCRF was generated automatically — verify all annotations against the study SDTM specification.",
+    ]
+    ny = page_height - 46
+    for n in notes:
+        page.insert_text(fitz.Point(36, ny), n, fontsize=7,
+                         fontname=_FONT_NAME, color=(0.45, 0.45, 0.45))
+        ny += 10
 
 
 # =============================================================================
@@ -860,6 +917,15 @@ def annotate_pdf(
                 _seen_visit_form.add(key)
                 form_visits[fc].append((visit, field.page_index))
 
+    # Precompute the positional MSG colour for every domain on every page so
+    # the header box and each field annotation share a consistent colour.
+    page_colour_maps: dict[int, dict[str, tuple[float, float, float]]] = {}
+    for pi in page_results:
+        fc_set = page_form_codes.get(pi, set())
+        page_fc = next(iter(fc_set)) if len(fc_set) == 1 else ""
+        doms = _get_all_domains_for_page(page_results.get(pi, []), form_code=page_fc)
+        page_colour_maps[pi] = _build_page_colour_map(doms)
+
     domain_header_written: set[int] = set()
     see_page_written: set[str] = set()
 
@@ -890,7 +956,9 @@ def annotate_pdf(
                 page_results.get(page_idx, []), form_code=page_fc
             )
             if page_doms:
-                _draw_domain_name_top_left(page, page_doms)
+                _draw_domain_name_top_left(
+                    page, page_doms, page_colour_maps.get(page_idx)
+                )
             # "Continued from page X" on subsequent pages of multi-page form
             if fid:
                 prev_idx = form_continued_from.get(fid, {}).get(page_idx)
@@ -957,6 +1025,10 @@ def annotate_pdf(
 
             this_h = _entry_height(entry)
 
+            # SDTM-MSG v2.0: variable annotations are BLACK, non-bold text in a
+            # box whose BORDER carries the domain's positional colour; the fill
+            # is transparent. Non-collected / derived annotations get a dashed
+            # border (MSG Section 3.1.2, point 8 + Findings guidance).
             if entry["is_not_submitted"]:
                 border_c = _NOT_SUB_BORDER
                 fill_c = _NOT_SUB_FILL
@@ -965,9 +1037,12 @@ def annotate_pdf(
                 use_dash = True
                 stats["not_submitted"] += 1
             else:
-                border_c, fill_c = _get_domain_colours(entry["domain"])
-                text_c = border_c
-                font_n = _FONT_NAME_BOLD
+                border_c = page_colour_maps.get(page_idx, {}).get(
+                    entry["domain"]
+                ) or _seq_colour(0)
+                fill_c = None
+                text_c = _ANNOT_TEXT_COLOUR
+                font_n = _FONT_NAME
                 use_dash = is_derived
 
             tw = fitz.get_text_length(ann_text, fontname=font_n, fontsize=eff_fs)
