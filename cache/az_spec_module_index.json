@@ -1,0 +1,3721 @@
+{
+  "module_to_domains": {
+    "AE": [
+      "AE",
+      "FAAE",
+      "RELREC",
+      "SUPPAE",
+      "SUPPFAAE"
+    ],
+    "DMAE": [
+      "AE"
+    ],
+    "SERAE": [
+      "AE",
+      "DD",
+      "DE",
+      "SUPPAE",
+      "SUPPDD",
+      "SUPPDE"
+    ],
+    "SERAESERAESERAESERAEAEAE": [
+      "SUPPAE"
+    ],
+    "AESIVAESIVAESIVAESIVAEAEAE": [
+      "AE",
+      "APMH",
+      "SUPPAE"
+    ],
+    "DE": [
+      "APRELSUB",
+      "BE",
+      "BS",
+      "DE",
+      "DI",
+      "DR",
+      "DT",
+      "SUPPDE",
+      "SUPPDT"
+    ],
+    "ADJAE": [
+      "CE",
+      "CO",
+      "FACE",
+      "SUPPCE",
+      "SUPPCO",
+      "SUPPFACE"
+    ],
+    "BSYMPT": [
+      "CE",
+      "SUPPCE"
+    ],
+    "CEREVENT": [
+      "CE",
+      "FACE",
+      "SUPPCE",
+      "SUPPFACE"
+    ],
+    "CIEVENT": [
+      "CE",
+      "FACE",
+      "PR",
+      "SUPPCE",
+      "SUPPFACE",
+      "SUPPPR"
+    ],
+    "COPDEX": [
+      "CE",
+      "FACE",
+      "HO",
+      "SUPPCE",
+      "SUPPFACE",
+      "SUPPHO"
+    ],
+    "CRSSS": [
+      "CE",
+      "SUPPCE"
+    ],
+    "DEATHEVT": [
+      "CE",
+      "DD",
+      "FACE",
+      "SUPPCE",
+      "SUPPDD",
+      "SUPPFACE"
+    ],
+    "EXACA": [
+      "CE",
+      "FACE",
+      "HO",
+      "RE",
+      "SUPPCE",
+      "SUPPFACE",
+      "SUPPHO",
+      "SUPPRE"
+    ],
+    "EXACD": [
+      "CE",
+      "DS",
+      "SUPPCE",
+      "SUPPDS"
+    ],
+    "HELMINTH": [
+      "CE",
+      "FA",
+      "SUPPCE",
+      "SUPPFA"
+    ],
+    "HFEVT": [
+      "CE",
+      "FACE",
+      "HO",
+      "SUPPCE",
+      "SUPPFACE",
+      "SUPPHO"
+    ],
+    "ICANSSS": [
+      "CE",
+      "SUPPCE"
+    ],
+    "INFSS": [
+      "CE",
+      "FA",
+      "SUPPCE",
+      "SUPPFA"
+    ],
+    "LIVERSS": [
+      "CE",
+      "SUPPCE"
+    ],
+    "SOLARST": [
+      "CE",
+      "SUPPCE"
+    ],
+    "ADJRCVRM": [
+      "CE",
+      "FACE",
+      "FAYB",
+      "SUPPCE",
+      "SUPPFACE",
+      "SUPPFAYB",
+      "SUPPYB",
+      "YB",
+      "YM",
+      "ZA"
+    ],
+    "TVTVCE": [
+      "CE"
+    ],
+    "DMCE": [
+      "CE"
+    ],
+    "CAPRX": [
+      "CM",
+      "SUPPCM"
+    ],
+    "CAPRXR": [
+      "CM",
+      "SUPPCM"
+    ],
+    "CM": [
+      "CM",
+      "RELREC",
+      "SUPPCM"
+    ],
+    "HEVENT": [
+      "CM",
+      "FAHO",
+      "HO",
+      "SUPPCM",
+      "SUPPFAHO",
+      "SUPPHO"
+    ],
+    "MINT": [
+      "CM",
+      "DI",
+      "EC",
+      "SUPPCM",
+      "SUPPDI",
+      "SUPPEC"
+    ],
+    "MISTD": [
+      "CM",
+      "SUPPCM"
+    ],
+    "PCOVID": [
+      "CM",
+      "FA",
+      "SUPPCM",
+      "SUPPFA"
+    ],
+    "TRANSF": [
+      "CM",
+      "SUPPCM"
+    ],
+    "CAPRXHL": [
+      "CM",
+      "RS",
+      "SUPPCM",
+      "SUPPRS"
+    ],
+    "OXYGEN": [
+      "CM",
+      "EC",
+      "SUPPCM",
+      "SUPPEC"
+    ],
+    "CAPRXMM": [
+      "CM",
+      "RS",
+      "SUPPCM",
+      "SUPPRS"
+    ],
+    "TVTVCM": [
+      "CM"
+    ],
+    "DMCM": [
+      "CM"
+    ],
+    "BONESCN": [
+      "CO",
+      "RS",
+      "SUPPCO",
+      "SUPPRS",
+      "SUPPTR",
+      "TR"
+    ],
+    "CO": [
+      "CO",
+      "SUPPCO"
+    ],
+    "DA": [
+      "CO",
+      "DA",
+      "SUPPCO",
+      "SUPPDA"
+    ],
+    "DECG": [
+      "CO",
+      "EG",
+      "SUPPCO",
+      "SUPPEG"
+    ],
+    "DEVRET": [
+      "CO",
+      "QS",
+      "SUPPCO",
+      "SUPPQS"
+    ],
+    "EC": [
+      "CO",
+      "DM",
+      "EC",
+      "EX",
+      "RELREC",
+      "SUPPCO",
+      "SUPPEC",
+      "SUPPEX"
+    ],
+    "ECHOC": [
+      "CO",
+      "CV",
+      "SUPPCO",
+      "SUPPCV"
+    ],
+    "EREFS": [
+      "CO",
+      "RS",
+      "SUPPCO",
+      "SUPPRS"
+    ],
+    "FDGSCAN": [
+      "CO",
+      "LB",
+      "SU",
+      "SUPPCO",
+      "SUPPLB",
+      "SUPPSU",
+      "SUPPVS",
+      "SUPPXC",
+      "VS",
+      "XC"
+    ],
+    "ISCONC": [
+      "CO",
+      "IS",
+      "SUPPCO",
+      "SUPPIS"
+    ],
+    "LB": [
+      "CO",
+      "LB",
+      "MB",
+      "RELREC",
+      "SUPPCO",
+      "SUPPLB",
+      "SUPPMB"
+    ],
+    "LIVERRF": [
+      "CO",
+      "FA",
+      "SUPPCO",
+      "SUPPFA"
+    ],
+    "LIVERDI": [
+      "FA",
+      "SUPPFA"
+    ],
+    "LUNDMACK": [
+      "CO",
+      "FA",
+      "PR",
+      "RS",
+      "SUPPCO",
+      "SUPPFA",
+      "SUPPPR",
+      "SUPPRS"
+    ],
+    "NPS": [
+      "CO",
+      "FA",
+      "PR",
+      "RS",
+      "SUPPCO",
+      "SUPPFA",
+      "SUPPPR",
+      "SUPPRS"
+    ],
+    "PATHREP": [
+      "CO",
+      "FA",
+      "SUPPCO",
+      "SUPPFA"
+    ],
+    "QNTCT": [
+      "CO",
+      "DI",
+      "DO",
+      "PR",
+      "RE",
+      "SUPPCO",
+      "SUPPDI",
+      "SUPPDO",
+      "SUPPPR",
+      "SUPPRE"
+    ],
+    "REIMRES": [
+      "CO",
+      "RE",
+      "SUPPRE"
+    ],
+    "BMRESON": [
+      "CO",
+      "DI",
+      "IS",
+      "MI",
+      "SUPPDI",
+      "SUPPIS",
+      "SUPPMI"
+    ],
+    "PKCONC": [
+      "CO",
+      "PC",
+      "SUPPCO",
+      "SUPPPC"
+    ],
+    "TVTVCO": [
+      "CO"
+    ],
+    "EF": [
+      "CV",
+      "SUPPCV"
+    ],
+    "CVCVCVCVDM": [
+      "CV"
+    ],
+    "TVTVCV": [
+      "CV"
+    ],
+    "DMCV": [
+      "CV"
+    ],
+    "DMDA": [
+      "DA"
+    ],
+    "SERAEDTH": [
+      "DD",
+      "SUPPDD"
+    ],
+    "DD": [
+      "DD",
+      "RELREC",
+      "SUPPDD"
+    ],
+    "DMDD": [
+      "DD"
+    ],
+    "COMPLT": [
+      "DE",
+      "SUPPDE"
+    ],
+    "TVTVDE": [
+      "DE"
+    ],
+    "DMDE": [
+      "DE"
+    ],
+    "DM": [
+      "DM",
+      "SE",
+      "SUPPDM"
+    ],
+    "DMDMDMDM": [
+      "DM"
+    ],
+    "TVTVDM": [
+      "DM"
+    ],
+    "CONSENTCONSENTCONSENTDM": [
+      "DM"
+    ],
+    "CONSENTDM": [
+      "DM"
+    ],
+    "SERAESERAESERAESERAEDM": [
+      "DM"
+    ],
+    "SERAESERAESERAEDM": [
+      "DM"
+    ],
+    "RANDRANDRANDRANDTADEFTADEFTADEFTADEFTADEFTADEFDMDMSUPPDM": [
+      "DM"
+    ],
+    "DSDSDSDM": [
+      "DM"
+    ],
+    "GROUPGROUPGROUPDM": [
+      "SUPPDM"
+    ],
+    "DUPLICDUPLICDUPLICDM": [
+      "SUPPDM"
+    ],
+    "SUTRASUTRASUTRADM": [
+      "SUPPDM"
+    ],
+    "SURVSTATSURVSTATSURVSTATDM": [
+      "DM"
+    ],
+    "DDDDDDDM": [
+      "DM"
+    ],
+    "DSSSDSSSDSSSDM": [
+      "DM"
+    ],
+    "CONSENT": [
+      "DS",
+      "SUPPDS"
+    ],
+    "CONSWD": [
+      "DS",
+      "SUPPDS"
+    ],
+    "DS": [
+      "DS",
+      "SUPPDS"
+    ],
+    "ETRT": [
+      "DS",
+      "SUPPDS"
+    ],
+    "ICFGEN": [
+      "DS",
+      "SUPPDS"
+    ],
+    "IE": [
+      "DS",
+      "IE",
+      "SUPPDS",
+      "SUPPIE"
+    ],
+    "PARTOPT": [
+      "DS",
+      "SUPPDS"
+    ],
+    "DSSS": [
+      "DS",
+      "SS",
+      "SUPPDS",
+      "SUPPSS"
+    ],
+    "CONSENTCONSENTDSDSDSDSSUPPDS": [
+      "DS"
+    ],
+    "TVTVDS": [
+      "DS"
+    ],
+    "DMDS": [
+      "DS"
+    ],
+    "RANDRANDSUPPDS": [
+      "DS",
+      "SUPPDS"
+    ],
+    "DMDT": [
+      "DT",
+      "DU"
+    ],
+    "DV": [
+      "DV",
+      "SUPPDV"
+    ],
+    "DVIS": [
+      "DV",
+      "SUPPDV"
+    ],
+    "DMDV": [
+      "DV",
+      "DX"
+    ],
+    "ECSYSCRT": [
+      "EC",
+      "SUPPEC"
+    ],
+    "OVERDOSE": [
+      "EC",
+      "SUPPEC"
+    ],
+    "SDSTD": [
+      "EC",
+      "SUPPEC"
+    ],
+    "SDREL": [
+      "EC",
+      "SUPPEC"
+    ],
+    "CELLT": [
+      "EC",
+      "SUPPEC"
+    ],
+    "TVTVEC": [
+      "EC"
+    ],
+    "DMEC": [
+      "EC"
+    ],
+    "EG": [
+      "EG",
+      "SUPPEG"
+    ],
+    "EXER": [
+      "EG",
+      "FT",
+      "QS",
+      "RS",
+      "SUPPEG",
+      "SUPPFT",
+      "SUPPQS",
+      "SUPPRS",
+      "SUPPVS",
+      "VS"
+    ],
+    "EGEGEGEGDM": [
+      "EG"
+    ],
+    "TVTVEG": [
+      "EG"
+    ],
+    "DMEG": [
+      "EG"
+    ],
+    "TVTVEX": [
+      "EX"
+    ],
+    "DMEX": [
+      "EX"
+    ],
+    "AEADDOM": [
+      "FA",
+      "SUPPFA"
+    ],
+    "CAPRXD": [
+      "FA",
+      "SUPPFA"
+    ],
+    "CAPRXL": [
+      "FA",
+      "SUPPFA"
+    ],
+    "CAPRXV": [
+      "FA",
+      "SUPPFA"
+    ],
+    "CPULM": [
+      "FA",
+      "RE",
+      "SUPPFA",
+      "SUPPRE"
+    ],
+    "CRASTCT": [
+      "FA",
+      "SUPPFA"
+    ],
+    "DISEXT": [
+      "FA",
+      "MH",
+      "SUPPFA",
+      "SUPPMH"
+    ],
+    "DISREC": [
+      "FA",
+      "PR",
+      "RS",
+      "SUPPFA",
+      "SUPPPR",
+      "SUPPRS",
+      "SUPPTR",
+      "SUPPTU",
+      "TR",
+      "TU"
+    ],
+    "HYPANPH": [
+      "FA",
+      "SUPPFA"
+    ],
+    "ICASTCT": [
+      "FA",
+      "SUPPFA"
+    ],
+    "ILDIS": [
+      "FA",
+      "LB",
+      "SUPPFA",
+      "SUPPLB"
+    ],
+    "INFDI": [
+      "FA",
+      "SUPPFA"
+    ],
+    "INFRF": [
+      "FA",
+      "SUPPFA"
+    ],
+    "NYHAHF": [
+      "FA",
+      "SUPPFA"
+    ],
+    "NPROCED": [
+      "FA",
+      "PR",
+      "SUPPFA",
+      "SUPPPR"
+    ],
+    "PATHGEN": [
+      "FA",
+      "MH",
+      "RS",
+      "SUPPFA",
+      "SUPPMH",
+      "SUPPRS"
+    ],
+    "PATHGOM": [
+      "FA",
+      "RS",
+      "SUPPFA",
+      "SUPPRS"
+    ],
+    "PULM": [
+      "AG",
+      "FA",
+      "RE",
+      "SUPPAG",
+      "SUPPFA",
+      "SUPPRE"
+    ],
+    "CAPRXP": [
+      "FA",
+      "SUPPFA"
+    ],
+    "DISCHMM": [
+      "FA",
+      "MH",
+      "RS"
+    ],
+    "DISCHAML": [
+      "FA",
+      "MH",
+      "SUPPFA"
+    ],
+    "DISCHALL": [
+      "FA",
+      "MH",
+      "SUPPFA"
+    ],
+    "DISCHLYM": [
+      "FA",
+      "MH",
+      "SUPPFA"
+    ],
+    "HSCT": [
+      "AG",
+      "FA",
+      "PR",
+      "SUPPAG",
+      "SUPPFA",
+      "SUPPPR"
+    ],
+    "IEC_HS": [
+      "FA"
+    ],
+    "DICLLSLL": [
+      "FA",
+      "MH",
+      "RS"
+    ],
+    "FAFAFAFADM": [
+      "FA",
+      "FAYM"
+    ],
+    "TVTVFA": [
+      "FA"
+    ],
+    "DMFA": [
+      "FA"
+    ],
+    "INJSTRC": [
+      "FAAE",
+      "SUPPFAAE"
+    ],
+    "FAAEFAAEFAAEFAAEDM": [
+      "FAAE"
+    ],
+    "TVTVFAAE": [
+      "FAAE"
+    ],
+    "DMFAAE": [
+      "FAAE"
+    ],
+    "SOLAR": [
+      "FACE",
+      "SUPPFACE"
+    ],
+    "TVTVFACE": [
+      "FACE"
+    ],
+    "DMFACE": [
+      "FACE"
+    ],
+    "FACEFACEFACEFACEDM": [
+      "FACE"
+    ],
+    "KIT": [
+      "FAEX",
+      "SUPPFAEX"
+    ],
+    "TVTVFAEX": [
+      "FAEX"
+    ],
+    "DMFAEX": [
+      "FAEX"
+    ],
+    "HOSPLOG": [
+      "FAHO",
+      "HO",
+      "SUPPFAHO",
+      "SUPPHO"
+    ],
+    "FAHOFAHOFAHOFAHODM": [
+      "FAHO"
+    ],
+    "TVTVFAHO": [
+      "FAHO"
+    ],
+    "DMFAHO": [
+      "FAHO"
+    ],
+    "ASTHMAD": [
+      "FAMH",
+      "MH",
+      "SUPPFAMH",
+      "SUPPMH"
+    ],
+    "COPDD": [
+      "FAMH",
+      "MH",
+      "SUPPFAMH",
+      "SUPPMH"
+    ],
+    "COPDEXH": [
+      "FAMH",
+      "HO",
+      "MH",
+      "SUPPFAMH",
+      "SUPPHO",
+      "SUPPMH"
+    ],
+    "EXACAH": [
+      "FAMH",
+      "HO",
+      "MH",
+      "SUPPFAMH",
+      "SUPPHO",
+      "SUPPMH"
+    ],
+    "ILDD": [
+      "FAMH",
+      "MH",
+      "SUPPFAMH",
+      "SUPPMH"
+    ],
+    "NRESPH": [
+      "FAMH",
+      "MH",
+      "SUPPFAMH",
+      "SUPPMH"
+    ],
+    "PATHNHL": [
+      "FAMH",
+      "MH",
+      "SUPPFAMH",
+      "SUPPMH"
+    ],
+    "SPECHIS": [
+      "FAMH",
+      "FAPR",
+      "MH",
+      "PR",
+      "RS",
+      "SUPPFAMH",
+      "SUPPFAPR",
+      "SUPPMH",
+      "SUPPPR",
+      "SUPPRS"
+    ],
+    "CKDD": [
+      "FAMH",
+      "MH",
+      "SUPPMH"
+    ],
+    "FAMHFAMHFAMHFAMHDM": [
+      "FAMH"
+    ],
+    "TVTVFAMH": [
+      "FAMH"
+    ],
+    "DMFAMH": [
+      "FAMH"
+    ],
+    "PRADDON": [
+      "FAPR",
+      "SUPPFAPR"
+    ],
+    "RADEXM": [
+      "FAPR",
+      "PR",
+      "SUPPPR"
+    ],
+    "FAPRFAPRFAPRFAPRDM": [
+      "FAPR"
+    ],
+    "TVTVFAPR": [
+      "FAPR"
+    ],
+    "DMFAPR": [
+      "FAPR"
+    ],
+    "DMFAYB": [
+      "FAYB"
+    ],
+    "MER": [
+      "FAYM",
+      "SUPPYM",
+      "YM"
+    ],
+    "DMFAYM": [
+      "FAYM"
+    ],
+    "FTFTFTFTDM": [
+      "FT"
+    ],
+    "TVTVFT": [
+      "FT"
+    ],
+    "DMFT": [
+      "FT"
+    ],
+    "MOLCHALL": [
+      "GF",
+      "SUPPGF"
+    ],
+    "MOLCHAML": [
+      "GF",
+      "SUPPGF"
+    ],
+    "CYTGEN": [
+      "GF",
+      "SUPPGF"
+    ],
+    "CYTOGEN": [
+      "GF",
+      "SUPPGF"
+    ],
+    "CYTOLYM": [
+      "GF",
+      "SUPPGF"
+    ],
+    "TVTVGF": [
+      "GF"
+    ],
+    "CHCSS": [
+      "HO",
+      "SUPPHO",
+      "SUPPZC",
+      "ZC"
+    ],
+    "HOSPAD": [
+      "HO",
+      "SUPPHO"
+    ],
+    "TVTVHO": [
+      "HO"
+    ],
+    "DMHO": [
+      "HO"
+    ],
+    "IEIEIEIEIETITIIEIE": [
+      "IE"
+    ],
+    "TVTVIE": [
+      "IE"
+    ],
+    "DMIE": [
+      "IE"
+    ],
+    "ALLR": [
+      "IS",
+      "SUPPIS"
+    ],
+    "ISCONCIS": [
+      "IS"
+    ],
+    "TVTVIS": [
+      "IS"
+    ],
+    "DMIS": [
+      "IS"
+    ],
+    "ISISISISDM": [
+      "IS"
+    ],
+    "LBREFISLBREF": [
+      "IS"
+    ],
+    "BMRES": [
+      "LB",
+      "LC",
+      "SUPPLB",
+      "SUPPLC"
+    ],
+    "CLAB": [
+      "LB",
+      "LC",
+      "SUPPLB",
+      "SUPPLC"
+    ],
+    "LBHIS": [
+      "LB",
+      "SUPPLB"
+    ],
+    "LBNO": [
+      "LB",
+      "SUPPLB"
+    ],
+    "PREG": [
+      "LB",
+      "LC",
+      "SUPPLB",
+      "SUPPLC"
+    ],
+    "MRDL": [
+      "LB",
+      "SUPPLB"
+    ],
+    "MRDMM": [
+      "LB",
+      "SUPPLB"
+    ],
+    "BMLAB": [
+      "LB",
+      "MI",
+      "SUPPLB",
+      "SUPPMI"
+    ],
+    "MPROTEIN": [
+      "LB",
+      "SUPPLB"
+    ],
+    "EXMDA": [
+      "LB",
+      "PR",
+      "SUPPLB",
+      "SUPPPR",
+      "SUPPTR",
+      "SUPPTU",
+      "TR",
+      "TU"
+    ],
+    "BMBAMM": [
+      "LB",
+      "PR",
+      "SUPPLB",
+      "SUPPPR"
+    ],
+    "BMRESBMRESBMRESBMRESBMRESBMRESBMRESUNITCONVLB": [
+      "LB"
+    ],
+    "LBREFLBREFLBREFLBREFLBREFLBREFLBREFLBREFLBREFLBREFLBREFLBREFLBREFLBREFUNITCONVUNITCONVUNITCONVUNITCONVUNITCONVLBLBLBLBLB": [
+      "LB"
+    ],
+    "LBLBLBLBLBDM": [
+      "LB"
+    ],
+    "DMLB": [
+      "LB"
+    ],
+    "CLABCLABCLABCLABCLABCLABCLABCLABUNITCONVLB": [
+      "LB"
+    ],
+    "LBLBLBLBLBLBLBLBLB": [
+      "LB"
+    ],
+    "LBLBLBLB": [
+      "LB"
+    ],
+    "TVTVLB": [
+      "LB",
+      "LBREF"
+    ],
+    "LBHISLBHISLBHISLBHISLBHISLBHISLBHISUNITCONVLB": [
+      "LB"
+    ],
+    "BMLABBMLABBMLABBMLABBMLABBMLABUNITCONVLB": [
+      "LB"
+    ],
+    "CLABCLABCLABCLABCLABCLABCLABCLABUNITCONV": [
+      "LC"
+    ],
+    "LCLCDM": [
+      "LC"
+    ],
+    "TVTVLC": [
+      "LC"
+    ],
+    "DMLC": [
+      "LC"
+    ],
+    "LCLCLCLCLCLBREFLBREFLBREFLBREFLBREFLBREFLBREFLBREFLBREFLBREFLBREFLBREFLBREFLBREFSUPPLC": [
+      "LC"
+    ],
+    "BMRESBMRESBMRESBMRESBMRESBMRESBMRESUNITCONV": [
+      "LC"
+    ],
+    "LBLBLBLBLBLBLBLBMBUNITCONV": [
+      "MB"
+    ],
+    "MBMBMBLB": [
+      "MB"
+    ],
+    "MBMBMBMBDMLB": [
+      "MB"
+    ],
+    "LBLBLBMBMBMBMBMBLBREFLBREFLBREFLBREFLBREFLBREFLBREFLBREFLBREFLBREFLBREFLBREFLBREFLBREFUNITCONVUNITCONVUNITCONVUNITCONVUNITCONVSUPPMB": [
+      "MB"
+    ],
+    "TVTVMB": [
+      "MB"
+    ],
+    "DMMB": [
+      "MB"
+    ],
+    "HISDM": [
+      "MH",
+      "SUPPMH"
+    ],
+    "MH": [
+      "MH",
+      "RELREC",
+      "SUPPMH"
+    ],
+    "MHRE": [
+      "MH",
+      "SUPPMH"
+    ],
+    "TVTVMH": [
+      "MH"
+    ],
+    "DMMH": [
+      "MH"
+    ],
+    "MHDMDM": [
+      "MH"
+    ],
+    "MHREDMDM": [
+      "MH"
+    ],
+    "PDL1": [
+      "MI",
+      "SUPPMI"
+    ],
+    "LBREF": [
+      "MI"
+    ],
+    "MIMIMIMIDM": [
+      "MI"
+    ],
+    "DMMI": [
+      "MI"
+    ],
+    "JOINTC": [
+      "MK",
+      "SUPPMK"
+    ],
+    "MKMKMKMKDM": [
+      "MK"
+    ],
+    "TVTVMK": [
+      "MK"
+    ],
+    "MEAL": [
+      "ML",
+      "SUPPML"
+    ],
+    "TVTVML": [
+      "ML"
+    ],
+    "DMML": [
+      "ML",
+      "MS",
+      "NV",
+      "OE",
+      "OI"
+    ],
+    "TVTVPC": [
+      "PC"
+    ],
+    "DMPC": [
+      "PC"
+    ],
+    "CTSCAN": [
+      "PE",
+      "SUPPPE"
+    ],
+    "XRAY": [
+      "PE",
+      "SUPPPE"
+    ],
+    "PEPEPEPEDM": [
+      "PE"
+    ],
+    "TVTVPE": [
+      "PE"
+    ],
+    "DMPE": [
+      "PE"
+    ],
+    "BRCA": [
+      "PF",
+      "SUPPPF"
+    ],
+    "MGSTA": [
+      "PF",
+      "SUPPPF"
+    ],
+    "TVTVPF": [
+      "PF"
+    ],
+    "DMPF": [
+      "PF",
+      "PP"
+    ],
+    "HISS": [
+      "PR",
+      "SUPPPR"
+    ],
+    "PE": [
+      "PR",
+      "SUPPPR"
+    ],
+    "PR": [
+      "PR",
+      "RELREC",
+      "SUPPPR"
+    ],
+    "PRPE": [
+      "PR",
+      "SUPPPR"
+    ],
+    "DMPR": [
+      "PR"
+    ],
+    "TVTVPR": [
+      "PR"
+    ],
+    "DMTVPR": [
+      "PR"
+    ],
+    "AIRQ": [
+      "QS",
+      "SUPPQS"
+    ],
+    "AQLQS12": [
+      "QS",
+      "SUPPQS"
+    ],
+    "BMQ_G": [
+      "QS",
+      "SUPPQS"
+    ],
+    "CGIC": [
+      "QS",
+      "SUPPQS"
+    ],
+    "LANGU": [
+      "QS",
+      "SUPPQS"
+    ],
+    "MOS09": [
+      "QS",
+      "SUPPQS"
+    ],
+    "MRS": [
+      "QS",
+      "SUPPQS"
+    ],
+    "REVPRDI": [
+      "QS",
+      "SUPPQS"
+    ],
+    "SPFQ": [
+      "QS",
+      "SUPPQS"
+    ],
+    "TASTE": [
+      "QS",
+      "SUPPQS"
+    ],
+    "BFI": [
+      "QS",
+      "SUPPQS"
+    ],
+    "BPIDGR": [
+      "QS",
+      "SUPPQS"
+    ],
+    "BPISF": [
+      "QS",
+      "SUPPQS"
+    ],
+    "CTSQ": [
+      "QS",
+      "SUPPQS"
+    ],
+    "FACITFS": [
+      "QS",
+      "SUPPQS"
+    ],
+    "FKSI19": [
+      "QS",
+      "SUPPQS"
+    ],
+    "FSIL": [
+      "QS",
+      "SUPPQS"
+    ],
+    "LPPSS": [
+      "QS",
+      "SUPPQS"
+    ],
+    "NSCLCSAQ": [
+      "QS",
+      "SUPPQS"
+    ],
+    "BED": [
+      "QS",
+      "SUPPQS"
+    ],
+    "CAT": [
+      "QS",
+      "SUPPQS"
+    ],
+    "CLASI": [
+      "QS",
+      "SUPPQS"
+    ],
+    "COUVAS": [
+      "QS",
+      "SUPPQS"
+    ],
+    "EOEQOLA": [
+      "QS",
+      "SUPPQS"
+    ],
+    "EXACT": [
+      "QS",
+      "SUPPQS"
+    ],
+    "IBDQ": [
+      "QS",
+      "SUPPQS"
+    ],
+    "INTEXSIC": [
+      "QS",
+      "SUPPQS"
+    ],
+    "MMRC": [
+      "QS",
+      "SUPPQS"
+    ],
+    "PAQLQS": [
+      "QS",
+      "SUPPQS"
+    ],
+    "PGA": [
+      "QS",
+      "SUPPQS"
+    ],
+    "PHQ8": [
+      "QS",
+      "SUPPQS"
+    ],
+    "SNOT22": [
+      "QS",
+      "SUPPQS"
+    ],
+    "LCQ": [
+      "QS",
+      "SUPPQS"
+    ],
+    "HADS": [
+      "QS",
+      "SUPPQS"
+    ],
+    "PRD": [
+      "QS",
+      "SUPPQS"
+    ],
+    "PTGDAA": [
+      "QS",
+      "SUPPQS"
+    ],
+    "PGDAA": [
+      "QS",
+      "SUPPQS"
+    ],
+    "ACQ": [
+      "QS",
+      "SUPPQS"
+    ],
+    "ACQIA": [
+      "QS",
+      "SUPPQS"
+    ],
+    "PACQLQ": [
+      "QS",
+      "SUPPQS"
+    ],
+    "ACT": [
+      "QS",
+      "SUPPQS"
+    ],
+    "ASTDD": [
+      "QS",
+      "SUPPQS"
+    ],
+    "BCSS": [
+      "QS",
+      "SUPPQS"
+    ],
+    "BSFS": [
+      "QS",
+      "SUPPQS"
+    ],
+    "CSSRSBS": [
+      "QS",
+      "SUPPQS"
+    ],
+    "CSSRSLV": [
+      "QS",
+      "SUPPQS"
+    ],
+    "CSTDD": [
+      "QS",
+      "SUPPQS"
+    ],
+    "CSYD": [
+      "QS",
+      "SUPPQS"
+    ],
+    "DIARYNP": [
+      "QS",
+      "SUPPQS"
+    ],
+    "DSQ": [
+      "QS",
+      "SUPPQS"
+    ],
+    "EMSCI": [
+      "QS",
+      "SUPPQS"
+    ],
+    "EORTC": [
+      "QS",
+      "SUPPQS"
+    ],
+    "EORTCBIL": [
+      "QS",
+      "SUPPQS"
+    ],
+    "EORTCBN": [
+      "QS",
+      "SUPPQS"
+    ],
+    "EORTCBR": [
+      "QS",
+      "SUPPQS"
+    ],
+    "EORTCCX": [
+      "QS",
+      "SUPPQS"
+    ],
+    "EORTCEN": [
+      "QS",
+      "SUPPQS"
+    ],
+    "EORTCHCC": [
+      "QS",
+      "SUPPQS"
+    ],
+    "EORTCHN": [
+      "QS",
+      "SUPPQS"
+    ],
+    "EORTCIL": [
+      "QS",
+      "SUPPQS"
+    ],
+    "EORTCLC": [
+      "QS",
+      "SUPPQS"
+    ],
+    "EORTCNB": [
+      "QS",
+      "SUPPQS"
+    ],
+    "EORTCOV": [
+      "QS",
+      "SUPPQS"
+    ],
+    "EORTCPN": [
+      "QS",
+      "SUPPQS"
+    ],
+    "EORTCPR": [
+      "QS",
+      "SUPPQS"
+    ],
+    "EORTCSTO": [
+      "QS",
+      "SUPPQS"
+    ],
+    "EQ_5D_3L": [
+      "QS",
+      "SUPPQS"
+    ],
+    "EQ_5D_5L": [
+      "QS",
+      "SUPPQS"
+    ],
+    "EQ_5D_Y": [
+      "QS",
+      "SUPPQS"
+    ],
+    "FACTB": [
+      "QS",
+      "SUPPQS"
+    ],
+    "FACTES": [
+      "QS",
+      "SUPPQS"
+    ],
+    "FACTG": [
+      "QS",
+      "SUPPQS"
+    ],
+    "FACTL": [
+      "QS",
+      "SUPPQS"
+    ],
+    "FACTLEU": [
+      "QS",
+      "SUPPQS"
+    ],
+    "FACTM": [
+      "QS",
+      "SUPPQS"
+    ],
+    "FACTO": [
+      "QS",
+      "SUPPQS"
+    ],
+    "FACTP": [
+      "QS",
+      "SUPPQS"
+    ],
+    "FPSI17": [
+      "QS",
+      "SUPPQS"
+    ],
+    "FPSR": [
+      "QS",
+      "SUPPQS"
+    ],
+    "HAQ": [
+      "QS",
+      "SUPPQS"
+    ],
+    "KCCQ": [
+      "QS",
+      "SUPPQS"
+    ],
+    "LQL": [
+      "QS",
+      "SUPPQS"
+    ],
+    "MDASISL": [
+      "QS",
+      "SUPPQS"
+    ],
+    "NISCI": [
+      "QS",
+      "SUPPQS"
+    ],
+    "PASO": [
+      "QS"
+    ],
+    "PEDQLF": [
+      "QS",
+      "SUPPQS"
+    ],
+    "PEESS": [
+      "QS"
+    ],
+    "PGIC": [
+      "QS",
+      "SUPPQS"
+    ],
+    "PGIS": [
+      "QS",
+      "SUPPQS"
+    ],
+    "PGITT": [
+      "QS",
+      "SUPPQS"
+    ],
+    "PROACT": [
+      "QS",
+      "SUPPQS"
+    ],
+    "PROCTC": [
+      "QS",
+      "SUPPQS"
+    ],
+    "PROMIS": [
+      "QS",
+      "SUPPQS"
+    ],
+    "PST": [
+      "QS",
+      "SUPPQS"
+    ],
+    "PTGA": [
+      "QS",
+      "SUPPQS"
+    ],
+    "SF36V2": [
+      "QS",
+      "SUPPQS"
+    ],
+    "SF36V2A": [
+      "QS",
+      "SUPPQS"
+    ],
+    "SF36V2SS": [
+      "QS",
+      "SUPPQS"
+    ],
+    "SGRQI": [
+      "QS",
+      "SUPPQS"
+    ],
+    "SGRQ": [
+      "QS"
+    ],
+    "SGRQC": [
+      "QS",
+      "SUPPQS"
+    ],
+    "TANNER": [
+      "QS",
+      "SUPPQS"
+    ],
+    "UPSIT": [
+      "QS",
+      "SUPPQS"
+    ],
+    "WPAI_SHP": [
+      "QS",
+      "SUPPQS"
+    ],
+    "WPAI_GH": [
+      "QS",
+      "SUPPQS"
+    ],
+    "WPAICIQ": [
+      "QS",
+      "SUPPQS"
+    ],
+    "WPAICIQ2": [
+      "QS",
+      "SUPPQS"
+    ],
+    "WORKABS": [
+      "QS",
+      "SUPPQS"
+    ],
+    "TVTVQS": [
+      "QS"
+    ],
+    "DMQS": [
+      "QS"
+    ],
+    "CGICCGICCGICCGICCGICCGICSUPPQSSUPPQS": [
+      "QS"
+    ],
+    "MOS09MOS09MOS09MOS09MOS09MOS09MOS09MOS09MOS09MOS09MOS09MOS09MOS09MOS09MOS09MOS09MOS09SUPPQSSUPPQS": [
+      "QS"
+    ],
+    "MRSMRSMRSMRSMRSMRSSUPPQSSUPPQS": [
+      "QS"
+    ],
+    "SPFQSPFQSPFQSPFQSPFQSPFQSPFQSPFQSPFQSPFQSPFQSPFQSPFQSPFQSPFQSPFQSPFQSPFQSPFQSPFQSPFQSPFQSUPPQSSUPPQS": [
+      "QS"
+    ],
+    "TASTETASTETASTETASTETASTETASTETASTETASTETASTETASTETASTETASTETASTETASTETASTETASTETASTESUPPQSSUPPQS": [
+      "QS"
+    ],
+    "BFIBFIBFIBFIBFIBFIBFIBFIBFIBFIBFIBFIBFIBFIBFISUPPQSSUPPQS": [
+      "QS"
+    ],
+    "BPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRSUPPQSSUPPQS": [
+      "QS"
+    ],
+    "BPISFBPISFBPISFBPISFBPISFBPISFBPISFBPISFBPISFBPISFBPISFBPISFBPISFBPISFBPISFBPISFBPISFBPISFBPISFSUPPQSSUPPQS": [
+      "QS"
+    ],
+    "CTSQCTSQCTSQCTSQCTSQCTSQCTSQCTSQCTSQCTSQCTSQCTSQCTSQCTSQCTSQCTSQCTSQCTSQCTSQCTSQCTSQSUPPQSSUPPQS": [
+      "QS"
+    ],
+    "NSCLCSAQNSCLCSAQNSCLCSAQNSCLCSAQNSCLCSAQNSCLCSAQNSCLCSAQNSCLCSAQNSCLCSAQNSCLCSAQNSCLCSAQSUPPQSSUPPQS": [
+      "QS"
+    ],
+    "BEDBEDBEDBEDBEDBEDBEDBEDBEDBEDBEDSUPPQSSUPPQS": [
+      "QS"
+    ],
+    "CATCATCATCATCATCATCATCATCATCATCATCATSUPPQSSUPPQS": [
+      "QS"
+    ],
+    "CLASICLASICLASICLASICLASICLASICLASICLASICLASICLASICLASICLASICLASICLASICLASICLASICLASISUPPQSSUPPQS": [
+      "QS"
+    ],
+    "EXACTEXACTEXACTEXACTEXACTEXACTEXACTEXACTEXACTEXACTEXACTEXACTEXACTEXACTEXACTEXACTEXACTEXACTEXACTSUPPQSSUPPQS": [
+      "QS"
+    ],
+    "IBDQIBDQIBDQIBDQIBDQIBDQIBDQIBDQIBDQIBDQIBDQIBDQIBDQIBDQIBDQIBDQIBDQIBDQIBDQIBDQIBDQIBDQIBDQIBDQIBDQIBDQIBDQIBDQIBDQIBDQIBDQIBDQIBDQIBDQIBDQSUPPQSSUPPQS": [
+      "QS"
+    ],
+    "INTEXSICINTEXSICINTEXSICINTEXSICINTEXSICINTEXSICINTEXSICINTEXSICINTEXSICINTEXSICINTEXSICINTEXSICINTEXSICSUPPQSSUPPQS": [
+      "QS"
+    ],
+    "PAQLQSPAQLQSPAQLQSPAQLQSPAQLQSPAQLQSPAQLQSPAQLQSPAQLQSPAQLQSPAQLQSPAQLQSPAQLQSPAQLQSPAQLQSPAQLQSPAQLQSPAQLQSPAQLQSPAQLQSPAQLQSPAQLQSPAQLQSPAQLQSPAQLQSPAQLQSSUPPQSSUPPQS": [
+      "QS"
+    ],
+    "LCQLCQLCQLCQLCQLCQLCQLCQLCQLCQLCQLCQLCQLCQLCQLCQLCQLCQLCQLCQLCQLCQLCQSUPPQSSUPPQS": [
+      "QS"
+    ],
+    "HADSHADSHADSHADSHADSHADSHADSHADSHADSHADSHADSHADSHADSHADSHADSHADSHADSHADSHADSHADSSUPPQSSUPPQS": [
+      "QS"
+    ],
+    "ACQACQACQACQACQACQACQACQACQACQACQSUPPQSSUPPQS": [
+      "QS"
+    ],
+    "QS": [
+      "QS"
+    ],
+    "QSQSQSQSDM": [
+      "QS"
+    ],
+    "ACQIAACQIAACQIAACQIAACQIAACQIAACQIAACQIAACQIAACQIAACQIASUPPQSSUPPQS": [
+      "QS"
+    ],
+    "PACQLQPACQLQPACQLQPACQLQPACQLQPACQLQPACQLQPACQLQPACQLQPACQLQPACQLQPACQLQPACQLQPACQLQPACQLQPACQLQPACQLQSUPPQSSUPPQS": [
+      "QS"
+    ],
+    "ACTACTACTACTACTACTACTACTACTACTSUPPQSSUPPQS": [
+      "QS"
+    ],
+    "EORTCCXEORTCCXEORTCCXEORTCCXEORTCCXEORTCCXEORTCCXEORTCCXEORTCCXEORTCCXEORTCCXEORTCCXEORTCCXEORTCCXEORTCCXEORTCCXEORTCCXEORTCCXEORTCCXEORTCCXEORTCCXEORTCCXEORTCCXEORTCCXEORTCCXEORTCCXEORTCCXEORTCCXEORTCCXSUPPQSSUPPQS": [
+      "QS"
+    ],
+    "EORTCHCCEORTCHCCEORTCHCCEORTCHCCEORTCHCCEORTCHCCEORTCHCCEORTCHCCEORTCHCCEORTCHCCEORTCHCCEORTCHCCEORTCHCCEORTCHCCEORTCHCCEORTCHCCEORTCHCCEORTCHCCEORTCHCCEORTCHCCEORTCHCCEORTCHCCEORTCHCCSUPPQSSUPPQS": [
+      "QS"
+    ],
+    "EORTCHNEORTCHNEORTCHNEORTCHNEORTCHNEORTCHNEORTCHNEORTCHNEORTCHNEORTCHNEORTCHNEORTCHNEORTCHNEORTCHNEORTCHNEORTCHNEORTCHNEORTCHNEORTCHNEORTCHNEORTCHNEORTCHNEORTCHNEORTCHNEORTCHNEORTCHNEORTCHNEORTCHNEORTCHNEORTCHNEORTCHNEORTCHNEORTCHNEORTCHNEORTCHNEORTCHNEORTCHNEORTCHNEORTCHNSUPPQSSUPPQS": [
+      "QS"
+    ],
+    "EORTCLCEORTCLCEORTCLCEORTCLCEORTCLCEORTCLCEORTCLCEORTCLCEORTCLCEORTCLCEORTCLCEORTCLCEORTCLCEORTCLCEORTCLCEORTCLCEORTCLCEORTCLCSUPPQSSUPPQS": [
+      "QS"
+    ],
+    "EORTCOVEORTCOVEORTCOVEORTCOVEORTCOVEORTCOVEORTCOVEORTCOVEORTCOVEORTCOVEORTCOVEORTCOVEORTCOVEORTCOVEORTCOVEORTCOVEORTCOVEORTCOVEORTCOVEORTCOVEORTCOVEORTCOVEORTCOVEORTCOVEORTCOVEORTCOVEORTCOVEORTCOVEORTCOVEORTCOVEORTCOVEORTCOVEORTCOVSUPPQSSUPPQS": [
+      "QS"
+    ],
+    "EQ_5D_YEQ_5D_YEQ_5D_YEQ_5D_YEQ_5D_YEQ_5D_YEQ_5D_YEQ_5D_YEQ_5D_YEQ_5D_YSUPPQSSUPPQS": [
+      "QS"
+    ],
+    "PEDQLFPEDQLFPEDQLFPEDQLFPEDQLFPEDQLFPEDQLFPEDQLFPEDQLFPEDQLFPEDQLFPEDQLFPEDQLFPEDQLFPEDQLFPEDQLFPEDQLFPEDQLFPEDQLFPEDQLFPEDQLFPEDQLFPEDQLFSUPPQSSUPPQS": [
+      "QS"
+    ],
+    "SF36V2SF36V2SF36V2SF36V2SF36V2SF36V2SF36V2SF36V2SF36V2SF36V2SF36V2SF36V2SF36V2SF36V2SF36V2SF36V2SF36V2SF36V2SF36V2SF36V2SUPPQSSUPPQS": [
+      "QS"
+    ],
+    "SF36V2ASF36V2ASF36V2ASF36V2ASF36V2ASF36V2ASF36V2ASF36V2ASF36V2ASF36V2ASF36V2ASF36V2ASF36V2ASF36V2ASF36V2ASF36V2ASF36V2ASF36V2ASF36V2ASF36V2ASUPPQSSUPPQS": [
+      "QS"
+    ],
+    "SGRQISGRQISGRQISGRQISGRQISGRQISGRQISGRQISGRQISGRQISGRQISGRQISGRQISGRQISGRQISGRQISGRQISGRQISGRQISGRQISGRQISGRQISGRQISGRQISGRQISGRQISGRQISGRQISGRQISGRQISGRQISGRQISGRQISGRQISGRQISGRQISGRQISGRQISGRQISGRQISUPPQSSUPPQS": [
+      "QS"
+    ],
+    "SGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSUPPQSSUPPQS": [
+      "QS"
+    ],
+    "SGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSUPPQSSUPPQS": [
+      "QS"
+    ],
+    "SGRQCSGRQCSGRQCSGRQCSGRQCSGRQCSGRQCSGRQCSGRQCSGRQCSGRQCSGRQCSGRQCSGRQCSGRQCSGRQCSGRQCSGRQCSGRQCSGRQCSGRQCSGRQCSGRQCSGRQCSGRQCSGRQCSGRQCSGRQCSGRQCSGRQCSGRQCSGRQCSGRQCSGRQCSGRQCSGRQCSGRQCSGRQCSGRQCSGRQCSGRQCSGRQCSGRQCSGRQCSUPPQSQS": [
+      "QS"
+    ],
+    "CE": [
+      "RELREC"
+    ],
+    "DI": [
+      "RELREC"
+    ],
+    "EX": [
+      "RELREC"
+    ],
+    "FA": [
+      "RELREC"
+    ],
+    "FAAE": [
+      "RELREC"
+    ],
+    "FACE": [
+      "RELREC"
+    ],
+    "FAHO": [
+      "RELREC"
+    ],
+    "HO": [
+      "RELREC"
+    ],
+    "RS": [
+      "RELREC"
+    ],
+    "TR": [
+      "RELREC"
+    ],
+    "TU": [
+      "RELREC"
+    ],
+    "DR": [
+      "RELREC"
+    ],
+    "IS": [
+      "RELREC"
+    ],
+    "MI": [
+      "RELREC"
+    ],
+    "AG": [
+      "RELREC"
+    ],
+    "LC": [
+      "RELREC"
+    ],
+    "YM": [
+      "RELREC"
+    ],
+    "FAYM": [
+      "RELREC",
+      "RELSPEC",
+      "RELSUB"
+    ],
+    "MENSTR": [
+      "RP",
+      "SUPPRP"
+    ],
+    "PREGREP": [
+      "RP",
+      "SUPPRP"
+    ],
+    "SC": [
+      "RP",
+      "SC",
+      "SUPPRP",
+      "SUPPSC"
+    ],
+    "RPRPRPRPDM": [
+      "RP"
+    ],
+    "TVTVRP": [
+      "RP"
+    ],
+    "DMRP": [
+      "RP"
+    ],
+    "BDI": [
+      "RS",
+      "SUPPRS"
+    ],
+    "CHPCLAS": [
+      "RS",
+      "SUPPRS"
+    ],
+    "ECOG": [
+      "RS",
+      "SUPPRS"
+    ],
+    "GCS": [
+      "RS",
+      "SUPPRS"
+    ],
+    "HENTLA": [
+      "RS",
+      "SUPPRS",
+      "SUPPTR",
+      "SUPPTU",
+      "TR",
+      "TU"
+    ],
+    "INDRESP": [
+      "RS",
+      "SUPPRS"
+    ],
+    "KPSS": [
+      "RS",
+      "SUPPRS"
+    ],
+    "LYMODR": [
+      "RS",
+      "SUPPRS"
+    ],
+    "LYMTLA": [
+      "RS",
+      "SUPPRS",
+      "SUPPTR",
+      "SUPPTU",
+      "TR",
+      "TU"
+    ],
+    "PFS2": [
+      "RS",
+      "SUPPRS"
+    ],
+    "RECIST1": [
+      "RS",
+      "SUPPRS",
+      "SUPPTR",
+      "SUPPTU",
+      "TR",
+      "TU"
+    ],
+    "RECIST2": [
+      "RS",
+      "SUPPRS",
+      "SUPPTR",
+      "SUPPTU",
+      "TR",
+      "TU"
+    ],
+    "RESPNHL": [
+      "RS",
+      "SUPPRS"
+    ],
+    "SPLDASS": [
+      "RS",
+      "SUPPRS",
+      "SUPPTR",
+      "SUPPTU",
+      "TR",
+      "TU"
+    ],
+    "TDI": [
+      "RS",
+      "SUPPRS"
+    ],
+    "AMLODR": [
+      "RS",
+      "SUPPRS"
+    ],
+    "ALLODR": [
+      "RS",
+      "SUPPRS"
+    ],
+    "MMODR": [
+      "RS",
+      "SUPPRS"
+    ],
+    "CLLODR": [
+      "RS",
+      "SUPPRS"
+    ],
+    "RSRSRSRSDM": [
+      "RS"
+    ],
+    "TVTVRS": [
+      "RS"
+    ],
+    "DMRS": [
+      "RS"
+    ],
+    "HGI": [
+      "SC",
+      "SUPPSC"
+    ],
+    "TVTVSC": [
+      "SC"
+    ],
+    "DMSC": [
+      "SC"
+    ],
+    "DMSE": [
+      "SE",
+      "SM"
+    ],
+    "SR": [
+      "SR",
+      "SUPPSR"
+    ],
+    "SRSRSRSRDM": [
+      "SR"
+    ],
+    "TVTVSR": [
+      "SR"
+    ],
+    "SURVIVE": [
+      "SS",
+      "SUPPSS"
+    ],
+    "SURVSTAT": [
+      "SS",
+      "SUPPSS"
+    ],
+    "PFU": [
+      "SS",
+      "SUPPSS"
+    ],
+    "TVTVSS": [
+      "SS"
+    ],
+    "SU_ALC": [
+      "SU"
+    ],
+    "SU_CAFF": [
+      "SU",
+      "SUPPSU"
+    ],
+    "SU_NIC": [
+      "SU",
+      "SUPPSU"
+    ],
+    "TVTVSU": [
+      "SU"
+    ],
+    "DMSU": [
+      "SU",
+      "SUPPQUAL"
+    ],
+    "VISIT": [
+      "SUPPSV",
+      "SV"
+    ],
+    "SVTV": [
+      "SV"
+    ],
+    "VISITVISITTV": [
+      "SV"
+    ],
+    "TVTVSV": [
+      "SV"
+    ],
+    "DMSV": [
+      "SV",
+      "TA",
+      "TADEF",
+      "TD",
+      "TE",
+      "TI",
+      "TM",
+      "TS",
+      "TV",
+      "UNITCONV",
+      "UR"
+    ],
+    "VS": [
+      "SUPPVS",
+      "VS"
+    ],
+    "VSVSVSVSDM": [
+      "VS"
+    ],
+    "TVTVVS": [
+      "VS"
+    ],
+    "DMVS": [
+      "VS"
+    ],
+    "TVTVXC": [
+      "XC"
+    ],
+    "DMXC": [
+      "XC"
+    ],
+    "DMYB": [
+      "YB"
+    ],
+    "ZC": [
+      "ZC"
+    ],
+    "TVTVZC": [
+      "ZC"
+    ],
+    "DMZC": [
+      "ZC",
+      "ZF",
+      "ZM"
+    ],
+    "BMBIOPAS": [
+      "CP",
+      "SUPPCP"
+    ],
+    "TVTVCP": [
+      "CP"
+    ],
+    "DMCP": [
+      "CP"
+    ],
+    "DMCPCPCPCP": [
+      "CP"
+    ],
+    "FDGSUV": [
+      "SUPPTR",
+      "TR"
+    ],
+    "LYMSTLA": [
+      "SUPPTR",
+      "SUPPTU",
+      "TR",
+      "TU"
+    ],
+    "NEWLES": [
+      "SUPPTR",
+      "SUPPTU",
+      "TR",
+      "TU"
+    ],
+    "PETSCAN": [
+      "SUPPTR",
+      "TR"
+    ],
+    "BNLIMM": [
+      "SUPPTR",
+      "TR"
+    ],
+    "TVTVTR": [
+      "TR"
+    ],
+    "DMTR": [
+      "TR"
+    ],
+    "DMTRTRTRTR": [
+      "TR"
+    ],
+    "TVTVTU": [
+      "TU"
+    ],
+    "DMTU": [
+      "TU"
+    ],
+    "DMTUTUTUTU": [
+      "TU"
+    ],
+    "RESPCHAL": [
+      "AG",
+      "RE",
+      "SUPPAG",
+      "SUPPRE"
+    ],
+    "DMAG": [
+      "AG"
+    ],
+    "TVTVAG": [
+      "AG"
+    ],
+    "IMPOSC": [
+      "RE",
+      "SUPPRE"
+    ],
+    "PULMOA": [
+      "RE",
+      "SUPPRE"
+    ],
+    "TVTVRE": [
+      "RE"
+    ],
+    "DMRE": [
+      "RE"
+    ],
+    "DMRERERERE": [
+      "RE"
+    ],
+    "BMRES2OM": [
+      "CO",
+      "MI",
+      "SUPPMI"
+    ],
+    "BMRS2OM": [
+      "MI"
+    ],
+    "PATHBIO": [
+      "CP",
+      "MI",
+      "PR"
+    ],
+    "PATHBIOLBREF": [
+      "CP"
+    ]
+  },
+  "module_to_primary_domain": {
+    "AE": "FAAE",
+    "DMAE": "AE",
+    "SERAE": "DE",
+    "SERAESERAESERAESERAEAEAE": "SUPPAE",
+    "AESIVAESIVAESIVAESIVAEAEAE": "AE",
+    "DE": "BS",
+    "ADJAE": "FACE",
+    "BSYMPT": "CE",
+    "CEREVENT": "FACE",
+    "CIEVENT": "FACE",
+    "COPDEX": "FACE",
+    "CRSSS": "CE",
+    "DEATHEVT": "DD",
+    "EXACA": "FACE",
+    "EXACD": "CE",
+    "HELMINTH": "FA",
+    "HFEVT": "FACE",
+    "ICANSSS": "CE",
+    "INFSS": "FA",
+    "LIVERSS": "CE",
+    "SOLARST": "CE",
+    "ADJRCVRM": "FACE",
+    "TVTVCE": "CE",
+    "DMCE": "CE",
+    "CAPRX": "CM",
+    "CAPRXR": "SUPPCM",
+    "CM": "SUPPCM",
+    "HEVENT": "FAHO",
+    "MINT": "CM",
+    "MISTD": "CM",
+    "PCOVID": "FA",
+    "TRANSF": "CM",
+    "CAPRXHL": "SUPPCM",
+    "OXYGEN": "EC",
+    "CAPRXMM": "SUPPCM",
+    "TVTVCM": "CM",
+    "DMCM": "CM",
+    "BONESCN": "TR",
+    "CO": "CO",
+    "DA": "DA",
+    "DECG": "EG",
+    "DEVRET": "QS",
+    "EC": "SUPPEC",
+    "ECHOC": "CV",
+    "EREFS": "RS",
+    "FDGSCAN": "VS",
+    "ISCONC": "IS",
+    "LB": "LB",
+    "LIVERRF": "CO",
+    "LIVERDI": "FA",
+    "LUNDMACK": "RS",
+    "NPS": "CO",
+    "PATHREP": "FA",
+    "QNTCT": "DO",
+    "REIMRES": "RE",
+    "BMRESON": "MI",
+    "PKCONC": "PC",
+    "TVTVCO": "CO",
+    "EF": "CV",
+    "CVCVCVCVDM": "CV",
+    "TVTVCV": "CV",
+    "DMCV": "CV",
+    "DMDA": "DA",
+    "SERAEDTH": "SUPPDD",
+    "DD": "SUPPDD",
+    "DMDD": "DD",
+    "COMPLT": "DE",
+    "TVTVDE": "DE",
+    "DMDE": "DE",
+    "DM": "DM",
+    "DMDMDMDM": "DM",
+    "TVTVDM": "DM",
+    "CONSENTCONSENTCONSENTDM": "DM",
+    "CONSENTDM": "DM",
+    "SERAESERAESERAESERAEDM": "DM",
+    "SERAESERAESERAEDM": "DM",
+    "RANDRANDRANDRANDTADEFTADEFTADEFTADEFTADEFTADEFDMDMSUPPDM": "DM",
+    "DSDSDSDM": "DM",
+    "GROUPGROUPGROUPDM": "SUPPDM",
+    "DUPLICDUPLICDUPLICDM": "SUPPDM",
+    "SUTRASUTRASUTRADM": "SUPPDM",
+    "SURVSTATSURVSTATSURVSTATDM": "DM",
+    "DDDDDDDM": "DM",
+    "DSSSDSSSDSSSDM": "DM",
+    "CONSENT": "DS",
+    "CONSWD": "DS",
+    "DS": "DS",
+    "ETRT": "DS",
+    "ICFGEN": "DS",
+    "IE": "DS",
+    "PARTOPT": "DS",
+    "DSSS": "SS",
+    "CONSENTCONSENTDSDSDSDSSUPPDS": "DS",
+    "TVTVDS": "DS",
+    "DMDS": "DS",
+    "RANDRANDSUPPDS": "SUPPDS",
+    "DMDT": "DU",
+    "DV": "DV",
+    "DVIS": "SUPPDV",
+    "DMDV": "DX",
+    "ECSYSCRT": "SUPPEC",
+    "OVERDOSE": "EC",
+    "SDSTD": "EC",
+    "SDREL": "EC",
+    "CELLT": "EC",
+    "TVTVEC": "EC",
+    "DMEC": "EC",
+    "EG": "EG",
+    "EXER": "VS",
+    "EGEGEGEGDM": "EG",
+    "TVTVEG": "EG",
+    "DMEG": "EG",
+    "TVTVEX": "EX",
+    "DMEX": "EX",
+    "AEADDOM": "FA",
+    "CAPRXD": "FA",
+    "CAPRXL": "FA",
+    "CAPRXV": "FA",
+    "CPULM": "RE",
+    "CRASTCT": "FA",
+    "DISEXT": "FA",
+    "DISREC": "FA",
+    "HYPANPH": "FA",
+    "ICASTCT": "FA",
+    "ILDIS": "FA",
+    "INFDI": "FA",
+    "INFRF": "FA",
+    "NYHAHF": "FA",
+    "NPROCED": "FA",
+    "PATHGEN": "FA",
+    "PATHGOM": "FA",
+    "PULM": "RE",
+    "CAPRXP": "FA",
+    "DISCHMM": "RS",
+    "DISCHAML": "FA",
+    "DISCHALL": "FA",
+    "DISCHLYM": "FA",
+    "HSCT": "FA",
+    "IEC_HS": "FA",
+    "DICLLSLL": "RS",
+    "FAFAFAFADM": "FA",
+    "TVTVFA": "FA",
+    "DMFA": "FA",
+    "INJSTRC": "FAAE",
+    "FAAEFAAEFAAEFAAEDM": "FAAE",
+    "TVTVFAAE": "FAAE",
+    "DMFAAE": "FAAE",
+    "SOLAR": "FACE",
+    "TVTVFACE": "FACE",
+    "DMFACE": "FACE",
+    "FACEFACEFACEFACEDM": "FACE",
+    "KIT": "FAEX",
+    "TVTVFAEX": "FAEX",
+    "DMFAEX": "FAEX",
+    "HOSPLOG": "FAHO",
+    "FAHOFAHOFAHOFAHODM": "FAHO",
+    "TVTVFAHO": "FAHO",
+    "DMFAHO": "FAHO",
+    "ASTHMAD": "FAMH",
+    "COPDD": "FAMH",
+    "COPDEXH": "FAMH",
+    "EXACAH": "FAMH",
+    "ILDD": "FAMH",
+    "NRESPH": "FAMH",
+    "PATHNHL": "FAMH",
+    "SPECHIS": "FAMH",
+    "CKDD": "MH",
+    "FAMHFAMHFAMHFAMHDM": "FAMH",
+    "TVTVFAMH": "FAMH",
+    "DMFAMH": "FAMH",
+    "PRADDON": "FAPR",
+    "RADEXM": "FAPR",
+    "FAPRFAPRFAPRFAPRDM": "FAPR",
+    "TVTVFAPR": "FAPR",
+    "DMFAPR": "FAPR",
+    "DMFAYB": "FAYB",
+    "MER": "FAYM",
+    "DMFAYM": "FAYM",
+    "FTFTFTFTDM": "FT",
+    "TVTVFT": "FT",
+    "DMFT": "FT",
+    "MOLCHALL": "GF",
+    "MOLCHAML": "GF",
+    "CYTGEN": "GF",
+    "CYTOGEN": "GF",
+    "CYTOLYM": "GF",
+    "TVTVGF": "GF",
+    "CHCSS": "ZC",
+    "HOSPAD": "HO",
+    "TVTVHO": "HO",
+    "DMHO": "HO",
+    "IEIEIEIEIETITIIEIE": "IE",
+    "TVTVIE": "IE",
+    "DMIE": "IE",
+    "ALLR": "IS",
+    "ISCONCIS": "IS",
+    "TVTVIS": "IS",
+    "DMIS": "IS",
+    "ISISISISDM": "IS",
+    "LBREFISLBREF": "IS",
+    "BMRES": "LC",
+    "CLAB": "LC",
+    "LBHIS": "LB",
+    "LBNO": "LB",
+    "PREG": "LB",
+    "MRDL": "LB",
+    "MRDMM": "LB",
+    "BMLAB": "MI",
+    "MPROTEIN": "LB",
+    "EXMDA": "TU",
+    "BMBAMM": "LB",
+    "BMRESBMRESBMRESBMRESBMRESBMRESBMRESUNITCONVLB": "LB",
+    "LBREFLBREFLBREFLBREFLBREFLBREFLBREFLBREFLBREFLBREFLBREFLBREFLBREFLBREFUNITCONVUNITCONVUNITCONVUNITCONVUNITCONVLBLBLBLBLB": "LB",
+    "LBLBLBLBLBDM": "LB",
+    "DMLB": "LB",
+    "CLABCLABCLABCLABCLABCLABCLABCLABUNITCONVLB": "LB",
+    "LBLBLBLBLBLBLBLBLB": "LB",
+    "LBLBLBLB": "LB",
+    "TVTVLB": "LB",
+    "LBHISLBHISLBHISLBHISLBHISLBHISLBHISUNITCONVLB": "LB",
+    "BMLABBMLABBMLABBMLABBMLABBMLABUNITCONVLB": "LB",
+    "CLABCLABCLABCLABCLABCLABCLABCLABUNITCONV": "LC",
+    "LCLCDM": "LC",
+    "TVTVLC": "LC",
+    "DMLC": "LC",
+    "LCLCLCLCLCLBREFLBREFLBREFLBREFLBREFLBREFLBREFLBREFLBREFLBREFLBREFLBREFLBREFLBREFSUPPLC": "LC",
+    "BMRESBMRESBMRESBMRESBMRESBMRESBMRESUNITCONV": "LC",
+    "LBLBLBLBLBLBLBLBMBUNITCONV": "MB",
+    "MBMBMBLB": "MB",
+    "MBMBMBMBDMLB": "MB",
+    "LBLBLBMBMBMBMBMBLBREFLBREFLBREFLBREFLBREFLBREFLBREFLBREFLBREFLBREFLBREFLBREFLBREFLBREFUNITCONVUNITCONVUNITCONVUNITCONVUNITCONVSUPPMB": "MB",
+    "TVTVMB": "MB",
+    "DMMB": "MB",
+    "HISDM": "MH",
+    "MH": "MH",
+    "MHRE": "MH",
+    "TVTVMH": "MH",
+    "DMMH": "MH",
+    "MHDMDM": "MH",
+    "MHREDMDM": "MH",
+    "PDL1": "MI",
+    "LBREF": "MI",
+    "MIMIMIMIDM": "MI",
+    "DMMI": "MI",
+    "JOINTC": "MK",
+    "MKMKMKMKDM": "MK",
+    "TVTVMK": "MK",
+    "MEAL": "ML",
+    "TVTVML": "ML",
+    "DMML": "MS",
+    "TVTVPC": "PC",
+    "DMPC": "PC",
+    "CTSCAN": "PE",
+    "XRAY": "PE",
+    "PEPEPEPEDM": "PE",
+    "TVTVPE": "PE",
+    "DMPE": "PE",
+    "BRCA": "PF",
+    "MGSTA": "PF",
+    "TVTVPF": "PF",
+    "DMPF": "PP",
+    "HISS": "SUPPPR",
+    "PE": "PR",
+    "PR": "RELREC",
+    "PRPE": "PR",
+    "DMPR": "PR",
+    "TVTVPR": "PR",
+    "DMTVPR": "PR",
+    "AIRQ": "QS",
+    "AQLQS12": "QS",
+    "BMQ_G": "QS",
+    "CGIC": "QS",
+    "LANGU": "QS",
+    "MOS09": "QS",
+    "MRS": "QS",
+    "REVPRDI": "QS",
+    "SPFQ": "QS",
+    "TASTE": "QS",
+    "BFI": "QS",
+    "BPIDGR": "QS",
+    "BPISF": "QS",
+    "CTSQ": "QS",
+    "FACITFS": "QS",
+    "FKSI19": "QS",
+    "FSIL": "QS",
+    "LPPSS": "QS",
+    "NSCLCSAQ": "QS",
+    "BED": "QS",
+    "CAT": "QS",
+    "CLASI": "QS",
+    "COUVAS": "QS",
+    "EOEQOLA": "QS",
+    "EXACT": "QS",
+    "IBDQ": "QS",
+    "INTEXSIC": "QS",
+    "MMRC": "QS",
+    "PAQLQS": "QS",
+    "PGA": "QS",
+    "PHQ8": "QS",
+    "SNOT22": "QS",
+    "LCQ": "QS",
+    "HADS": "QS",
+    "PRD": "QS",
+    "PTGDAA": "QS",
+    "PGDAA": "QS",
+    "ACQ": "QS",
+    "ACQIA": "QS",
+    "PACQLQ": "QS",
+    "ACT": "QS",
+    "ASTDD": "QS",
+    "BCSS": "QS",
+    "BSFS": "QS",
+    "CSSRSBS": "QS",
+    "CSSRSLV": "QS",
+    "CSTDD": "QS",
+    "CSYD": "QS",
+    "DIARYNP": "QS",
+    "DSQ": "QS",
+    "EMSCI": "QS",
+    "EORTC": "QS",
+    "EORTCBIL": "QS",
+    "EORTCBN": "QS",
+    "EORTCBR": "QS",
+    "EORTCCX": "QS",
+    "EORTCEN": "QS",
+    "EORTCHCC": "QS",
+    "EORTCHN": "QS",
+    "EORTCIL": "QS",
+    "EORTCLC": "QS",
+    "EORTCNB": "QS",
+    "EORTCOV": "QS",
+    "EORTCPN": "QS",
+    "EORTCPR": "QS",
+    "EORTCSTO": "QS",
+    "EQ_5D_3L": "QS",
+    "EQ_5D_5L": "QS",
+    "EQ_5D_Y": "QS",
+    "FACTB": "QS",
+    "FACTES": "QS",
+    "FACTG": "QS",
+    "FACTL": "QS",
+    "FACTLEU": "QS",
+    "FACTM": "QS",
+    "FACTO": "QS",
+    "FACTP": "QS",
+    "FPSI17": "QS",
+    "FPSR": "QS",
+    "HAQ": "QS",
+    "KCCQ": "QS",
+    "LQL": "QS",
+    "MDASISL": "QS",
+    "NISCI": "QS",
+    "PASO": "QS",
+    "PEDQLF": "QS",
+    "PEESS": "QS",
+    "PGIC": "QS",
+    "PGIS": "QS",
+    "PGITT": "QS",
+    "PROACT": "QS",
+    "PROCTC": "QS",
+    "PROMIS": "QS",
+    "PST": "QS",
+    "PTGA": "QS",
+    "SF36V2": "QS",
+    "SF36V2A": "QS",
+    "SF36V2SS": "QS",
+    "SGRQI": "QS",
+    "SGRQ": "QS",
+    "SGRQC": "QS",
+    "TANNER": "QS",
+    "UPSIT": "QS",
+    "WPAI_SHP": "QS",
+    "WPAI_GH": "QS",
+    "WPAICIQ": "QS",
+    "WPAICIQ2": "QS",
+    "WORKABS": "QS",
+    "TVTVQS": "QS",
+    "DMQS": "QS",
+    "CGICCGICCGICCGICCGICCGICSUPPQSSUPPQS": "QS",
+    "MOS09MOS09MOS09MOS09MOS09MOS09MOS09MOS09MOS09MOS09MOS09MOS09MOS09MOS09MOS09MOS09MOS09SUPPQSSUPPQS": "QS",
+    "MRSMRSMRSMRSMRSMRSSUPPQSSUPPQS": "QS",
+    "SPFQSPFQSPFQSPFQSPFQSPFQSPFQSPFQSPFQSPFQSPFQSPFQSPFQSPFQSPFQSPFQSPFQSPFQSPFQSPFQSPFQSPFQSUPPQSSUPPQS": "QS",
+    "TASTETASTETASTETASTETASTETASTETASTETASTETASTETASTETASTETASTETASTETASTETASTETASTETASTESUPPQSSUPPQS": "QS",
+    "BFIBFIBFIBFIBFIBFIBFIBFIBFIBFIBFIBFIBFIBFIBFISUPPQSSUPPQS": "QS",
+    "BPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRSUPPQSSUPPQS": "QS",
+    "BPISFBPISFBPISFBPISFBPISFBPISFBPISFBPISFBPISFBPISFBPISFBPISFBPISFBPISFBPISFBPISFBPISFBPISFBPISFSUPPQSSUPPQS": "QS",
+    "CTSQCTSQCTSQCTSQCTSQCTSQCTSQCTSQCTSQCTSQCTSQCTSQCTSQCTSQCTSQCTSQCTSQCTSQCTSQCTSQCTSQSUPPQSSUPPQS": "QS",
+    "NSCLCSAQNSCLCSAQNSCLCSAQNSCLCSAQNSCLCSAQNSCLCSAQNSCLCSAQNSCLCSAQNSCLCSAQNSCLCSAQNSCLCSAQSUPPQSSUPPQS": "QS",
+    "BEDBEDBEDBEDBEDBEDBEDBEDBEDBEDBEDSUPPQSSUPPQS": "QS",
+    "CATCATCATCATCATCATCATCATCATCATCATCATSUPPQSSUPPQS": "QS",
+    "CLASICLASICLASICLASICLASICLASICLASICLASICLASICLASICLASICLASICLASICLASICLASICLASICLASISUPPQSSUPPQS": "QS",
+    "EXACTEXACTEXACTEXACTEXACTEXACTEXACTEXACTEXACTEXACTEXACTEXACTEXACTEXACTEXACTEXACTEXACTEXACTEXACTSUPPQSSUPPQS": "QS",
+    "IBDQIBDQIBDQIBDQIBDQIBDQIBDQIBDQIBDQIBDQIBDQIBDQIBDQIBDQIBDQIBDQIBDQIBDQIBDQIBDQIBDQIBDQIBDQIBDQIBDQIBDQIBDQIBDQIBDQIBDQIBDQIBDQIBDQIBDQIBDQSUPPQSSUPPQS": "QS",
+    "INTEXSICINTEXSICINTEXSICINTEXSICINTEXSICINTEXSICINTEXSICINTEXSICINTEXSICINTEXSICINTEXSICINTEXSICINTEXSICSUPPQSSUPPQS": "QS",
+    "PAQLQSPAQLQSPAQLQSPAQLQSPAQLQSPAQLQSPAQLQSPAQLQSPAQLQSPAQLQSPAQLQSPAQLQSPAQLQSPAQLQSPAQLQSPAQLQSPAQLQSPAQLQSPAQLQSPAQLQSPAQLQSPAQLQSPAQLQSPAQLQSPAQLQSPAQLQSSUPPQSSUPPQS": "QS",
+    "LCQLCQLCQLCQLCQLCQLCQLCQLCQLCQLCQLCQLCQLCQLCQLCQLCQLCQLCQLCQLCQLCQLCQSUPPQSSUPPQS": "QS",
+    "HADSHADSHADSHADSHADSHADSHADSHADSHADSHADSHADSHADSHADSHADSHADSHADSHADSHADSHADSHADSSUPPQSSUPPQS": "QS",
+    "ACQACQACQACQACQACQACQACQACQACQACQSUPPQSSUPPQS": "QS",
+    "QS": "QS",
+    "QSQSQSQSDM": "QS",
+    "ACQIAACQIAACQIAACQIAACQIAACQIAACQIAACQIAACQIAACQIAACQIASUPPQSSUPPQS": "QS",
+    "PACQLQPACQLQPACQLQPACQLQPACQLQPACQLQPACQLQPACQLQPACQLQPACQLQPACQLQPACQLQPACQLQPACQLQPACQLQPACQLQPACQLQSUPPQSSUPPQS": "QS",
+    "ACTACTACTACTACTACTACTACTACTACTSUPPQSSUPPQS": "QS",
+    "EORTCCXEORTCCXEORTCCXEORTCCXEORTCCXEORTCCXEORTCCXEORTCCXEORTCCXEORTCCXEORTCCXEORTCCXEORTCCXEORTCCXEORTCCXEORTCCXEORTCCXEORTCCXEORTCCXEORTCCXEORTCCXEORTCCXEORTCCXEORTCCXEORTCCXEORTCCXEORTCCXEORTCCXEORTCCXSUPPQSSUPPQS": "QS",
+    "EORTCHCCEORTCHCCEORTCHCCEORTCHCCEORTCHCCEORTCHCCEORTCHCCEORTCHCCEORTCHCCEORTCHCCEORTCHCCEORTCHCCEORTCHCCEORTCHCCEORTCHCCEORTCHCCEORTCHCCEORTCHCCEORTCHCCEORTCHCCEORTCHCCEORTCHCCEORTCHCCSUPPQSSUPPQS": "QS",
+    "EORTCHNEORTCHNEORTCHNEORTCHNEORTCHNEORTCHNEORTCHNEORTCHNEORTCHNEORTCHNEORTCHNEORTCHNEORTCHNEORTCHNEORTCHNEORTCHNEORTCHNEORTCHNEORTCHNEORTCHNEORTCHNEORTCHNEORTCHNEORTCHNEORTCHNEORTCHNEORTCHNEORTCHNEORTCHNEORTCHNEORTCHNEORTCHNEORTCHNEORTCHNEORTCHNEORTCHNEORTCHNEORTCHNEORTCHNSUPPQSSUPPQS": "QS",
+    "EORTCLCEORTCLCEORTCLCEORTCLCEORTCLCEORTCLCEORTCLCEORTCLCEORTCLCEORTCLCEORTCLCEORTCLCEORTCLCEORTCLCEORTCLCEORTCLCEORTCLCEORTCLCSUPPQSSUPPQS": "QS",
+    "EORTCOVEORTCOVEORTCOVEORTCOVEORTCOVEORTCOVEORTCOVEORTCOVEORTCOVEORTCOVEORTCOVEORTCOVEORTCOVEORTCOVEORTCOVEORTCOVEORTCOVEORTCOVEORTCOVEORTCOVEORTCOVEORTCOVEORTCOVEORTCOVEORTCOVEORTCOVEORTCOVEORTCOVEORTCOVEORTCOVEORTCOVEORTCOVEORTCOVSUPPQSSUPPQS": "QS",
+    "EQ_5D_YEQ_5D_YEQ_5D_YEQ_5D_YEQ_5D_YEQ_5D_YEQ_5D_YEQ_5D_YEQ_5D_YEQ_5D_YSUPPQSSUPPQS": "QS",
+    "PEDQLFPEDQLFPEDQLFPEDQLFPEDQLFPEDQLFPEDQLFPEDQLFPEDQLFPEDQLFPEDQLFPEDQLFPEDQLFPEDQLFPEDQLFPEDQLFPEDQLFPEDQLFPEDQLFPEDQLFPEDQLFPEDQLFPEDQLFSUPPQSSUPPQS": "QS",
+    "SF36V2SF36V2SF36V2SF36V2SF36V2SF36V2SF36V2SF36V2SF36V2SF36V2SF36V2SF36V2SF36V2SF36V2SF36V2SF36V2SF36V2SF36V2SF36V2SF36V2SUPPQSSUPPQS": "QS",
+    "SF36V2ASF36V2ASF36V2ASF36V2ASF36V2ASF36V2ASF36V2ASF36V2ASF36V2ASF36V2ASF36V2ASF36V2ASF36V2ASF36V2ASF36V2ASF36V2ASF36V2ASF36V2ASF36V2ASF36V2ASUPPQSSUPPQS": "QS",
+    "SGRQISGRQISGRQISGRQISGRQISGRQISGRQISGRQISGRQISGRQISGRQISGRQISGRQISGRQISGRQISGRQISGRQISGRQISGRQISGRQISGRQISGRQISGRQISGRQISGRQISGRQISGRQISGRQISGRQISGRQISGRQISGRQISGRQISGRQISGRQISGRQISGRQISGRQISGRQISGRQISUPPQSSUPPQS": "QS",
+    "SGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSUPPQSSUPPQS": "QS",
+    "SGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSUPPQSSUPPQS": "QS",
+    "SGRQCSGRQCSGRQCSGRQCSGRQCSGRQCSGRQCSGRQCSGRQCSGRQCSGRQCSGRQCSGRQCSGRQCSGRQCSGRQCSGRQCSGRQCSGRQCSGRQCSGRQCSGRQCSGRQCSGRQCSGRQCSGRQCSGRQCSGRQCSGRQCSGRQCSGRQCSGRQCSGRQCSGRQCSGRQCSGRQCSGRQCSGRQCSGRQCSGRQCSGRQCSGRQCSGRQCSGRQCSUPPQSQS": "QS",
+    "CE": "RELREC",
+    "DI": "RELREC",
+    "EX": "RELREC",
+    "FA": "RELREC",
+    "FAAE": "RELREC",
+    "FACE": "RELREC",
+    "FAHO": "RELREC",
+    "HO": "RELREC",
+    "RS": "RELREC",
+    "TR": "RELREC",
+    "TU": "RELREC",
+    "DR": "RELREC",
+    "IS": "RELREC",
+    "MI": "RELREC",
+    "AG": "RELREC",
+    "LC": "RELREC",
+    "YM": "RELREC",
+    "FAYM": "RELREC",
+    "MENSTR": "RP",
+    "PREGREP": "RP",
+    "SC": "SC",
+    "RPRPRPRPDM": "RP",
+    "TVTVRP": "RP",
+    "DMRP": "RP",
+    "BDI": "RS",
+    "CHPCLAS": "RS",
+    "ECOG": "RS",
+    "GCS": "RS",
+    "HENTLA": "TR",
+    "INDRESP": "RS",
+    "KPSS": "RS",
+    "LYMODR": "RS",
+    "LYMTLA": "TR",
+    "PFS2": "RS",
+    "RECIST1": "TR",
+    "RECIST2": "RS",
+    "RESPNHL": "RS",
+    "SPLDASS": "TR",
+    "TDI": "RS",
+    "AMLODR": "RS",
+    "ALLODR": "RS",
+    "MMODR": "RS",
+    "CLLODR": "RS",
+    "RSRSRSRSDM": "RS",
+    "TVTVRS": "RS",
+    "DMRS": "RS",
+    "HGI": "SC",
+    "TVTVSC": "SC",
+    "DMSC": "SC",
+    "DMSE": "SE",
+    "SR": "SR",
+    "SRSRSRSRDM": "SR",
+    "TVTVSR": "SR",
+    "SURVIVE": "SS",
+    "SURVSTAT": "SS",
+    "PFU": "SS",
+    "TVTVSS": "SS",
+    "SU_ALC": "SU",
+    "SU_CAFF": "SU",
+    "SU_NIC": "SU",
+    "TVTVSU": "SU",
+    "DMSU": "SU",
+    "VISIT": "SV",
+    "SVTV": "SV",
+    "VISITVISITTV": "SV",
+    "TVTVSV": "SV",
+    "DMSV": "UR",
+    "VS": "VS",
+    "VSVSVSVSDM": "VS",
+    "TVTVVS": "VS",
+    "DMVS": "VS",
+    "TVTVXC": "XC",
+    "DMXC": "XC",
+    "DMYB": "YB",
+    "ZC": "ZC",
+    "TVTVZC": "ZC",
+    "DMZC": "ZM",
+    "BMBIOPAS": "CP",
+    "TVTVCP": "CP",
+    "DMCP": "CP",
+    "DMCPCPCPCP": "CP",
+    "FDGSUV": "TR",
+    "LYMSTLA": "TR",
+    "NEWLES": "TR",
+    "PETSCAN": "TR",
+    "BNLIMM": "TR",
+    "TVTVTR": "TR",
+    "DMTR": "TR",
+    "DMTRTRTRTR": "TR",
+    "TVTVTU": "TU",
+    "DMTU": "TU",
+    "DMTUTUTUTU": "TU",
+    "RESPCHAL": "RE",
+    "DMAG": "AG",
+    "TVTVAG": "AG",
+    "IMPOSC": "RE",
+    "PULMOA": "RE",
+    "TVTVRE": "RE",
+    "DMRE": "RE",
+    "DMRERERERE": "RE",
+    "BMRES2OM": "MI",
+    "BMRS2OM": "MI",
+    "PATHBIO": "MI",
+    "PATHBIOLBREF": "CP"
+  },
+  "module_to_entry_count": {
+    "AE": 279,
+    "DMAE": 2,
+    "SERAE": 47,
+    "SERAESERAESERAESERAEAEAE": 10,
+    "AESIVAESIVAESIVAESIVAEAEAE": 47,
+    "DE": 115,
+    "ADJAE": 189,
+    "BSYMPT": 23,
+    "CEREVENT": 54,
+    "CIEVENT": 60,
+    "COPDEX": 160,
+    "CRSSS": 36,
+    "DEATHEVT": 40,
+    "EXACA": 148,
+    "EXACD": 17,
+    "HELMINTH": 118,
+    "HFEVT": 292,
+    "ICANSSS": 37,
+    "INFSS": 24,
+    "LIVERSS": 32,
+    "SOLARST": 21,
+    "ADJRCVRM": 244,
+    "TVTVCE": 2,
+    "DMCE": 12,
+    "CAPRX": 37,
+    "CAPRXR": 44,
+    "CM": 67,
+    "HEVENT": 270,
+    "MINT": 148,
+    "MISTD": 19,
+    "PCOVID": 60,
+    "TRANSF": 15,
+    "CAPRXHL": 99,
+    "OXYGEN": 104,
+    "CAPRXMM": 85,
+    "TVTVCM": 2,
+    "DMCM": 2,
+    "BONESCN": 97,
+    "CO": 17,
+    "DA": 42,
+    "DECG": 50,
+    "DEVRET": 94,
+    "EC": 241,
+    "ECHOC": 536,
+    "EREFS": 77,
+    "FDGSCAN": 59,
+    "ISCONC": 33,
+    "LB": 82,
+    "LIVERRF": 37,
+    "LIVERDI": 17,
+    "LUNDMACK": 232,
+    "NPS": 98,
+    "PATHREP": 135,
+    "QNTCT": 87,
+    "REIMRES": 47,
+    "BMRESON": 181,
+    "PKCONC": 65,
+    "TVTVCO": 2,
+    "EF": 54,
+    "CVCVCVCVDM": 1,
+    "TVTVCV": 2,
+    "DMCV": 23,
+    "DMDA": 18,
+    "SERAEDTH": 21,
+    "DD": 45,
+    "DMDD": 8,
+    "COMPLT": 6,
+    "TVTVDE": 2,
+    "DMDE": 2,
+    "DM": 19,
+    "DMDMDMDM": 2,
+    "TVTVDM": 2,
+    "CONSENTCONSENTCONSENTDM": 1,
+    "CONSENTDM": 1,
+    "SERAESERAESERAESERAEDM": 1,
+    "SERAESERAESERAEDM": 1,
+    "RANDRANDRANDRANDTADEFTADEFTADEFTADEFTADEFTADEFDMDMSUPPDM": 1,
+    "DSDSDSDM": 1,
+    "GROUPGROUPGROUPDM": 2,
+    "DUPLICDUPLICDUPLICDM": 2,
+    "SUTRASUTRASUTRADM": 12,
+    "SURVSTATSURVSTATSURVSTATDM": 2,
+    "DDDDDDDM": 2,
+    "DSSSDSSSDSSSDM": 11,
+    "CONSENT": 47,
+    "CONSWD": 12,
+    "DS": 16,
+    "ETRT": 11,
+    "ICFGEN": 42,
+    "IE": 37,
+    "PARTOPT": 9,
+    "DSSS": 30,
+    "CONSENTCONSENTDSDSDSDSSUPPDS": 1,
+    "TVTVDS": 2,
+    "DMDS": 2,
+    "RANDRANDSUPPDS": 11,
+    "DMDT": 32,
+    "DV": 20,
+    "DVIS": 17,
+    "DMDV": 33,
+    "ECSYSCRT": 54,
+    "OVERDOSE": 17,
+    "SDSTD": 14,
+    "SDREL": 6,
+    "CELLT": 10,
+    "TVTVEC": 2,
+    "DMEC": 2,
+    "EG": 219,
+    "EXER": 226,
+    "EGEGEGEGDM": 1,
+    "TVTVEG": 2,
+    "DMEG": 23,
+    "TVTVEX": 2,
+    "DMEX": 18,
+    "AEADDOM": 37,
+    "CAPRXD": 16,
+    "CAPRXL": 29,
+    "CAPRXV": 90,
+    "CPULM": 148,
+    "CRASTCT": 28,
+    "DISEXT": 65,
+    "DISREC": 81,
+    "HYPANPH": 103,
+    "ICASTCT": 40,
+    "ILDIS": 266,
+    "INFDI": 13,
+    "INFRF": 14,
+    "NYHAHF": 13,
+    "NPROCED": 45,
+    "PATHGEN": 228,
+    "PATHGOM": 231,
+    "PULM": 465,
+    "CAPRXP": 224,
+    "DISCHMM": 54,
+    "DISCHAML": 77,
+    "DISCHALL": 60,
+    "DISCHLYM": 239,
+    "HSCT": 103,
+    "IEC_HS": 1,
+    "DICLLSLL": 89,
+    "FAFAFAFADM": 2,
+    "TVTVFA": 32,
+    "DMFA": 3,
+    "INJSTRC": 98,
+    "FAAEFAAEFAAEFAAEDM": 1,
+    "TVTVFAAE": 2,
+    "DMFAAE": 15,
+    "SOLAR": 249,
+    "TVTVFACE": 2,
+    "DMFACE": 2,
+    "FACEFACEFACEFACEDM": 38,
+    "KIT": 27,
+    "TVTVFAEX": 2,
+    "DMFAEX": 3,
+    "HOSPLOG": 122,
+    "FAHOFAHOFAHOFAHODM": 1,
+    "TVTVFAHO": 2,
+    "DMFAHO": 47,
+    "ASTHMAD": 84,
+    "COPDD": 41,
+    "COPDEXH": 58,
+    "EXACAH": 68,
+    "ILDD": 32,
+    "NRESPH": 49,
+    "PATHNHL": 111,
+    "SPECHIS": 154,
+    "CKDD": 44,
+    "FAMHFAMHFAMHFAMHDM": 1,
+    "TVTVFAMH": 2,
+    "DMFAMH": 43,
+    "PRADDON": 33,
+    "RADEXM": 172,
+    "FAPRFAPRFAPRFAPRDM": 1,
+    "TVTVFAPR": 2,
+    "DMFAPR": 44,
+    "DMFAYB": 5,
+    "MER": 58,
+    "DMFAYM": 25,
+    "FTFTFTFTDM": 1,
+    "TVTVFT": 2,
+    "DMFT": 47,
+    "MOLCHALL": 22,
+    "MOLCHAML": 23,
+    "CYTGEN": 28,
+    "CYTOGEN": 142,
+    "CYTOLYM": 284,
+    "TVTVGF": 36,
+    "CHCSS": 239,
+    "HOSPAD": 19,
+    "TVTVHO": 2,
+    "DMHO": 18,
+    "IEIEIEIEIETITIIEIE": 1,
+    "TVTVIE": 2,
+    "DMIE": 8,
+    "ALLR": 15,
+    "ISCONCIS": 1,
+    "TVTVIS": 2,
+    "DMIS": 1,
+    "ISISISISDM": 1,
+    "LBREFISLBREF": 2,
+    "BMRES": 61,
+    "CLAB": 60,
+    "LBHIS": 15,
+    "LBNO": 23,
+    "PREG": 108,
+    "MRDL": 47,
+    "MRDMM": 46,
+    "BMLAB": 45,
+    "MPROTEIN": 84,
+    "EXMDA": 73,
+    "BMBAMM": 54,
+    "BMRESBMRESBMRESBMRESBMRESBMRESBMRESUNITCONVLB": 1,
+    "LBREFLBREFLBREFLBREFLBREFLBREFLBREFLBREFLBREFLBREFLBREFLBREFLBREFLBREFUNITCONVUNITCONVUNITCONVUNITCONVUNITCONVLBLBLBLBLB": 1,
+    "LBLBLBLBLBDM": 1,
+    "DMLB": 1,
+    "CLABCLABCLABCLABCLABCLABCLABCLABUNITCONVLB": 1,
+    "LBLBLBLBLBLBLBLBLB": 1,
+    "LBLBLBLB": 1,
+    "TVTVLB": 51,
+    "LBHISLBHISLBHISLBHISLBHISLBHISLBHISUNITCONVLB": 1,
+    "BMLABBMLABBMLABBMLABBMLABBMLABUNITCONVLB": 1,
+    "CLABCLABCLABCLABCLABCLABCLABCLABUNITCONV": 1,
+    "LCLCDM": 1,
+    "TVTVLC": 2,
+    "DMLC": 1,
+    "LCLCLCLCLCLBREFLBREFLBREFLBREFLBREFLBREFLBREFLBREFLBREFLBREFLBREFLBREFLBREFLBREFSUPPLC": 1,
+    "BMRESBMRESBMRESBMRESBMRESBMRESBMRESUNITCONV": 29,
+    "LBLBLBLBLBLBLBLBMBUNITCONV": 1,
+    "MBMBMBLB": 1,
+    "MBMBMBMBDMLB": 1,
+    "LBLBLBMBMBMBMBMBLBREFLBREFLBREFLBREFLBREFLBREFLBREFLBREFLBREFLBREFLBREFLBREFLBREFLBREFUNITCONVUNITCONVUNITCONVUNITCONVUNITCONVSUPPMB": 1,
+    "TVTVMB": 2,
+    "DMMB": 40,
+    "HISDM": 24,
+    "MH": 39,
+    "MHRE": 17,
+    "TVTVMH": 2,
+    "DMMH": 3,
+    "MHDMDM": 1,
+    "MHREDMDM": 16,
+    "PDL1": 72,
+    "LBREF": 2,
+    "MIMIMIMIDM": 1,
+    "DMMI": 16,
+    "JOINTC": 31,
+    "MKMKMKMKDM": 1,
+    "TVTVMK": 30,
+    "MEAL": 42,
+    "TVTVML": 2,
+    "DMML": 198,
+    "TVTVPC": 2,
+    "DMPC": 25,
+    "CTSCAN": 22,
+    "XRAY": 14,
+    "PEPEPEPEDM": 1,
+    "TVTVPE": 2,
+    "DMPE": 26,
+    "BRCA": 39,
+    "MGSTA": 53,
+    "TVTVPF": 2,
+    "DMPF": 65,
+    "HISS": 25,
+    "PE": 10,
+    "PR": 52,
+    "PRPE": 12,
+    "DMPR": 2,
+    "TVTVPR": 2,
+    "DMTVPR": 28,
+    "AIRQ": 17,
+    "AQLQS12": 14,
+    "BMQ_G": 16,
+    "CGIC": 17,
+    "LANGU": 6,
+    "MOS09": 13,
+    "MRS": 13,
+    "REVPRDI": 14,
+    "SPFQ": 9,
+    "TASTE": 11,
+    "BFI": 106,
+    "BPIDGR": 13,
+    "BPISF": 13,
+    "CTSQ": 11,
+    "FACITFS": 16,
+    "FKSI19": 17,
+    "FSIL": 16,
+    "LPPSS": 17,
+    "NSCLCSAQ": 15,
+    "BED": 11,
+    "CAT": 11,
+    "CLASI": 11,
+    "COUVAS": 17,
+    "EOEQOLA": 18,
+    "EXACT": 13,
+    "IBDQ": 13,
+    "INTEXSIC": 13,
+    "MMRC": 14,
+    "PAQLQS": 11,
+    "PGA": 17,
+    "PHQ8": 17,
+    "SNOT22": 18,
+    "LCQ": 11,
+    "HADS": 14,
+    "PRD": 17,
+    "PTGDAA": 26,
+    "PGDAA": 24,
+    "ACQ": 12,
+    "ACQIA": 12,
+    "PACQLQ": 12,
+    "ACT": 14,
+    "ASTDD": 50,
+    "BCSS": 25,
+    "BSFS": 15,
+    "CSSRSBS": 471,
+    "CSSRSLV": 246,
+    "CSTDD": 31,
+    "CSYD": 50,
+    "DIARYNP": 103,
+    "DSQ": 34,
+    "EMSCI": 84,
+    "EORTC": 193,
+    "EORTCBIL": 17,
+    "EORTCBN": 17,
+    "EORTCBR": 228,
+    "EORTCCX": 13,
+    "EORTCEN": 16,
+    "EORTCHCC": 13,
+    "EORTCHN": 13,
+    "EORTCIL": 40,
+    "EORTCLC": 13,
+    "EORTCNB": 149,
+    "EORTCOV": 13,
+    "EORTCPN": 16,
+    "EORTCPR": 16,
+    "EORTCSTO": 17,
+    "EQ_5D_3L": 48,
+    "EQ_5D_5L": 46,
+    "EQ_5D_Y": 15,
+    "FACTB": 234,
+    "FACTES": 289,
+    "FACTG": 175,
+    "FACTL": 235,
+    "FACTLEU": 277,
+    "FACTM": 319,
+    "FACTO": 246,
+    "FACTP": 249,
+    "FPSI17": 17,
+    "FPSR": 14,
+    "HAQ": 255,
+    "KCCQ": 190,
+    "LQL": 194,
+    "MDASISL": 21,
+    "NISCI": 89,
+    "PASO": 67,
+    "PEDQLF": 12,
+    "PEESS": 127,
+    "PGIC": 18,
+    "PGIS": 19,
+    "PGITT": 18,
+    "PROACT": 78,
+    "PROCTC": 811,
+    "PROMIS": 61,
+    "PST": 121,
+    "PTGA": 23,
+    "SF36V2": 137,
+    "SF36V2A": 137,
+    "SF36V2SS": 112,
+    "SGRQI": 13,
+    "SGRQ": 8,
+    "SGRQC": 11,
+    "TANNER": 21,
+    "UPSIT": 22,
+    "WPAI_SHP": 50,
+    "WPAI_GH": 58,
+    "WPAICIQ": 66,
+    "WPAICIQ2": 81,
+    "WORKABS": 40,
+    "TVTVQS": 2,
+    "DMQS": 1,
+    "CGICCGICCGICCGICCGICCGICSUPPQSSUPPQS": 1,
+    "MOS09MOS09MOS09MOS09MOS09MOS09MOS09MOS09MOS09MOS09MOS09MOS09MOS09MOS09MOS09MOS09MOS09SUPPQSSUPPQS": 1,
+    "MRSMRSMRSMRSMRSMRSSUPPQSSUPPQS": 1,
+    "SPFQSPFQSPFQSPFQSPFQSPFQSPFQSPFQSPFQSPFQSPFQSPFQSPFQSPFQSPFQSPFQSPFQSPFQSPFQSPFQSPFQSPFQSUPPQSSUPPQS": 1,
+    "TASTETASTETASTETASTETASTETASTETASTETASTETASTETASTETASTETASTETASTETASTETASTETASTETASTESUPPQSSUPPQS": 1,
+    "BFIBFIBFIBFIBFIBFIBFIBFIBFIBFIBFIBFIBFIBFIBFISUPPQSSUPPQS": 1,
+    "BPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRSUPPQSSUPPQS": 1,
+    "BPISFBPISFBPISFBPISFBPISFBPISFBPISFBPISFBPISFBPISFBPISFBPISFBPISFBPISFBPISFBPISFBPISFBPISFBPISFSUPPQSSUPPQS": 1,
+    "CTSQCTSQCTSQCTSQCTSQCTSQCTSQCTSQCTSQCTSQCTSQCTSQCTSQCTSQCTSQCTSQCTSQCTSQCTSQCTSQCTSQSUPPQSSUPPQS": 1,
+    "NSCLCSAQNSCLCSAQNSCLCSAQNSCLCSAQNSCLCSAQNSCLCSAQNSCLCSAQNSCLCSAQNSCLCSAQNSCLCSAQNSCLCSAQSUPPQSSUPPQS": 1,
+    "BEDBEDBEDBEDBEDBEDBEDBEDBEDBEDBEDSUPPQSSUPPQS": 1,
+    "CATCATCATCATCATCATCATCATCATCATCATCATSUPPQSSUPPQS": 1,
+    "CLASICLASICLASICLASICLASICLASICLASICLASICLASICLASICLASICLASICLASICLASICLASICLASICLASISUPPQSSUPPQS": 1,
+    "EXACTEXACTEXACTEXACTEXACTEXACTEXACTEXACTEXACTEXACTEXACTEXACTEXACTEXACTEXACTEXACTEXACTEXACTEXACTSUPPQSSUPPQS": 1,
+    "IBDQIBDQIBDQIBDQIBDQIBDQIBDQIBDQIBDQIBDQIBDQIBDQIBDQIBDQIBDQIBDQIBDQIBDQIBDQIBDQIBDQIBDQIBDQIBDQIBDQIBDQIBDQIBDQIBDQIBDQIBDQIBDQIBDQIBDQIBDQSUPPQSSUPPQS": 1,
+    "INTEXSICINTEXSICINTEXSICINTEXSICINTEXSICINTEXSICINTEXSICINTEXSICINTEXSICINTEXSICINTEXSICINTEXSICINTEXSICSUPPQSSUPPQS": 1,
+    "PAQLQSPAQLQSPAQLQSPAQLQSPAQLQSPAQLQSPAQLQSPAQLQSPAQLQSPAQLQSPAQLQSPAQLQSPAQLQSPAQLQSPAQLQSPAQLQSPAQLQSPAQLQSPAQLQSPAQLQSPAQLQSPAQLQSPAQLQSPAQLQSPAQLQSPAQLQSSUPPQSSUPPQS": 1,
+    "LCQLCQLCQLCQLCQLCQLCQLCQLCQLCQLCQLCQLCQLCQLCQLCQLCQLCQLCQLCQLCQLCQLCQSUPPQSSUPPQS": 1,
+    "HADSHADSHADSHADSHADSHADSHADSHADSHADSHADSHADSHADSHADSHADSHADSHADSHADSHADSHADSHADSSUPPQSSUPPQS": 1,
+    "ACQACQACQACQACQACQACQACQACQACQACQSUPPQSSUPPQS": 1,
+    "QS": 1,
+    "QSQSQSQSDM": 1,
+    "ACQIAACQIAACQIAACQIAACQIAACQIAACQIAACQIAACQIAACQIAACQIASUPPQSSUPPQS": 1,
+    "PACQLQPACQLQPACQLQPACQLQPACQLQPACQLQPACQLQPACQLQPACQLQPACQLQPACQLQPACQLQPACQLQPACQLQPACQLQPACQLQPACQLQSUPPQSSUPPQS": 1,
+    "ACTACTACTACTACTACTACTACTACTACTSUPPQSSUPPQS": 1,
+    "EORTCCXEORTCCXEORTCCXEORTCCXEORTCCXEORTCCXEORTCCXEORTCCXEORTCCXEORTCCXEORTCCXEORTCCXEORTCCXEORTCCXEORTCCXEORTCCXEORTCCXEORTCCXEORTCCXEORTCCXEORTCCXEORTCCXEORTCCXEORTCCXEORTCCXEORTCCXEORTCCXEORTCCXEORTCCXSUPPQSSUPPQS": 1,
+    "EORTCHCCEORTCHCCEORTCHCCEORTCHCCEORTCHCCEORTCHCCEORTCHCCEORTCHCCEORTCHCCEORTCHCCEORTCHCCEORTCHCCEORTCHCCEORTCHCCEORTCHCCEORTCHCCEORTCHCCEORTCHCCEORTCHCCEORTCHCCEORTCHCCEORTCHCCEORTCHCCSUPPQSSUPPQS": 1,
+    "EORTCHNEORTCHNEORTCHNEORTCHNEORTCHNEORTCHNEORTCHNEORTCHNEORTCHNEORTCHNEORTCHNEORTCHNEORTCHNEORTCHNEORTCHNEORTCHNEORTCHNEORTCHNEORTCHNEORTCHNEORTCHNEORTCHNEORTCHNEORTCHNEORTCHNEORTCHNEORTCHNEORTCHNEORTCHNEORTCHNEORTCHNEORTCHNEORTCHNEORTCHNEORTCHNEORTCHNEORTCHNEORTCHNEORTCHNSUPPQSSUPPQS": 1,
+    "EORTCLCEORTCLCEORTCLCEORTCLCEORTCLCEORTCLCEORTCLCEORTCLCEORTCLCEORTCLCEORTCLCEORTCLCEORTCLCEORTCLCEORTCLCEORTCLCEORTCLCEORTCLCSUPPQSSUPPQS": 1,
+    "EORTCOVEORTCOVEORTCOVEORTCOVEORTCOVEORTCOVEORTCOVEORTCOVEORTCOVEORTCOVEORTCOVEORTCOVEORTCOVEORTCOVEORTCOVEORTCOVEORTCOVEORTCOVEORTCOVEORTCOVEORTCOVEORTCOVEORTCOVEORTCOVEORTCOVEORTCOVEORTCOVEORTCOVEORTCOVEORTCOVEORTCOVEORTCOVEORTCOVSUPPQSSUPPQS": 1,
+    "EQ_5D_YEQ_5D_YEQ_5D_YEQ_5D_YEQ_5D_YEQ_5D_YEQ_5D_YEQ_5D_YEQ_5D_YEQ_5D_YSUPPQSSUPPQS": 1,
+    "PEDQLFPEDQLFPEDQLFPEDQLFPEDQLFPEDQLFPEDQLFPEDQLFPEDQLFPEDQLFPEDQLFPEDQLFPEDQLFPEDQLFPEDQLFPEDQLFPEDQLFPEDQLFPEDQLFPEDQLFPEDQLFPEDQLFPEDQLFSUPPQSSUPPQS": 1,
+    "SF36V2SF36V2SF36V2SF36V2SF36V2SF36V2SF36V2SF36V2SF36V2SF36V2SF36V2SF36V2SF36V2SF36V2SF36V2SF36V2SF36V2SF36V2SF36V2SF36V2SUPPQSSUPPQS": 1,
+    "SF36V2ASF36V2ASF36V2ASF36V2ASF36V2ASF36V2ASF36V2ASF36V2ASF36V2ASF36V2ASF36V2ASF36V2ASF36V2ASF36V2ASF36V2ASF36V2ASF36V2ASF36V2ASF36V2ASF36V2ASUPPQSSUPPQS": 1,
+    "SGRQISGRQISGRQISGRQISGRQISGRQISGRQISGRQISGRQISGRQISGRQISGRQISGRQISGRQISGRQISGRQISGRQISGRQISGRQISGRQISGRQISGRQISGRQISGRQISGRQISGRQISGRQISGRQISGRQISGRQISGRQISGRQISGRQISGRQISGRQISGRQISGRQISGRQISGRQISGRQISUPPQSSUPPQS": 1,
+    "SGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSUPPQSSUPPQS": 1,
+    "SGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSUPPQSSUPPQS": 1,
+    "SGRQCSGRQCSGRQCSGRQCSGRQCSGRQCSGRQCSGRQCSGRQCSGRQCSGRQCSGRQCSGRQCSGRQCSGRQCSGRQCSGRQCSGRQCSGRQCSGRQCSGRQCSGRQCSGRQCSGRQCSGRQCSGRQCSGRQCSGRQCSGRQCSGRQCSGRQCSGRQCSGRQCSGRQCSGRQCSGRQCSGRQCSGRQCSGRQCSGRQCSGRQCSGRQCSGRQCSGRQCSUPPQSQS": 19,
+    "CE": 21,
+    "DI": 9,
+    "EX": 6,
+    "FA": 15,
+    "FAAE": 6,
+    "FACE": 21,
+    "FAHO": 6,
+    "HO": 15,
+    "RS": 12,
+    "TR": 12,
+    "TU": 12,
+    "DR": 1,
+    "IS": 6,
+    "MI": 6,
+    "AG": 3,
+    "LC": 6,
+    "YM": 9,
+    "FAYM": 19,
+    "MENSTR": 28,
+    "PREGREP": 58,
+    "SC": 43,
+    "RPRPRPRPDM": 1,
+    "TVTVRP": 2,
+    "DMRP": 54,
+    "BDI": 23,
+    "CHPCLAS": 49,
+    "ECOG": 13,
+    "GCS": 34,
+    "HENTLA": 58,
+    "INDRESP": 30,
+    "KPSS": 14,
+    "LYMODR": 73,
+    "LYMTLA": 91,
+    "PFS2": 17,
+    "RECIST1": 117,
+    "RECIST2": 59,
+    "RESPNHL": 44,
+    "SPLDASS": 44,
+    "TDI": 23,
+    "AMLODR": 19,
+    "ALLODR": 24,
+    "MMODR": 13,
+    "CLLODR": 24,
+    "RSRSRSRSDM": 1,
+    "TVTVRS": 29,
+    "DMRS": 1,
+    "HGI": 115,
+    "TVTVSC": 2,
+    "DMSC": 23,
+    "DMSE": 23,
+    "SR": 19,
+    "SRSRSRSRDM": 1,
+    "TVTVSR": 27,
+    "SURVIVE": 17,
+    "SURVSTAT": 14,
+    "PFU": 11,
+    "TVTVSS": 2,
+    "SU_ALC": 15,
+    "SU_CAFF": 16,
+    "SU_NIC": 25,
+    "TVTVSU": 2,
+    "DMSU": 40,
+    "VISIT": 9,
+    "SVTV": 1,
+    "VISITVISITTV": 1,
+    "TVTVSV": 2,
+    "DMSV": 135,
+    "VS": 466,
+    "VSVSVSVSDM": 1,
+    "TVTVVS": 2,
+    "DMVS": 26,
+    "TVTVXC": 2,
+    "DMXC": 47,
+    "DMYB": 6,
+    "ZC": 1,
+    "TVTVZC": 2,
+    "DMZC": 153,
+    "BMBIOPAS": 51,
+    "TVTVCP": 2,
+    "DMCP": 1,
+    "DMCPCPCPCP": 37,
+    "FDGSUV": 64,
+    "LYMSTLA": 69,
+    "NEWLES": 37,
+    "PETSCAN": 46,
+    "BNLIMM": 24,
+    "TVTVTR": 2,
+    "DMTR": 1,
+    "DMTRTRTRTR": 34,
+    "TVTVTU": 2,
+    "DMTU": 1,
+    "DMTUTUTUTU": 34,
+    "RESPCHAL": 45,
+    "DMAG": 3,
+    "TVTVAG": 34,
+    "IMPOSC": 218,
+    "PULMOA": 489,
+    "TVTVRE": 2,
+    "DMRE": 1,
+    "DMRERERERE": 30,
+    "BMRES2OM": 116,
+    "BMRS2OM": 2,
+    "PATHBIO": 86,
+    "PATHBIOLBREF": 1
+  },
+  "module_to_label_count": {
+    "AE": 247,
+    "DMAE": 2,
+    "SERAE": 31,
+    "SERAESERAESERAESERAEAEAE": 10,
+    "AESIVAESIVAESIVAESIVAEAEAE": 10,
+    "DE": 48,
+    "ADJAE": 186,
+    "BSYMPT": 21,
+    "CEREVENT": 48,
+    "CIEVENT": 53,
+    "COPDEX": 155,
+    "CRSSS": 33,
+    "DEATHEVT": 32,
+    "EXACA": 144,
+    "EXACD": 16,
+    "HELMINTH": 113,
+    "HFEVT": 280,
+    "ICANSSS": 34,
+    "INFSS": 21,
+    "LIVERSS": 31,
+    "SOLARST": 18,
+    "ADJRCVRM": 199,
+    "TVTVCE": 2,
+    "DMCE": 3,
+    "CAPRX": 35,
+    "CAPRXR": 41,
+    "CM": 50,
+    "HEVENT": 261,
+    "MINT": 113,
+    "MISTD": 17,
+    "PCOVID": 56,
+    "TRANSF": 13,
+    "CAPRXHL": 95,
+    "OXYGEN": 98,
+    "CAPRXMM": 81,
+    "TVTVCM": 2,
+    "DMCM": 2,
+    "BONESCN": 88,
+    "CO": 11,
+    "DA": 40,
+    "DECG": 48,
+    "DEVRET": 92,
+    "EC": 217,
+    "ECHOC": 530,
+    "EREFS": 75,
+    "FDGSCAN": 49,
+    "ISCONC": 30,
+    "LB": 68,
+    "LIVERRF": 36,
+    "LIVERDI": 13,
+    "LUNDMACK": 226,
+    "NPS": 78,
+    "PATHREP": 130,
+    "QNTCT": 67,
+    "REIMRES": 45,
+    "BMRESON": 146,
+    "PKCONC": 61,
+    "TVTVCO": 2,
+    "EF": 52,
+    "CVCVCVCVDM": 1,
+    "TVTVCV": 2,
+    "DMCV": 1,
+    "DMDA": 1,
+    "SERAEDTH": 19,
+    "DD": 37,
+    "DMDD": 1,
+    "COMPLT": 5,
+    "TVTVDE": 2,
+    "DMDE": 2,
+    "DM": 15,
+    "DMDMDMDM": 2,
+    "TVTVDM": 2,
+    "CONSENTCONSENTCONSENTDM": 1,
+    "CONSENTDM": 1,
+    "SERAESERAESERAESERAEDM": 1,
+    "SERAESERAESERAEDM": 1,
+    "RANDRANDRANDRANDTADEFTADEFTADEFTADEFTADEFTADEFDMDMSUPPDM": 1,
+    "DSDSDSDM": 1,
+    "GROUPGROUPGROUPDM": 2,
+    "DUPLICDUPLICDUPLICDM": 2,
+    "SUTRASUTRASUTRADM": 12,
+    "SURVSTATSURVSTATSURVSTATDM": 2,
+    "DDDDDDDM": 2,
+    "DSSSDSSSDSSSDM": 1,
+    "CONSENT": 46,
+    "CONSWD": 11,
+    "DS": 15,
+    "ETRT": 10,
+    "ICFGEN": 41,
+    "IE": 35,
+    "PARTOPT": 9,
+    "DSSS": 18,
+    "CONSENTCONSENTDSDSDSDSSUPPDS": 1,
+    "TVTVDS": 2,
+    "DMDS": 2,
+    "RANDRANDSUPPDS": 9,
+    "DMDT": 1,
+    "DV": 19,
+    "DVIS": 16,
+    "DMDV": 2,
+    "ECSYSCRT": 51,
+    "OVERDOSE": 14,
+    "SDSTD": 12,
+    "SDREL": 5,
+    "CELLT": 7,
+    "TVTVEC": 2,
+    "DMEC": 2,
+    "EG": 218,
+    "EXER": 220,
+    "EGEGEGEGDM": 1,
+    "TVTVEG": 2,
+    "DMEG": 2,
+    "TVTVEX": 2,
+    "DMEX": 2,
+    "AEADDOM": 36,
+    "CAPRXD": 14,
+    "CAPRXL": 27,
+    "CAPRXV": 88,
+    "CPULM": 146,
+    "CRASTCT": 26,
+    "DISEXT": 60,
+    "DISREC": 69,
+    "HYPANPH": 101,
+    "ICASTCT": 38,
+    "ILDIS": 262,
+    "INFDI": 9,
+    "INFRF": 12,
+    "NYHAHF": 8,
+    "NPROCED": 42,
+    "PATHGEN": 221,
+    "PATHGOM": 225,
+    "PULM": 459,
+    "CAPRXP": 222,
+    "DISCHMM": 50,
+    "DISCHAML": 75,
+    "DISCHALL": 57,
+    "DISCHLYM": 237,
+    "HSCT": 97,
+    "IEC_HS": 1,
+    "DICLLSLL": 86,
+    "FAFAFAFADM": 2,
+    "TVTVFA": 2,
+    "DMFA": 3,
+    "INJSTRC": 96,
+    "FAAEFAAEFAAEFAAEDM": 1,
+    "TVTVFAAE": 2,
+    "DMFAAE": 2,
+    "SOLAR": 246,
+    "TVTVFACE": 2,
+    "DMFACE": 2,
+    "FACEFACEFACEFACEDM": 1,
+    "KIT": 25,
+    "TVTVFAEX": 2,
+    "DMFAEX": 1,
+    "HOSPLOG": 120,
+    "FAHOFAHOFAHOFAHODM": 1,
+    "TVTVFAHO": 2,
+    "DMFAHO": 2,
+    "ASTHMAD": 80,
+    "COPDD": 37,
+    "COPDEXH": 40,
+    "EXACAH": 50,
+    "ILDD": 27,
+    "NRESPH": 42,
+    "PATHNHL": 107,
+    "SPECHIS": 151,
+    "CKDD": 38,
+    "FAMHFAMHFAMHFAMHDM": 1,
+    "TVTVFAMH": 2,
+    "DMFAMH": 2,
+    "PRADDON": 32,
+    "RADEXM": 169,
+    "FAPRFAPRFAPRFAPRDM": 1,
+    "TVTVFAPR": 2,
+    "DMFAPR": 2,
+    "DMFAYB": 1,
+    "MER": 54,
+    "DMFAYM": 1,
+    "FTFTFTFTDM": 1,
+    "TVTVFT": 2,
+    "DMFT": 2,
+    "MOLCHALL": 20,
+    "MOLCHAML": 21,
+    "CYTGEN": 27,
+    "CYTOGEN": 140,
+    "CYTOLYM": 282,
+    "TVTVGF": 1,
+    "CHCSS": 235,
+    "HOSPAD": 17,
+    "TVTVHO": 2,
+    "DMHO": 3,
+    "IEIEIEIEIETITIIEIE": 1,
+    "TVTVIE": 2,
+    "DMIE": 1,
+    "ALLR": 12,
+    "ISCONCIS": 1,
+    "TVTVIS": 2,
+    "DMIS": 1,
+    "ISISISISDM": 1,
+    "LBREFISLBREF": 2,
+    "BMRES": 58,
+    "CLAB": 58,
+    "LBHIS": 14,
+    "LBNO": 22,
+    "PREG": 106,
+    "MRDL": 46,
+    "MRDMM": 45,
+    "BMLAB": 43,
+    "MPROTEIN": 83,
+    "EXMDA": 69,
+    "BMBAMM": 50,
+    "BMRESBMRESBMRESBMRESBMRESBMRESBMRESUNITCONVLB": 1,
+    "LBREFLBREFLBREFLBREFLBREFLBREFLBREFLBREFLBREFLBREFLBREFLBREFLBREFLBREFUNITCONVUNITCONVUNITCONVUNITCONVUNITCONVLBLBLBLBLB": 1,
+    "LBLBLBLBLBDM": 1,
+    "DMLB": 1,
+    "CLABCLABCLABCLABCLABCLABCLABCLABUNITCONVLB": 1,
+    "LBLBLBLBLBLBLBLBLB": 1,
+    "LBLBLBLB": 1,
+    "TVTVLB": 2,
+    "LBHISLBHISLBHISLBHISLBHISLBHISLBHISUNITCONVLB": 1,
+    "BMLABBMLABBMLABBMLABBMLABBMLABUNITCONVLB": 1,
+    "CLABCLABCLABCLABCLABCLABCLABCLABUNITCONV": 1,
+    "LCLCDM": 1,
+    "TVTVLC": 2,
+    "DMLC": 1,
+    "LCLCLCLCLCLBREFLBREFLBREFLBREFLBREFLBREFLBREFLBREFLBREFLBREFLBREFLBREFLBREFLBREFSUPPLC": 1,
+    "BMRESBMRESBMRESBMRESBMRESBMRESBMRESUNITCONV": 1,
+    "LBLBLBLBLBLBLBLBMBUNITCONV": 1,
+    "MBMBMBLB": 1,
+    "MBMBMBMBDMLB": 1,
+    "LBLBLBMBMBMBMBMBLBREFLBREFLBREFLBREFLBREFLBREFLBREFLBREFLBREFLBREFLBREFLBREFLBREFLBREFUNITCONVUNITCONVUNITCONVUNITCONVUNITCONVSUPPMB": 1,
+    "TVTVMB": 2,
+    "DMMB": 1,
+    "HISDM": 22,
+    "MH": 28,
+    "MHRE": 15,
+    "TVTVMH": 2,
+    "DMMH": 3,
+    "MHDMDM": 1,
+    "MHREDMDM": 1,
+    "PDL1": 72,
+    "LBREF": 2,
+    "MIMIMIMIDM": 1,
+    "DMMI": 1,
+    "JOINTC": 30,
+    "MKMKMKMKDM": 1,
+    "TVTVMK": 2,
+    "MEAL": 41,
+    "TVTVML": 2,
+    "DMML": 3,
+    "TVTVPC": 2,
+    "DMPC": 2,
+    "CTSCAN": 21,
+    "XRAY": 9,
+    "PEPEPEPEDM": 1,
+    "TVTVPE": 2,
+    "DMPE": 1,
+    "BRCA": 37,
+    "MGSTA": 46,
+    "TVTVPF": 2,
+    "DMPF": 1,
+    "HISS": 24,
+    "PE": 7,
+    "PR": 31,
+    "PRPE": 8,
+    "DMPR": 2,
+    "TVTVPR": 2,
+    "DMTVPR": 1,
+    "AIRQ": 16,
+    "AQLQS12": 13,
+    "BMQ_G": 15,
+    "CGIC": 16,
+    "LANGU": 5,
+    "MOS09": 12,
+    "MRS": 12,
+    "REVPRDI": 13,
+    "SPFQ": 8,
+    "TASTE": 10,
+    "BFI": 105,
+    "BPIDGR": 12,
+    "BPISF": 12,
+    "CTSQ": 10,
+    "FACITFS": 15,
+    "FKSI19": 16,
+    "FSIL": 15,
+    "LPPSS": 16,
+    "NSCLCSAQ": 14,
+    "BED": 10,
+    "CAT": 10,
+    "CLASI": 10,
+    "COUVAS": 15,
+    "EOEQOLA": 17,
+    "EXACT": 12,
+    "IBDQ": 12,
+    "INTEXSIC": 12,
+    "MMRC": 12,
+    "PAQLQS": 10,
+    "PGA": 16,
+    "PHQ8": 16,
+    "SNOT22": 17,
+    "LCQ": 10,
+    "HADS": 12,
+    "PRD": 16,
+    "PTGDAA": 25,
+    "PGDAA": 23,
+    "ACQ": 11,
+    "ACQIA": 11,
+    "PACQLQ": 10,
+    "ACT": 13,
+    "ASTDD": 49,
+    "BCSS": 24,
+    "BSFS": 14,
+    "CSSRSBS": 469,
+    "CSSRSLV": 245,
+    "CSTDD": 30,
+    "CSYD": 49,
+    "DIARYNP": 102,
+    "DSQ": 33,
+    "EMSCI": 83,
+    "EORTC": 190,
+    "EORTCBIL": 16,
+    "EORTCBN": 16,
+    "EORTCBR": 185,
+    "EORTCCX": 12,
+    "EORTCEN": 15,
+    "EORTCHCC": 12,
+    "EORTCHN": 12,
+    "EORTCIL": 39,
+    "EORTCLC": 12,
+    "EORTCNB": 102,
+    "EORTCOV": 12,
+    "EORTCPN": 15,
+    "EORTCPR": 15,
+    "EORTCSTO": 16,
+    "EQ_5D_3L": 47,
+    "EQ_5D_5L": 33,
+    "EQ_5D_Y": 14,
+    "FACTB": 159,
+    "FACTES": 196,
+    "FACTG": 120,
+    "FACTL": 123,
+    "FACTLEU": 188,
+    "FACTM": 216,
+    "FACTO": 168,
+    "FACTP": 170,
+    "FPSI17": 16,
+    "FPSR": 13,
+    "HAQ": 254,
+    "KCCQ": 189,
+    "LQL": 193,
+    "MDASISL": 20,
+    "NISCI": 88,
+    "PASO": 66,
+    "PEDQLF": 11,
+    "PEESS": 126,
+    "PGIC": 17,
+    "PGIS": 18,
+    "PGITT": 17,
+    "PROACT": 77,
+    "PROCTC": 551,
+    "PROMIS": 60,
+    "PST": 93,
+    "PTGA": 22,
+    "SF36V2": 73,
+    "SF36V2A": 73,
+    "SF36V2SS": 109,
+    "SGRQI": 12,
+    "SGRQ": 7,
+    "SGRQC": 10,
+    "TANNER": 14,
+    "UPSIT": 19,
+    "WPAI_SHP": 29,
+    "WPAI_GH": 57,
+    "WPAICIQ": 65,
+    "WPAICIQ2": 62,
+    "WORKABS": 39,
+    "TVTVQS": 2,
+    "DMQS": 1,
+    "CGICCGICCGICCGICCGICCGICSUPPQSSUPPQS": 1,
+    "MOS09MOS09MOS09MOS09MOS09MOS09MOS09MOS09MOS09MOS09MOS09MOS09MOS09MOS09MOS09MOS09MOS09SUPPQSSUPPQS": 1,
+    "MRSMRSMRSMRSMRSMRSSUPPQSSUPPQS": 1,
+    "SPFQSPFQSPFQSPFQSPFQSPFQSPFQSPFQSPFQSPFQSPFQSPFQSPFQSPFQSPFQSPFQSPFQSPFQSPFQSPFQSPFQSPFQSUPPQSSUPPQS": 1,
+    "TASTETASTETASTETASTETASTETASTETASTETASTETASTETASTETASTETASTETASTETASTETASTETASTETASTESUPPQSSUPPQS": 1,
+    "BFIBFIBFIBFIBFIBFIBFIBFIBFIBFIBFIBFIBFIBFIBFISUPPQSSUPPQS": 1,
+    "BPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRBPIDGRSUPPQSSUPPQS": 1,
+    "BPISFBPISFBPISFBPISFBPISFBPISFBPISFBPISFBPISFBPISFBPISFBPISFBPISFBPISFBPISFBPISFBPISFBPISFBPISFSUPPQSSUPPQS": 1,
+    "CTSQCTSQCTSQCTSQCTSQCTSQCTSQCTSQCTSQCTSQCTSQCTSQCTSQCTSQCTSQCTSQCTSQCTSQCTSQCTSQCTSQSUPPQSSUPPQS": 1,
+    "NSCLCSAQNSCLCSAQNSCLCSAQNSCLCSAQNSCLCSAQNSCLCSAQNSCLCSAQNSCLCSAQNSCLCSAQNSCLCSAQNSCLCSAQSUPPQSSUPPQS": 1,
+    "BEDBEDBEDBEDBEDBEDBEDBEDBEDBEDBEDSUPPQSSUPPQS": 1,
+    "CATCATCATCATCATCATCATCATCATCATCATCATSUPPQSSUPPQS": 1,
+    "CLASICLASICLASICLASICLASICLASICLASICLASICLASICLASICLASICLASICLASICLASICLASICLASICLASISUPPQSSUPPQS": 1,
+    "EXACTEXACTEXACTEXACTEXACTEXACTEXACTEXACTEXACTEXACTEXACTEXACTEXACTEXACTEXACTEXACTEXACTEXACTEXACTSUPPQSSUPPQS": 1,
+    "IBDQIBDQIBDQIBDQIBDQIBDQIBDQIBDQIBDQIBDQIBDQIBDQIBDQIBDQIBDQIBDQIBDQIBDQIBDQIBDQIBDQIBDQIBDQIBDQIBDQIBDQIBDQIBDQIBDQIBDQIBDQIBDQIBDQIBDQIBDQSUPPQSSUPPQS": 1,
+    "INTEXSICINTEXSICINTEXSICINTEXSICINTEXSICINTEXSICINTEXSICINTEXSICINTEXSICINTEXSICINTEXSICINTEXSICINTEXSICSUPPQSSUPPQS": 1,
+    "PAQLQSPAQLQSPAQLQSPAQLQSPAQLQSPAQLQSPAQLQSPAQLQSPAQLQSPAQLQSPAQLQSPAQLQSPAQLQSPAQLQSPAQLQSPAQLQSPAQLQSPAQLQSPAQLQSPAQLQSPAQLQSPAQLQSPAQLQSPAQLQSPAQLQSPAQLQSSUPPQSSUPPQS": 1,
+    "LCQLCQLCQLCQLCQLCQLCQLCQLCQLCQLCQLCQLCQLCQLCQLCQLCQLCQLCQLCQLCQLCQLCQSUPPQSSUPPQS": 1,
+    "HADSHADSHADSHADSHADSHADSHADSHADSHADSHADSHADSHADSHADSHADSHADSHADSHADSHADSHADSHADSSUPPQSSUPPQS": 1,
+    "ACQACQACQACQACQACQACQACQACQACQACQSUPPQSSUPPQS": 1,
+    "QS": 1,
+    "QSQSQSQSDM": 1,
+    "ACQIAACQIAACQIAACQIAACQIAACQIAACQIAACQIAACQIAACQIAACQIASUPPQSSUPPQS": 1,
+    "PACQLQPACQLQPACQLQPACQLQPACQLQPACQLQPACQLQPACQLQPACQLQPACQLQPACQLQPACQLQPACQLQPACQLQPACQLQPACQLQPACQLQSUPPQSSUPPQS": 1,
+    "ACTACTACTACTACTACTACTACTACTACTSUPPQSSUPPQS": 1,
+    "EORTCCXEORTCCXEORTCCXEORTCCXEORTCCXEORTCCXEORTCCXEORTCCXEORTCCXEORTCCXEORTCCXEORTCCXEORTCCXEORTCCXEORTCCXEORTCCXEORTCCXEORTCCXEORTCCXEORTCCXEORTCCXEORTCCXEORTCCXEORTCCXEORTCCXEORTCCXEORTCCXEORTCCXEORTCCXSUPPQSSUPPQS": 1,
+    "EORTCHCCEORTCHCCEORTCHCCEORTCHCCEORTCHCCEORTCHCCEORTCHCCEORTCHCCEORTCHCCEORTCHCCEORTCHCCEORTCHCCEORTCHCCEORTCHCCEORTCHCCEORTCHCCEORTCHCCEORTCHCCEORTCHCCEORTCHCCEORTCHCCEORTCHCCEORTCHCCSUPPQSSUPPQS": 1,
+    "EORTCHNEORTCHNEORTCHNEORTCHNEORTCHNEORTCHNEORTCHNEORTCHNEORTCHNEORTCHNEORTCHNEORTCHNEORTCHNEORTCHNEORTCHNEORTCHNEORTCHNEORTCHNEORTCHNEORTCHNEORTCHNEORTCHNEORTCHNEORTCHNEORTCHNEORTCHNEORTCHNEORTCHNEORTCHNEORTCHNEORTCHNEORTCHNEORTCHNEORTCHNEORTCHNEORTCHNEORTCHNEORTCHNEORTCHNSUPPQSSUPPQS": 1,
+    "EORTCLCEORTCLCEORTCLCEORTCLCEORTCLCEORTCLCEORTCLCEORTCLCEORTCLCEORTCLCEORTCLCEORTCLCEORTCLCEORTCLCEORTCLCEORTCLCEORTCLCEORTCLCSUPPQSSUPPQS": 1,
+    "EORTCOVEORTCOVEORTCOVEORTCOVEORTCOVEORTCOVEORTCOVEORTCOVEORTCOVEORTCOVEORTCOVEORTCOVEORTCOVEORTCOVEORTCOVEORTCOVEORTCOVEORTCOVEORTCOVEORTCOVEORTCOVEORTCOVEORTCOVEORTCOVEORTCOVEORTCOVEORTCOVEORTCOVEORTCOVEORTCOVEORTCOVEORTCOVEORTCOVSUPPQSSUPPQS": 1,
+    "EQ_5D_YEQ_5D_YEQ_5D_YEQ_5D_YEQ_5D_YEQ_5D_YEQ_5D_YEQ_5D_YEQ_5D_YEQ_5D_YSUPPQSSUPPQS": 1,
+    "PEDQLFPEDQLFPEDQLFPEDQLFPEDQLFPEDQLFPEDQLFPEDQLFPEDQLFPEDQLFPEDQLFPEDQLFPEDQLFPEDQLFPEDQLFPEDQLFPEDQLFPEDQLFPEDQLFPEDQLFPEDQLFPEDQLFPEDQLFSUPPQSSUPPQS": 1,
+    "SF36V2SF36V2SF36V2SF36V2SF36V2SF36V2SF36V2SF36V2SF36V2SF36V2SF36V2SF36V2SF36V2SF36V2SF36V2SF36V2SF36V2SF36V2SF36V2SF36V2SUPPQSSUPPQS": 1,
+    "SF36V2ASF36V2ASF36V2ASF36V2ASF36V2ASF36V2ASF36V2ASF36V2ASF36V2ASF36V2ASF36V2ASF36V2ASF36V2ASF36V2ASF36V2ASF36V2ASF36V2ASF36V2ASF36V2ASF36V2ASUPPQSSUPPQS": 1,
+    "SGRQISGRQISGRQISGRQISGRQISGRQISGRQISGRQISGRQISGRQISGRQISGRQISGRQISGRQISGRQISGRQISGRQISGRQISGRQISGRQISGRQISGRQISGRQISGRQISGRQISGRQISGRQISGRQISGRQISGRQISGRQISGRQISGRQISGRQISGRQISGRQISGRQISGRQISGRQISGRQISUPPQSSUPPQS": 1,
+    "SGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSUPPQSSUPPQS": 1,
+    "SGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSGRQSUPPQSSUPPQS": 1,
+    "SGRQCSGRQCSGRQCSGRQCSGRQCSGRQCSGRQCSGRQCSGRQCSGRQCSGRQCSGRQCSGRQCSGRQCSGRQCSGRQCSGRQCSGRQCSGRQCSGRQCSGRQCSGRQCSGRQCSGRQCSGRQCSGRQCSGRQCSGRQCSGRQCSGRQCSGRQCSGRQCSGRQCSGRQCSGRQCSGRQCSGRQCSGRQCSGRQCSGRQCSGRQCSGRQCSGRQCSGRQCSUPPQSQS": 1,
+    "CE": 2,
+    "DI": 2,
+    "EX": 2,
+    "FA": 2,
+    "FAAE": 2,
+    "FACE": 1,
+    "FAHO": 1,
+    "HO": 2,
+    "RS": 2,
+    "TR": 2,
+    "TU": 2,
+    "DR": 0,
+    "IS": 1,
+    "MI": 1,
+    "AG": 1,
+    "LC": 2,
+    "YM": 2,
+    "FAYM": 2,
+    "MENSTR": 27,
+    "PREGREP": 55,
+    "SC": 41,
+    "RPRPRPRPDM": 1,
+    "TVTVRP": 2,
+    "DMRP": 1,
+    "BDI": 19,
+    "CHPCLAS": 48,
+    "ECOG": 12,
+    "GCS": 27,
+    "HENTLA": 53,
+    "INDRESP": 27,
+    "KPSS": 13,
+    "LYMODR": 67,
+    "LYMTLA": 86,
+    "PFS2": 16,
+    "RECIST1": 111,
+    "RECIST2": 56,
+    "RESPNHL": 41,
+    "SPLDASS": 32,
+    "TDI": 19,
+    "AMLODR": 18,
+    "ALLODR": 23,
+    "MMODR": 10,
+    "CLLODR": 22,
+    "RSRSRSRSDM": 1,
+    "TVTVRS": 2,
+    "DMRS": 1,
+    "HGI": 113,
+    "TVTVSC": 2,
+    "DMSC": 1,
+    "DMSE": 2,
+    "SR": 18,
+    "SRSRSRSRDM": 1,
+    "TVTVSR": 2,
+    "SURVIVE": 16,
+    "SURVSTAT": 12,
+    "PFU": 10,
+    "TVTVSS": 2,
+    "SU_ALC": 14,
+    "SU_CAFF": 15,
+    "SU_NIC": 24,
+    "TVTVSU": 2,
+    "DMSU": 3,
+    "VISIT": 8,
+    "SVTV": 1,
+    "VISITVISITTV": 1,
+    "TVTVSV": 2,
+    "DMSV": 2,
+    "VS": 465,
+    "VSVSVSVSDM": 1,
+    "TVTVVS": 2,
+    "DMVS": 1,
+    "TVTVXC": 2,
+    "DMXC": 2,
+    "DMYB": 2,
+    "ZC": 1,
+    "TVTVZC": 2,
+    "DMZC": 1,
+    "BMBIOPAS": 33,
+    "TVTVCP": 2,
+    "DMCP": 1,
+    "DMCPCPCPCP": 1,
+    "FDGSUV": 62,
+    "LYMSTLA": 65,
+    "NEWLES": 32,
+    "PETSCAN": 42,
+    "BNLIMM": 22,
+    "TVTVTR": 2,
+    "DMTR": 1,
+    "DMTRTRTRTR": 1,
+    "TVTVTU": 2,
+    "DMTU": 1,
+    "DMTUTUTUTU": 1,
+    "RESPCHAL": 43,
+    "DMAG": 3,
+    "TVTVAG": 2,
+    "IMPOSC": 217,
+    "PULMOA": 487,
+    "TVTVRE": 2,
+    "DMRE": 1,
+    "DMRERERERE": 1,
+    "BMRES2OM": 109,
+    "BMRS2OM": 2,
+    "PATHBIO": 78,
+    "PATHBIOLBREF": 1
+  }
+}
