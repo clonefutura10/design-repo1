@@ -124,6 +124,12 @@ _FT_SIDE_INSET = 4.0
 # Horizontal stagger for overlapping annotations (different fields)
 _STAGGER_SHIFT_X = -120.0
 
+# Overlap-avoidance (SDTM-MSG v2.0 §3.1.2 pt.9 "avoid covering text" / pt.4
+# "reduce font size to accommodate"):
+_TEXT_CLEAR_GAP = 6.0     # gap left between CRF text and the annotation box
+_MIN_ANNOT_WIDTH = 70.0   # never push the box start past (page_width - this)
+_FONT_SIZE_MIN = 5.5      # smallest font when shrinking to fit the right margin
+
 # Navigation-note style
 _NOTE_FONT_SIZE = 9.0
 _NOTE_FILL = (0.93, 0.95, 0.99)
@@ -402,6 +408,26 @@ def _build_annotations_list(result: ResolutionResult) -> list[dict]:
     return annotations
 
 
+def _entry_box_width(entry: dict, fs: float) -> float:
+    """Width of an annotation box for ``entry`` at font size ``fs``.
+
+    Mirrors the per-line width computation in the draw loop so placement and
+    font-fit logic agree with what is actually rendered.
+    """
+    tw = fitz.get_text_length(entry.get("text", "") or "", fontname=_FONT_NAME, fontsize=fs)
+    ta = entry.get("test_assign", "") or ""
+    if ta:
+        tw = max(tw, fitz.get_text_length(ta, fontname=_FONT_NAME, fontsize=fs))
+    wc = entry.get("where_clause", "") or ""
+    if wc:
+        kw = getattr(ANNOTATION_STYLE, "conditional_keyword", "when")
+        tw = max(tw, fitz.get_text_length(f"{kw} {wc}", fontname=_FONT_NAME, fontsize=fs))
+    vd = entry.get("value_decode", "") or ""
+    if vd:
+        tw = max(tw, fitz.get_text_length(f"({vd})", fontname=_FONT_NAME, fontsize=fs))
+    return tw + 2 * _BOX_PADDING_X + _FT_SIDE_INSET
+
+
 def _test_assignment_for(domain: str, where_clause: str) -> str:
     """Build a ``--TEST = <Name>`` string from a TESTCD where-clause, if known.
 
@@ -676,6 +702,31 @@ class _PlacementTracker:
                 return _STAGGER_SHIFT_X
         return 0.0
 
+    def find_free_y(
+        self, page_idx: int, top: float, bottom: float, max_bottom: float
+    ) -> float:
+        """
+        Return a (possibly lowered) box-top so the box does not overlap an
+        already-placed annotation. Nudges DOWN into free whitespace rather than
+        shifting left over CRF text (SDTM-MSG v2.0 §3.1.2 pt.9). If no free slot
+        fits above ``max_bottom``, returns the original top unchanged.
+        """
+        h = bottom - top
+        cur_top = top
+        guard = 0
+        moved = True
+        while moved and guard < 300:
+            moved = False
+            guard += 1
+            for (ot, ob) in self._occupied[page_idx]:
+                if cur_top < ob and (cur_top + h) > ot:
+                    cur_top = ob + 1.5
+                    moved = True
+                    break
+        if cur_top + h > max_bottom:
+            return top
+        return cur_top
+
     def mark_occupied(self, page_idx: int, box_top: float, box_bottom: float) -> None:
         """Record the vertical span of a placed annotation."""
         self._occupied[page_idx].append((box_top, box_bottom))
@@ -942,6 +993,27 @@ def annotate_pdf(
         doms = _get_all_domains_for_page(page_results.get(pi, []), form_code=page_fc)
         page_colour_maps[pi] = _build_page_colour_map(doms)
 
+    # Precompute the CRF's own text spans for every page to be annotated (BEFORE
+    # any annotation is drawn, so we capture only the blank-CRF text). Used to
+    # place annotation boxes in whitespace to the right of the CRF text rather
+    # than over it (SDTM-MSG v2.0 §3.1.2 pt.9).
+    page_text_spans: dict[int, list[tuple[float, float, float, float]]] = {}
+    for pi in page_results:
+        spans: list[tuple[float, float, float, float]] = []
+        try:
+            for blk in doc[pi].get_text("dict").get("blocks", []):
+                if blk.get("type") != 0:
+                    continue
+                for ln in blk.get("lines", []):
+                    for sp in ln.get("spans", []):
+                        if not sp.get("text", "").strip():
+                            continue
+                        bx0, by0, bx1, by1 = sp["bbox"]
+                        spans.append((bx0, by0, bx1, by1))
+        except Exception:
+            pass
+        page_text_spans[pi] = spans
+
     domain_header_written: set[int] = set()
     see_page_written: set[str] = set()
 
@@ -1017,9 +1089,56 @@ def annotate_pdf(
         box_top_for_field = slot_y - eff_fs - _BOX_PADDING_Y
         box_bottom_for_field = box_top_for_field + max_entry_h
 
-        # ─── Check stagger for overlap with OTHER fields' annotations ───
-        x_offset = tracker.get_x_offset(page_idx, box_top_for_field, box_bottom_for_field)
-        base_x = max(36.0, ann_x + x_offset)
+        # ─── Place in the row's whitespace GAP, not over CRF text (MSG pt.9) ───
+        # Look at the blank-CRF text overlapping this box's vertical band, find
+        # the empty horizontal gaps at/after the annotation column, and choose
+        # the earliest gap wide enough for the box (keeping a consistent column
+        # per MSG pt.1a). If nothing fits, the widest gap is used and the font is
+        # reduced to fit it (MSG pt.4) so the box never spills off the page.
+        spans = page_text_spans.get(page_idx, [])
+        floor_x = ann_x
+        right_limit = pw - 8.0
+        band_intervals = sorted(
+            (sx0, sx1) for (sx0, sy0, sx1, sy1) in spans
+            if sy0 < box_bottom_for_field and sy1 > box_top_for_field and sx1 > floor_x
+        )
+        gaps: list[tuple[float, float]] = []
+        cursor = floor_x
+        for (sx0, sx1) in band_intervals:
+            if sx0 - cursor > 8.0:
+                gaps.append((cursor + _TEXT_CLEAR_GAP if cursor > floor_x else cursor, sx0 - 2.0))
+            cursor = max(cursor, sx1)
+        if right_limit - cursor > 8.0:
+            gaps.append((cursor + _TEXT_CLEAR_GAP if cursor > floor_x else cursor, right_limit))
+
+        needed_w = max(_entry_box_width(e, eff_fs) for e in ann_entries)
+
+        base_x = floor_x
+        avail_w = right_limit - floor_x
+        if gaps:
+            fitting = [g for g in gaps if (g[1] - g[0]) >= needed_w]
+            chosen = min(fitting, key=lambda g: g[0]) if fitting else max(gaps, key=lambda g: g[1] - g[0])
+            base_x = chosen[0]
+            avail_w = chosen[1] - chosen[0]
+
+        base_x = min(max(36.0, base_x), pw - _MIN_ANNOT_WIDTH)
+
+        # ─── Fit font to the chosen gap (MSG pt.4) ───
+        if needed_w > avail_w and avail_w > 24.0:
+            eff_fs = max(_FONT_SIZE_MIN, eff_fs * (avail_w / needed_w))
+            max_entry_h = max(_entry_height(e) for e in ann_entries)
+            box_top_for_field = slot_y - eff_fs - _BOX_PADDING_Y
+            box_bottom_for_field = box_top_for_field + max_entry_h
+
+        # ─── Nudge DOWN (not left) to avoid covering another annotation ───
+        free_top = tracker.find_free_y(
+            page_idx, box_top_for_field, box_bottom_for_field, ph - _PAGE_BOTTOM_MARGIN
+        )
+        if free_top != box_top_for_field:
+            shift = free_top - box_top_for_field
+            slot_y += shift
+            box_top_for_field += shift
+            box_bottom_for_field += shift
 
         # ─── Draw entries SIDE BY SIDE horizontally ───
         x_cursor = base_x
