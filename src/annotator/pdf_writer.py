@@ -89,10 +89,11 @@ _FONT_NAME_BOLD = "hebo"
 
 # SDTM-MSG v2.0 recommends a 12-point font, allowing reduction to fit the page.
 # The AZ production aCRF uses 12pt bold for domain headers and 10pt for variable
-# annotations — matched here, with an automatic reduction on dense pages.
-_FONT_SIZE = 9.5
-_FONT_SIZE_DENSE = 8.0
-_HEADER_FONT_SIZE = 11.0
+# annotations — matched here as the BASE sizes. Per-row whitespace fitting
+# (MSG §3.1.2 pt.4) reduces the font automatically only where space is tight.
+_FONT_SIZE = 10.0
+_FONT_SIZE_DENSE = 9.0
+_HEADER_FONT_SIZE = 12.0
 _LEGEND_FONT_SIZE = 8.0
 
 _BORDER_WIDTH = 0.6
