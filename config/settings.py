@@ -182,41 +182,59 @@ class ExcelConfig:
 
 
 # ─────────────────────────────────────────────────────────────────────────────
-# Annotation Style (SDTM-MSG v2.0 / AstraZeneca house style)
+# Annotation Style — STRICT SDTM-MSG v2.0 (CDISC, 2021-03-30, latest version)
 # ─────────────────────────────────────────────────────────────────────────────
 
 @dataclass(frozen=True)
 class AnnotationStyleConfig:
     """
-    Controls the *look* of the annotation text so the output matches the
-    AstraZeneca production aCRF house style described in SDTM-MSG v2.0.
+    Controls the appearance/format of annotations.
 
-    These are intentionally configurable (not hardcoded per-CRF) so the same
-    engine can emit either the AZ standalone-variable style or a generic
-    CDISC ``DOMAIN.VARIABLE`` style.
+    Defaults implement the CDISC SDTM-MSG v2.0 conventions *strictly*
+    (Section 3.1.2). The options remain configurable (not hardcoded per-CRF)
+    so an alternative house style can be selected, but out of the box every
+    output is MSG-compliant.
+
+    MSG v2.0 reference for each option is given inline.
     """
 
-    # Use standalone variable names (``VSORRES``) instead of dotted
-    # ``DOMAIN.VARIABLE`` (``VS.VSORRES``). SUPP datasets always keep their
-    # ``SUPPxx.QVAL`` dataset prefix because they are a separate dataset.
+    # MSG §3.1.2 pt.5: variable annotations are standalone capitalised names
+    # (``BRTHDTC``), never dotted ``DOMAIN.VARIABLE``.
     use_domain_prefix: bool = False
 
-    # Render domain full names in Title Case (``Vital Signs``) rather than
-    # ALL CAPS (``VITAL SIGNS``) in the page header boxes.
+    # MSG §3.1.2 pt.5: dataset labels use Title-Case inside the header, e.g.
+    # ``DM (Demographics)``.
     title_case_headers: bool = True
 
-    # Wrap where-clause values in double quotes (``VSTESTCD = "WEIGHT"``).
-    # AZ house style omits the quotes (``VSTESTCD = WEIGHT``).
+    # MSG §3.1.2 pt.14: explicit values are NOT quoted
+    # (``DSCAT = PROTOCOL MILESTONE``).
     quote_where_values: bool = False
 
-    # For Findings domains, emit a companion ``--TEST = <Name>`` annotation
-    # alongside the result variable when the test is known.
-    emit_test_assignment: bool = True
+    # MSG findings examples annotate via the TESTCD when-clause only; the
+    # ``--TEST = <Name>`` companion is an AZ extension and is OFF for strict MSG.
+    emit_test_assignment: bool = False
 
     # Render annotation boxes onto the page content stream (instead of as
     # FreeText annotations) so the colours render identically in browser PDF
-    # viewers (pdf.js / pdfium), not just Adobe Acrobat.
+    # viewers (pdf.js / pdfium), not just Adobe Acrobat. MSG pt.13 only requires
+    # that flattened text remain searchable, which content rendering preserves.
     render_as_content: bool = True
+
+    # MSG §3.1.2 pt.5 (and the v1.0→v2.0 rationale on p.9): domain headers use
+    # the ``DM (Demographics)`` parenthesis form, NOT the v1.0 ``DM = ...`` form.
+    # "paren" => MSG v2.0 ; "equals" => legacy v1.0 / AZ house style.
+    domain_header_format: str = "paren"
+
+    # MSG §3.1.2 pt.15: conditional (when/then) annotations use the keyword
+    # ``when`` — e.g. ``VSORRES when VSTESTCD = TEMP``.
+    # "when" => MSG v2.0 ; "where" => AZ house style.
+    conditional_keyword: str = "when"
+
+    # MSG §3.1.2 pt.1c/pt.5: supplemental qualifiers are annotated in
+    # equivalence to the parent domain as ``<QNAM> in SUPP<DOMAIN>``
+    # (e.g. ``AEACN01 in SUPPAE``); the SUPP dataset name itself is not annotated.
+    # "in" => MSG v2.0 ; "qval" => AZ ``SUPPxx.QVAL where QNAM = <var>`` style.
+    supp_format: str = "in"
 
 
 # ─────────────────────────────────────────────────────────────────────────────

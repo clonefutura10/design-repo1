@@ -303,15 +303,21 @@ def _build_annotations_list(result: ResolutionResult) -> list[dict]:
         return annotations
 
     use_prefix = getattr(ANNOTATION_STYLE, "use_domain_prefix", False)
+    supp_fmt = getattr(ANNOTATION_STYLE, "supp_format", "in")
     domain = result.sdtm_domain.upper()
     is_supp = result.is_supplemental
     base_domain = domain[4:] if domain.startswith("SUPP") else domain
 
     if is_supp:
-        # SUPP qualifiers always keep the SUPPxx dataset prefix (separate dataset).
         prefix = domain if domain.startswith("SUPP") else f"SUPP{domain}"
-        primary_text = f"{prefix}.QVAL"
-        primary_qnam = result.sdtm_variable
+        if supp_fmt == "qval":
+            # AZ house style: ``SUPPxx.QVAL where QNAM = <var>``.
+            primary_text = f"{prefix}.QVAL"
+            primary_qnam = result.sdtm_variable
+        else:
+            # MSG v2.0 §3.1.2 pt.5: ``<QNAM> in SUPPxx`` (e.g. AEACN01 in SUPPAE).
+            primary_text = f"{result.sdtm_variable} in {prefix}"
+            primary_qnam = ""
     elif use_prefix:
         primary_text = f"{domain}.{result.sdtm_variable}"
         primary_qnam = ""
@@ -338,8 +344,12 @@ def _build_annotations_list(result: ResolutionResult) -> list[dict]:
 
         if add_is_supp:
             pfx = add_domain if add_domain.startswith("SUPP") else f"SUPP{add_domain}"
-            add_text = f"{pfx}.QVAL"
-            add_qnam = add_variable
+            if supp_fmt == "qval":
+                add_text = f"{pfx}.QVAL"
+                add_qnam = add_variable
+            else:
+                add_text = f"{add_variable} in {pfx}"
+                add_qnam = ""
         elif use_prefix:
             add_text = f"{add_domain}.{add_variable}"
             add_qnam = ""
@@ -571,10 +581,16 @@ def _draw_domain_name_top_left(
         return
 
     colour_map = colour_map or _build_page_colour_map(domains)
+    fmt = getattr(ANNOTATION_STYLE, "domain_header_format", "paren")
     y = _DOMAIN_HEADER_Y
     for domain in domains:
         full_name = _get_domain_full_name(domain)
-        label_text = f"{domain} = {full_name}"
+        # MSG v2.0 §3.1.2 pt.5: "DM (Demographics)". "equals" is the legacy
+        # v1.0 / AZ form "DM = Demographics".
+        if fmt == "equals":
+            label_text = f"{domain} = {full_name}"
+        else:
+            label_text = f"{domain} ({full_name})"
         border_c = colour_map.get(domain) or _seq_colour(0)
 
         tw = fitz.get_text_length(label_text, fontname=_FONT_NAME_BOLD, fontsize=_HEADER_FONT_SIZE)
@@ -1050,7 +1066,9 @@ def annotate_pdf(
                 tw = max(tw, fitz.get_text_length(test_assign, fontname=font_n, fontsize=eff_fs))
             wc_text = ""
             if where_clause:
-                wc_text = f"where {where_clause}"
+                # MSG v2.0 §3.1.2 pt.15: conditional clauses use "when".
+                kw = getattr(ANNOTATION_STYLE, "conditional_keyword", "when")
+                wc_text = f"{kw} {where_clause}"
                 tw = max(tw, fitz.get_text_length(wc_text, fontname=_FONT_NAME, fontsize=eff_fs))
             if value_decode:
                 vd_text = f"({value_decode})"
