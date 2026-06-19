@@ -16,6 +16,15 @@ from src.resolution.usage_guard import check_usage, reset_usage_tracking
 import threading
 from src.resolution.rule_loader import match_domain_rules, match_form_rules, match_gating_rules
 
+
+def _quote_where_values() -> bool:
+    """Whether where-clause values should be wrapped in quotes (config-driven)."""
+    try:
+        from config.settings import ANNOTATION_STYLE
+        return ANNOTATION_STYLE.quote_where_values
+    except Exception:
+        return False
+
 logger = get_logger(__name__)
 
 
@@ -607,7 +616,10 @@ class Tier0Rules:
                     confidence=0.88,
                     resolved=True,
                     tier=ResolutionTier.TIER0_EXACT,
-                    where_clause=f'{testcd_var} = "{code}"',
+                    where_clause=(
+                        f'{testcd_var} = "{code}"'
+                        if _quote_where_values() else f"{testcd_var} = {code}"
+                    ),
                     sdtm_label="",
                     core="",
                 )

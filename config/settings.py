@@ -182,9 +182,48 @@ class ExcelConfig:
 
 
 # ─────────────────────────────────────────────────────────────────────────────
+# Annotation Style (SDTM-MSG v2.0 / AstraZeneca house style)
+# ─────────────────────────────────────────────────────────────────────────────
+
+@dataclass(frozen=True)
+class AnnotationStyleConfig:
+    """
+    Controls the *look* of the annotation text so the output matches the
+    AstraZeneca production aCRF house style described in SDTM-MSG v2.0.
+
+    These are intentionally configurable (not hardcoded per-CRF) so the same
+    engine can emit either the AZ standalone-variable style or a generic
+    CDISC ``DOMAIN.VARIABLE`` style.
+    """
+
+    # Use standalone variable names (``VSORRES``) instead of dotted
+    # ``DOMAIN.VARIABLE`` (``VS.VSORRES``). SUPP datasets always keep their
+    # ``SUPPxx.QVAL`` dataset prefix because they are a separate dataset.
+    use_domain_prefix: bool = False
+
+    # Render domain full names in Title Case (``Vital Signs``) rather than
+    # ALL CAPS (``VITAL SIGNS``) in the page header boxes.
+    title_case_headers: bool = True
+
+    # Wrap where-clause values in double quotes (``VSTESTCD = "WEIGHT"``).
+    # AZ house style omits the quotes (``VSTESTCD = WEIGHT``).
+    quote_where_values: bool = False
+
+    # For Findings domains, emit a companion ``--TEST = <Name>`` annotation
+    # alongside the result variable when the test is known.
+    emit_test_assignment: bool = True
+
+    # Render annotation boxes onto the page content stream (instead of as
+    # FreeText annotations) so the colours render identically in browser PDF
+    # viewers (pdf.js / pdfium), not just Adobe Acrobat.
+    render_as_content: bool = True
+
+
+# ─────────────────────────────────────────────────────────────────────────────
 # Singletons
 # ─────────────────────────────────────────────────────────────────────────────
 
+ANNOTATION_STYLE = AnnotationStyleConfig()
 MODELS = ModelConfig()
 LLM = LLMConfig()
 THRESHOLDS = ThresholdConfig()

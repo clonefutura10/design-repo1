@@ -28,9 +28,44 @@ import fitz  # pymupdf
 
 from src.pdf_parser.field_identifier import CRFField
 from src.resolution.models import ResolutionResult
+from src.resolution.findings_qualifier import test_name_for_code
 from src.utils.logging_config import get_logger
 
+try:
+    from config.settings import ANNOTATION_STYLE
+except Exception:  # pragma: no cover
+    class _FallbackStyle:
+        use_domain_prefix = False
+        title_case_headers = True
+        quote_where_values = False
+        emit_test_assignment = True
+        render_as_content = True
+    ANNOTATION_STYLE = _FallbackStyle()  # type: ignore
+
 logger = get_logger(__name__)
+
+
+# Acronyms that must stay upper-cased when Title-Casing domain full names.
+_HEADER_ACRONYMS = {"ECG", "PK"}
+
+
+def _title_case_name(name: str) -> str:
+    """Title-Case a domain full name while preserving known acronyms and '/'.
+
+    e.g. 'ECG TEST RESULTS' -> 'ECG Test Results',
+         'INCLUSION / EXCLUSION CRITERIA' -> 'Inclusion / Exclusion Criteria'.
+    """
+    out: list[str] = []
+    for tok in name.split(" "):
+        if not tok:
+            out.append(tok)
+        elif tok in _HEADER_ACRONYMS:
+            out.append(tok)
+        elif tok in ("/", "–", "-", "&"):
+            out.append(tok)
+        else:
+            out.append(tok[0].upper() + tok[1:].lower())
+    return " ".join(out)
 
 
 # =============================================================================
@@ -138,7 +173,10 @@ def _domain_class(domain: str) -> str:
 
 def _get_domain_full_name(domain: str) -> str:
     d = domain.upper()
-    return _DOMAIN_NAMES.get(d, d)
+    name = _DOMAIN_NAMES.get(d, d)
+    if getattr(ANNOTATION_STYLE, "title_case_headers", True) and name != d:
+        return _title_case_name(name)
+    return name
 
 
 # =============================================================================
@@ -221,16 +259,22 @@ def _build_annotations_list(result: ResolutionResult) -> list[dict]:
     if not result.sdtm_domain or not result.sdtm_variable:
         return annotations
 
+    use_prefix = getattr(ANNOTATION_STYLE, "use_domain_prefix", False)
     domain = result.sdtm_domain.upper()
     is_supp = result.is_supplemental
     base_domain = domain[4:] if domain.startswith("SUPP") else domain
 
     if is_supp:
+        # SUPP qualifiers always keep the SUPPxx dataset prefix (separate dataset).
         prefix = domain if domain.startswith("SUPP") else f"SUPP{domain}"
         primary_text = f"{prefix}.QVAL"
         primary_qnam = result.sdtm_variable
-    else:
+    elif use_prefix:
         primary_text = f"{domain}.{result.sdtm_variable}"
+        primary_qnam = ""
+    else:
+        # AZ house style: standalone variable name, no DOMAIN. prefix.
+        primary_text = result.sdtm_variable
         primary_qnam = ""
 
     if result.codelist_code and not is_supp:
@@ -253,8 +297,11 @@ def _build_annotations_list(result: ResolutionResult) -> list[dict]:
             pfx = add_domain if add_domain.startswith("SUPP") else f"SUPP{add_domain}"
             add_text = f"{pfx}.QVAL"
             add_qnam = add_variable
-        else:
+        elif use_prefix:
             add_text = f"{add_domain}.{add_variable}"
+            add_qnam = ""
+        else:
+            add_text = add_variable
             add_qnam = ""
 
         if add_codelist and not add_is_supp:
@@ -270,6 +317,8 @@ def _build_annotations_list(result: ResolutionResult) -> list[dict]:
     is_derived = getattr(result, "is_derived", False)
     value_decode = getattr(result, "value_decode", "") or ""
 
+    emit_test = getattr(ANNOTATION_STYLE, "emit_test_assignment", True)
+
     for grp_index, ((grp_domain, grp_is_supp, grp_qnam), texts) in enumerate(groups.items()):
         combined_text = " / ".join(texts)
         if grp_is_supp:
@@ -279,6 +328,13 @@ def _build_annotations_list(result: ResolutionResult) -> list[dict]:
         else:
             wc = ""
 
+        # AZ-style companion test assignment (e.g. "VSTEST = Weight") for the
+        # primary Findings result so both the test name and the result variable
+        # are documented, per SDTM-MSG Findings annotation guidance.
+        test_assign = ""
+        if emit_test and wc and not grp_is_supp:
+            test_assign = _test_assignment_for(grp_domain, wc)
+
         annotations.append({
             "text": combined_text,
             "domain": grp_domain,
@@ -287,9 +343,27 @@ def _build_annotations_list(result: ResolutionResult) -> list[dict]:
             "where_clause": wc,
             "is_derived": is_derived,
             "value_decode": value_decode if grp_index == 0 else "",
+            "test_assign": test_assign,
         })
 
     return annotations
+
+
+def _test_assignment_for(domain: str, where_clause: str) -> str:
+    """Build a ``--TEST = <Name>`` string from a TESTCD where-clause, if known.
+
+    Returns '' when the domain has no TEST variable or the code is unknown,
+    so generic/placeholder grids are never given a spurious test name.
+    """
+    import re
+    m = re.match(r"\s*([A-Z]+)TESTCD\s*=\s*\"?([A-Za-z0-9_]+)\"?", where_clause or "")
+    if not m:
+        return ""
+    dom, code = m.group(1), m.group(2)
+    name = test_name_for_code(dom, code)
+    if not name:
+        return ""
+    return f"{dom}TEST = {name}"
 
 
 # =============================================================================
@@ -333,6 +407,53 @@ _DOMAIN_HEADER_LEFT_X = 36.0
 _DOMAIN_HEADER_Y = 62.0
 
 
+def _draw_box_content(
+    page: fitz.Page,
+    rect: fitz.Rect,
+    text: str,
+    fontsize: float,
+    fontname: str,
+    text_color: tuple,
+    fill_color: tuple,
+    border_color: tuple,
+    border_width: float,
+    dashed: bool,
+) -> None:
+    """Draw a filled, bordered box + (multi-line) text on the page content
+    stream so colours render in every PDF viewer (browser and Adobe alike)."""
+    # Filled, bordered rectangle.
+    page.draw_rect(
+        rect,
+        color=border_color,
+        fill=fill_color,
+        width=border_width,
+        dashes="[2 2] 0" if dashed else None,
+        overlay=True,
+    )
+
+    # Lay out each text line from the top of the box.
+    lines = text.split("\n")
+    line_h = fontsize * _FT_LINE_FACTOR
+    x = rect.x0 + _BOX_PADDING_X
+    # Baseline of the first line (insert_text anchors at the baseline).
+    y = rect.y0 + _BOX_PADDING_Y + fontsize
+    for line in lines:
+        if y > rect.y1 + 1:
+            break
+        try:
+            page.insert_text(
+                fitz.Point(x, y),
+                line,
+                fontsize=fontsize,
+                fontname=fontname,
+                color=text_color,
+                overlay=True,
+            )
+        except Exception:
+            pass
+        y += line_h
+
+
 def _freetext(
     page: fitz.Page,
     rect: fitz.Rect,
@@ -346,9 +467,22 @@ def _freetext(
     dashed: bool = False,
 ) -> None:
     """
-    Create a real PDF FreeText annotation (selectable, extractable),
-    rendered exactly once.
+    Render an annotation box + text.
+
+    When ``ANNOTATION_STYLE.render_as_content`` is enabled (default) the box and
+    text are drawn directly onto the page content stream. FreeText annotation
+    appearance streams (fill/border colours) are frequently dropped by
+    browser-based PDF viewers (pdf.js / pdfium) even though Adobe Acrobat
+    renders them — drawing on the content stream guarantees the colours appear
+    identically in every viewer.
     """
+    if getattr(ANNOTATION_STYLE, "render_as_content", True):
+        _draw_box_content(
+            page, rect, text, fontsize, fontname,
+            text_color, fill_color, border_color, border_width, dashed,
+        )
+        return
+
     try:
         annot = page.add_freetext_annot(
             rect,
@@ -783,6 +917,8 @@ def annotate_pdf(
 
         def _entry_height(entry: dict) -> float:
             n_lines = 1
+            if entry.get("test_assign"):
+                n_lines += 1
             if entry.get("where_clause"):
                 n_lines += 1
             if entry.get("value_decode"):
@@ -809,6 +945,7 @@ def annotate_pdf(
             ann_text = entry["text"]
             where_clause = entry.get("where_clause", "") or ""
             value_decode = entry.get("value_decode", "") or ""
+            test_assign = entry.get("test_assign", "") or ""
             is_derived = entry.get("is_derived", False)
 
             if not ann_text:
@@ -834,6 +971,8 @@ def annotate_pdf(
                 use_dash = is_derived
 
             tw = fitz.get_text_length(ann_text, fontname=font_n, fontsize=eff_fs)
+            if test_assign:
+                tw = max(tw, fitz.get_text_length(test_assign, fontname=font_n, fontsize=eff_fs))
             wc_text = ""
             if where_clause:
                 wc_text = f"where {where_clause}"
@@ -857,7 +996,9 @@ def annotate_pdf(
                 box_top + this_h,
             )
 
-            full_content = ann_text
+            # Test assignment is shown first (e.g. "VSTEST = Weight") followed
+            # by the result variable, matching the AZ Findings annotation order.
+            full_content = f"{test_assign}\n{ann_text}" if test_assign else ann_text
             if where_clause:
                 full_content += f"\n{wc_text}"
             if value_decode:

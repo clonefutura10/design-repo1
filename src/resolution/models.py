@@ -72,6 +72,12 @@ class ResolutionResult:
         if not self.sdtm_domain or not self.sdtm_variable:
             return ""
 
+        try:
+            from config.settings import ANNOTATION_STYLE
+            use_prefix = ANNOTATION_STYLE.use_domain_prefix
+        except Exception:
+            use_prefix = False
+
         # Primary mapping
         if self.is_supplemental:
             domain = self.sdtm_domain.upper()
@@ -79,8 +85,10 @@ class ResolutionResult:
                 text = f"{domain}.{self.sdtm_variable}"
             else:
                 text = f"SUPP{domain}.{self.sdtm_variable}"
-        else:
+        elif use_prefix:
             text = f"{self.sdtm_domain}.{self.sdtm_variable}"
+        else:
+            text = self.sdtm_variable
 
         if self.codelist_code:
             text += f" ({self.codelist_code})"
@@ -98,8 +106,10 @@ class ResolutionResult:
                             add_text = f"{add_domain_upper}.{add_variable}"
                         else:
                             add_text = f"SUPP{add_domain_upper}.{add_variable}"
-                    else:
+                    elif use_prefix:
                         add_text = f"{add_domain}.{add_variable}"
+                    else:
+                        add_text = add_variable
                     add_codelist = mapping.get("codelist_code", "") or mapping.get("codelist", "")
                     if add_codelist:
                         add_text += f" ({add_codelist})"

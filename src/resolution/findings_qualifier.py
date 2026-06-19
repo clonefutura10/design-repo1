@@ -8,6 +8,17 @@ from __future__ import annotations
 import re
 from src.resolution.models import ResolutionResult
 
+try:
+    from config.settings import ANNOTATION_STYLE
+    _QUOTE_WHERE = ANNOTATION_STYLE.quote_where_values
+except Exception:  # pragma: no cover - config always present in practice
+    _QUOTE_WHERE = False
+
+
+def _fmt_where(var: str, code: str) -> str:
+    """Format a where-clause honouring the configured quoting style."""
+    return f'{var} = "{code}"' if _QUOTE_WHERE else f"{var} = {code}"
+
 
 _FINDINGS_QUALIFIER_VARS: dict[str, set[str]] = {
     "VS": {"VSORRES", "VSORRESU", "VSSTRESN", "VSSTRESC", "VSSTRESU",
@@ -167,6 +178,28 @@ _DOMAIN_TEST_MAP: dict[str, dict[str, str]] = {
 }
 
 
+# Human-readable test names keyed by (DOMAIN, TESTCD). Used to emit the
+# AZ-style companion ``--TEST = <Name>`` annotation. The longest synonym for a
+# code is treated as the most descriptive/canonical label.
+_TESTCD_TO_NAME: dict[tuple[str, str], str] = {}
+for _dom, _tests in _DOMAIN_TEST_MAP.items():
+    _best: dict[str, str] = {}
+    for _name, _code in _tests.items():
+        if _code in _PLACEHOLDER_TESTCODES:
+            continue
+        if _code not in _best or len(_name) > len(_best[_code]):
+            _best[_code] = _name
+    for _code, _name in _best.items():
+        _TESTCD_TO_NAME[(_dom, _code)] = _name.title()
+
+
+def test_name_for_code(domain: str, testcd: str) -> str | None:
+    """Return a Title-Case human test name for a (domain, TESTCD), if known."""
+    if not domain or not testcd:
+        return None
+    return _TESTCD_TO_NAME.get((domain.upper(), testcd.upper()))
+
+
 def _norm_label(text: str) -> str:
     for ch in ("\xa0", " ", " ", "​", "﻿"):
         text = text.replace(ch, " ")
@@ -218,7 +251,7 @@ class FindingsQualifierResolver:
         # 1. Field label IS a specific test name
         test_code = self._find_test_code(domain, label_norm)
         if test_code and test_code not in _PLACEHOLDER_TESTCODES:
-            return f'{testcd_var} = "{test_code}"'
+            return _fmt_where(testcd_var, test_code)
 
         # 2. Check context labels before (ignoring helper/instruction labels)
         for ctx in reversed(context_labels_before or []):
@@ -226,7 +259,7 @@ class FindingsQualifierResolver:
                 continue
             test_code = self._find_test_code(domain, _norm_label(ctx))
             if test_code and test_code not in _PLACEHOLDER_TESTCODES:
-                return f'{testcd_var} = "{test_code}"'
+                return _fmt_where(testcd_var, test_code)
 
         # 3. Check value options
         test_codes_from_opts: list[str] = []
@@ -238,6 +271,6 @@ class FindingsQualifierResolver:
         if len(unique_codes) > 1:
             return None  # ambiguous multi-test grid
         if unique_codes:
-            return f'{testcd_var} = "{unique_codes[0]}"'
+            return _fmt_where(testcd_var, unique_codes[0])
 
         return None
