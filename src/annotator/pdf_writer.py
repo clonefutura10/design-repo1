@@ -107,13 +107,19 @@ _PAGE_TOP_MARGIN = 52.0
 _PAGE_BOTTOM_MARGIN = 28.0
 _DENSE_THRESHOLD = 14
 
-# SDTM-MSG v2.0 (Section 3.1.2): annotation text is BLACK — bold for domain
-# headers, non-bold for variable annotations. Only the box border is coloured.
+# SDTM-MSG v2.0 (Section 3.1.2, point 7/8): the domain colour is applied as the
+# box FILL/background, with a darker frame of the same colour and BLACK text
+# (bold for domain headers, non-bold for variable annotations).
 _TEXT_COLOUR = (0.0, 0.0, 0.0)
 _ANNOT_TEXT_COLOUR = (0.0, 0.0, 0.0)
-_NOT_SUB_TEXT = (0.0, 0.0, 0.0)
+_NOT_SUB_TEXT = (0.30, 0.30, 0.30)
 _NOT_SUB_BORDER = (0.50, 0.50, 0.50)
-_NOT_SUB_FILL = None  # transparent — MSG style uses no fill
+_NOT_SUB_FILL = (0.94, 0.94, 0.94)  # light grey background for [NOT SUBMITTED]
+
+
+def _darken(colour: tuple[float, float, float], factor: float = 0.5) -> tuple[float, float, float]:
+    """Return a darker shade of ``colour`` for use as a visible box frame."""
+    return (colour[0] * factor, colour[1] * factor, colour[2] * factor)
 
 _HEADER_BAR_HEIGHT = 11.0
 
@@ -618,7 +624,7 @@ def _draw_domain_name_top_left(
             label_text = f"{domain} = {full_name}"
         else:
             label_text = f"{domain} ({full_name})"
-        border_c = colour_map.get(domain) or _seq_colour(0)
+        seq_c = colour_map.get(domain) or _seq_colour(0)
 
         tw = fitz.get_text_length(label_text, fontname=_FONT_NAME_BOLD, fontsize=_HEADER_FONT_SIZE)
         box_h = _HEADER_FONT_SIZE * _FT_LINE_FACTOR + 2 * _BOX_PADDING_Y
@@ -631,7 +637,7 @@ def _draw_domain_name_top_left(
         _freetext(
             page, box_rect, label_text,
             fontsize=_HEADER_FONT_SIZE, fontname=_FONT_NAME_BOLD,
-            text_color=_TEXT_COLOUR, fill_color=None, border_color=border_c,
+            text_color=_TEXT_COLOUR, fill_color=seq_c, border_color=_darken(seq_c),
             border_width=1.0,
         )
         y += box_h + 2.0
@@ -764,7 +770,7 @@ def _append_legend_page(doc: fitz.Document, page_width: float, page_height: floa
     rgb_labels = ["191, 255, 255", "255, 255, 150", "150, 255, 150", "255, 190, 155"]
     for i, colour in enumerate(_MSG_COLOUR_SEQUENCE):
         swatch = fitz.Rect(x, y - box_h + 1, x + box_w, y + 1)
-        page.draw_rect(swatch, color=colour, fill=None, width=1.0)
+        page.draw_rect(swatch, color=_darken(colour), fill=colour, width=1.0)
         page.insert_text(fitz.Point(x + box_w + 8, y),
                          f"{seq_labels[i]}   (RGB {rgb_labels[i]})",
                          fontsize=8.5, fontname=_FONT_NAME, color=(0.0, 0.0, 0.0))
@@ -1163,8 +1169,9 @@ def annotate_pdf(
 
             # SDTM-MSG v2.0: variable annotations are BLACK, non-bold text in a
             # box whose BORDER carries the domain's positional colour; the fill
-            # is transparent. Non-collected / derived annotations get a dashed
-            # border (MSG Section 3.1.2, point 8 + Findings guidance).
+            # filled with the domain colour and framed in a darker shade of it.
+            # Non-collected / derived annotations get a dashed frame
+            # (MSG Section 3.1.2, point 8 + Findings guidance).
             if entry["is_not_submitted"]:
                 border_c = _NOT_SUB_BORDER
                 fill_c = _NOT_SUB_FILL
@@ -1173,10 +1180,11 @@ def annotate_pdf(
                 use_dash = True
                 stats["not_submitted"] += 1
             else:
-                border_c = page_colour_maps.get(page_idx, {}).get(
+                seq_c = page_colour_maps.get(page_idx, {}).get(
                     entry["domain"]
                 ) or _seq_colour(0)
-                fill_c = None
+                fill_c = seq_c
+                border_c = _darken(seq_c)
                 text_c = _ANNOT_TEXT_COLOUR
                 font_n = _FONT_NAME
                 use_dash = is_derived
