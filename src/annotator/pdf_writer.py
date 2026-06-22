@@ -603,19 +603,30 @@ def _draw_domain_name_top_left(
     page: fitz.Page,
     domains: list[str],
     colour_map: dict[str, tuple[float, float, float]] | None = None,
+    crf_top_y: float | None = None,
 ) -> None:
     """Draw domain-name header boxes at the top-left of the page.
 
-    Per SDTM-MSG v2.0: domain annotations are BLACK BOLD text in the format
-    ``XX = Domain Label`` (AZ house style), inside a box whose BORDER carries
-    the domain's positional MSG sequence colour; the fill is transparent.
+    Per SDTM-MSG v2.0: domain headers are ``DM (Demographics)`` boxes filled
+    with the domain's positional colour and black bold text. The stack is kept
+    ABOVE the CRF's own header text (``crf_top_y``) so multi-domain stacks never
+    cover the study/form header lines (MSG §3.1.2 pt.9).
     """
     if not domains:
         return
 
     colour_map = colour_map or _build_page_colour_map(domains)
     fmt = getattr(ANNOTATION_STYLE, "domain_header_format", "paren")
+    box_h = _HEADER_FONT_SIZE * _FT_LINE_FACTOR + 2 * _BOX_PADDING_Y
+    spacing = box_h + 2.0
+
+    # Anchor the stack so its LAST box sits just above the CRF's top text.
     y = _DOMAIN_HEADER_Y
+    if crf_top_y is not None and len(domains) > 1:
+        wanted_start = (crf_top_y - 4.0) - (len(domains) - 1) * spacing
+        top_limit = box_h + 6.0  # don't run off the top of the page
+        y = max(top_limit, min(_DOMAIN_HEADER_Y, wanted_start))
+
     for domain in domains:
         full_name = _get_domain_full_name(domain)
         # MSG v2.0 §3.1.2 pt.5: "DM (Demographics)". "equals" is the legacy
@@ -627,7 +638,6 @@ def _draw_domain_name_top_left(
         seq_c = colour_map.get(domain) or _seq_colour(0)
 
         tw = fitz.get_text_length(label_text, fontname=_FONT_NAME_BOLD, fontsize=_HEADER_FONT_SIZE)
-        box_h = _HEADER_FONT_SIZE * _FT_LINE_FACTOR + 2 * _BOX_PADDING_Y
         box_rect = fitz.Rect(
             _DOMAIN_HEADER_LEFT_X - 2,
             y - box_h + 1,
@@ -1051,8 +1061,10 @@ def annotate_pdf(
                 page_results.get(page_idx, []), form_code=page_fc
             )
             if page_doms:
+                _spans = page_text_spans.get(page_idx, [])
+                _crf_top = min((s[1] for s in _spans), default=None)
                 _draw_domain_name_top_left(
-                    page, page_doms, page_colour_maps.get(page_idx)
+                    page, page_doms, page_colour_maps.get(page_idx), _crf_top
                 )
             # "Continued from page X" on subsequent pages of multi-page form
             if fid:
@@ -1209,11 +1221,17 @@ def annotate_pdf(
                 # Fallback: can't fit side-by-side, skip (rare edge case)
                 continue
 
+            # Hard clamp so the box never spills off the right edge of the page
+            # (MSG §3.1.2 pt.9). Shift left as a last resort if needed.
+            draw_x = x_cursor
+            if draw_x + box_width > pw - 6.0:
+                draw_x = max(36.0, pw - 6.0 - box_width)
+
             box_top = slot_y - eff_fs - _BOX_PADDING_Y
             box_rect = fitz.Rect(
-                x_cursor,
+                draw_x,
                 box_top,
-                x_cursor + box_width,
+                draw_x + box_width,
                 box_top + this_h,
             )
 
@@ -1232,8 +1250,8 @@ def annotate_pdf(
                 border_width=_BORDER_WIDTH, dashed=use_dash,
             )
 
-            # Advance cursor to the RIGHT for next entry
-            x_cursor += box_width + _MULTI_BOX_H_GAP
+            # Advance cursor to the RIGHT for next entry (from the drawn x)
+            x_cursor = draw_x + box_width + _MULTI_BOX_H_GAP
             any_drawn = True
             stats["total_annotations"] += 1
 
