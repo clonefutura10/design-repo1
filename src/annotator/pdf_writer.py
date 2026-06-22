@@ -832,36 +832,60 @@ def _build_toc(
     form_first_page: dict[str, tuple[int, str]],
     form_domains: dict[str, str],
     form_visits: dict[str, list[tuple[str, int]]] | None = None,
+    form_names: dict[str, str] | None = None,
+    study_id: str = "",
 ) -> list[list]:
-    """Build a dual bookmark hierarchy."""
+    """Build a bookmark hierarchy matching the reference aCRFs:
+
+        <Study Id>
+          By Domain
+            <DOMAIN>: <Domain Label>
+              <DOMAIN>: <Form Name> (<FORMCODE>)
+                <Visit>
+          By Visit
+            <Visit>
+              <DOMAIN>: <Form Name> (<FORMCODE>)
+    """
+    form_names = form_names or {}
     toc: list[list] = []
 
-    # Branch 1: By Topic
-    class_domain_forms: dict[str, dict[str, list[tuple[str, int]]]] = defaultdict(
-        lambda: defaultdict(list)
+    def _form_label(form_code: str) -> str:
+        domain = (form_domains.get(form_code) or "").upper()
+        name = form_names.get(form_code) or form_code
+        prefix = f"{domain}: " if domain else ""
+        return f"{prefix}{name} ({form_code})"
+
+    first_page_overall = min(
+        (pg for (pg, _) in form_first_page.values()), default=0
     )
+
+    # Root: study identifier.
+    root_level = 1
+    if study_id:
+        toc.append([1, study_id, first_page_overall + 1])
+        root_level = 2
+
+    # ── Branch 1: By Domain ──
+    domain_forms: dict[str, list[tuple[str, int]]] = defaultdict(list)
     for form_code, (page_idx, _) in sorted(form_first_page.items(), key=lambda x: x[1][0]):
-        domain = form_domains.get(form_code, "")
-        cls = _domain_class(domain) if domain else "Other"
-        class_domain_forms[cls][domain or "??"].append((form_code, page_idx))
+        domain = (form_domains.get(form_code) or "??").upper()
+        domain_forms[domain].append((form_code, page_idx))
 
-    topic_first_page = min(
-        (pg for forms in class_domain_forms.values() for fl in forms.values() for _, pg in fl),
-        default=0,
-    )
-    toc.append([1, "CRFs by Topic", topic_first_page + 1])
-    class_order = list(_DOMAIN_CLASSES.keys()) + ["Other"]
-    for cls in class_order:
-        if cls not in class_domain_forms:
-            continue
-        toc.append([2, cls, list(class_domain_forms[cls].values())[0][0][1] + 1])
-        for domain, forms in sorted(class_domain_forms[cls].items(), key=lambda x: x[0]):
-            full = _get_domain_full_name(domain)
-            toc.append([3, f"{domain} — {full}", forms[0][1] + 1])
-            for form_code, pg in forms:
-                toc.append([4, form_code, pg + 1])
+    toc.append([root_level, "By Domain", first_page_overall + 1])
+    for domain in sorted(domain_forms, key=lambda d: (d == "??", d)):
+        forms = domain_forms[domain]
+        full = _get_domain_full_name(domain) if domain != "??" else "Unmapped"
+        toc.append([root_level + 1, f"{domain}: {full}", forms[0][1] + 1])
+        for form_code, pg in sorted(forms, key=lambda x: x[1]):
+            toc.append([root_level + 2, _form_label(form_code), pg + 1])
+            # Visit sub-level for this form.
+            for visit, vpg in sorted(
+                (form_visits or {}).get(form_code, []), key=lambda x: x[1]
+            ):
+                if visit:
+                    toc.append([root_level + 3, visit, vpg + 1])
 
-    # Branch 2: By Visit
+    # ── Branch 2: By Visit ──
     if form_visits:
         visit_entries: dict[str, list[tuple[str, int]]] = defaultdict(list)
         visit_first_page: dict[str, int] = {}
@@ -875,16 +899,16 @@ def _build_toc(
 
         if visit_entries:
             branch_first = min(visit_first_page.values())
-            toc.append([1, "CRFs by Visit", branch_first + 1])
+            toc.append([root_level, "By Visit", branch_first + 1])
             for visit in sorted(visit_first_page, key=lambda v: visit_first_page[v]):
                 forms = sorted(visit_entries[visit], key=lambda x: x[1])
-                toc.append([2, visit, visit_first_page[visit] + 1])
+                toc.append([root_level + 1, visit, visit_first_page[visit] + 1])
                 seen_forms: set[str] = set()
                 for form_code, pg in forms:
                     if form_code in seen_forms:
                         continue
                     seen_forms.add(form_code)
-                    toc.append([3, form_code, pg + 1])
+                    toc.append([root_level + 2, _form_label(form_code), pg + 1])
 
     return toc
 
@@ -982,22 +1006,44 @@ def annotate_pdf(
             page_ann_count[pi] += 1
 
     form_first_page: dict[str, tuple[int, str]] = {}
-    form_primary_domain: dict[str, str] = {}
+    form_names: dict[str, str] = {}
+    form_domain_votes: dict[str, dict[str, int]] = defaultdict(lambda: defaultdict(int))
     form_visits: dict[str, list[tuple[str, int]]] = defaultdict(list)
     _seen_visit_form: set[tuple[str, str]] = set()
     for field, result in zip(fields, results):
         fc = field.form_code
         if fc and fc not in form_first_page and field.page_index is not None:
             form_first_page[fc] = (field.page_index, fc)
-        if fc and fc not in form_primary_domain and result.sdtm_domain:
+        if fc and fc not in form_names:
+            form_names[fc] = (getattr(field, "form_name", "") or "").strip()
+        # Vote for the form's dominant domain across ALL its fields, rather than
+        # taking the first field's domain (which mis-grouped e.g. a Lab form
+        # under AE because its first field happened to resolve to AE).
+        if fc and result.resolved and not result.is_not_submitted and result.sdtm_domain:
             d = result.sdtm_domain.upper()
-            form_primary_domain[fc] = d[4:] if d.startswith("SUPP") else d
+            d = d[4:] if d.startswith("SUPP") else d
+            if d:
+                form_domain_votes[fc][d] += 1
         visit = getattr(field, "folder", "") or ""
         if fc and visit and field.page_index is not None:
             key = (fc, visit)
             if key not in _seen_visit_form:
                 _seen_visit_form.add(key)
                 form_visits[fc].append((visit, field.page_index))
+
+    # Dominant domain per form (highest vote; the form-code mapping wins ties).
+    form_primary_domain: dict[str, str] = {}
+    for fc, votes in form_domain_votes.items():
+        mapped = ""
+        try:
+            from src.resolution.tier0_rules import _get_domain_for_form
+            mapped = (_get_domain_for_form(fc) or "").upper()
+        except Exception:
+            mapped = ""
+        if mapped and mapped in votes:
+            form_primary_domain[fc] = mapped
+        else:
+            form_primary_domain[fc] = max(votes.items(), key=lambda kv: kv[1])[0]
 
     # Precompute the positional MSG colour for every domain on every page so
     # the header box and each field annotation share a consistent colour.
@@ -1261,7 +1307,22 @@ def annotate_pdf(
     ref_page = doc[0]
     _append_legend_page(doc, ref_page.rect.width, ref_page.rect.height)
 
-    toc = _build_toc(form_first_page, form_primary_domain, dict(form_visits))
+    # Study identifier for the bookmark root (e.g. "D5180C00007").
+    study_id = ""
+    try:
+        import re as _re_id
+        for _pi in range(min(6, doc.page_count)):
+            m = _re_id.search(r"D\d{3,}[A-Z]\d{3,}", doc[_pi].get_text())
+            if m:
+                study_id = m.group(0)
+                break
+    except Exception:
+        pass
+
+    toc = _build_toc(
+        form_first_page, form_primary_domain, dict(form_visits),
+        form_names=form_names, study_id=study_id,
+    )
     toc.append([1, "Colour Legend", doc.page_count])
     if toc:
         try:
