@@ -25,6 +25,8 @@ from src.pdf_parser.header_parser import parse_page_header, PageHeader
 from src.pdf_parser.field_identifier import (
     CRFField,
     identify_fields_from_lines,
+    identify_fields_by_position,
+    page_has_field_numbers,
 )
 from src.pdf_parser.context_window import build_contextual_windows
 from src.utils.logging_config import get_logger
@@ -106,14 +108,26 @@ def extract_crf(filepath: Path | None = None) -> CRFParseResult:
         # Split into lines for field identification
         lines = raw_text.split("\n")
 
-        # Identify fields — now passing form_name for domain inference
-        page_fields = identify_fields_from_lines(
-            lines=lines,
-            page_index=page_idx,
-            form_code=header.form_code,
-            form_name=header.form_name,
-            folder=header.folder,
-        )
+        # AZ-EDC CRFs anchor every field with a standalone number; other exports
+        # (e.g. "All Blank CRF") have no numbers and use a left-margin label /
+        # right-indented value-option layout. Pick the parser per page so both
+        # formats are handled robustly.
+        if page_has_field_numbers(lines):
+            page_fields = identify_fields_from_lines(
+                lines=lines,
+                page_index=page_idx,
+                form_code=header.form_code,
+                form_name=header.form_name,
+                folder=header.folder,
+            )
+        else:
+            page_fields = identify_fields_by_position(
+                page=page,
+                page_index=page_idx,
+                form_code=header.form_code,
+                form_name=header.form_name,
+                folder=header.folder,
+            )
 
         # Build contextual windows
         page_fields = build_contextual_windows(page_fields, window_size=3)

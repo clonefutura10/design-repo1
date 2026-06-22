@@ -231,7 +231,9 @@ def run_pipeline(input_pdf_path: Path, original_filename: str = "unknown.pdf") -
     # Walk unique_fields in form order, propagating the last resolved test code
     # so that generic labels like "Result" / "Unit" pick up the correct TESTCD
     # from the preceding test-name field.
-    from src.resolution.findings_qualifier import _FINDINGS_QUALIFIER_VARS, _DOMAIN_TESTCD_VAR
+    from src.resolution.findings_qualifier import (
+        _FINDINGS_QUALIFIER_VARS, _DOMAIN_TESTCD_VAR, _fmt_where,
+    )
     from src.resolution.value_decoder import compute_value_decode
     _findings_resolver = FindingsQualifierResolver()
     _current_testcd: dict[str, str] = {}   # domain → last resolved test code
@@ -275,8 +277,9 @@ def run_pipeline(input_pdf_path: Path, original_filename: str = "unknown.pdf") -
         )
         if wc:
             res.where_clause = wc
-            # Propagate: extract the test code for subsequent fields
-            m = _re.search(r'"([A-Z0-9]+)"', wc)
+            # Propagate: extract the test code for subsequent fields. The clause
+            # may be quoted ("WEIGHT") or unquoted (MSG style) — handle both.
+            m = _re.search(r'=\s*"?([A-Za-z0-9_]+)"?\s*$', wc)
             if m:
                 _current_testcd[domain] = m.group(1)
         elif variable == _TEST_NAME_VARS.get(domain, ""):
@@ -285,11 +288,12 @@ def run_pipeline(input_pdf_path: Path, original_filename: str = "unknown.pdf") -
             # downstream Result/Unit fields from inheriting a stale code.
             _current_testcd.pop(domain, None)
         elif variable in _FINDINGS_QUALIFIER_VARS.get(domain, set()):
-            # No direct match — use last known test code for this domain
+            # No direct match — carry forward the last known test code for this
+            # domain so generic "Result"/"Unit" rows inherit the row's TESTCD.
             last_tc = _current_testcd.get(domain)
             if last_tc:
                 testcd_var = _DOMAIN_TESTCD_VAR[domain]
-                res.where_clause = f'{testcd_var} = "{last_tc}"'
+                res.where_clause = _fmt_where(testcd_var, last_tc)
 
     # Propagate where_clause back to the expanded results list
     # (unique results already have where_clause set; re-lookup by key)

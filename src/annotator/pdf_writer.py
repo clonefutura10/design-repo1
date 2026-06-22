@@ -28,21 +28,72 @@ import fitz  # pymupdf
 
 from src.pdf_parser.field_identifier import CRFField
 from src.resolution.models import ResolutionResult
+from src.resolution.findings_qualifier import test_name_for_code
 from src.utils.logging_config import get_logger
 
+try:
+    from config.settings import ANNOTATION_STYLE
+except Exception:  # pragma: no cover
+    class _FallbackStyle:
+        use_domain_prefix = False
+        title_case_headers = True
+        quote_where_values = False
+        emit_test_assignment = True
+        render_as_content = True
+    ANNOTATION_STYLE = _FallbackStyle()  # type: ignore
+
 logger = get_logger(__name__)
+
+
+# Acronyms that must stay upper-cased when Title-Casing domain full names.
+_HEADER_ACRONYMS = {"ECG", "PK"}
+
+
+def _title_case_name(name: str) -> str:
+    """Title-Case a domain full name while preserving known acronyms.
+
+    Capitalises every maximal alphabetic run (so '/'-joined words like
+    'CONCOMITANT/PRIOR' become 'Concomitant/Prior'); tokens that are known
+    acronyms (e.g. 'ECG') are kept upper-case.
+
+    e.g. 'ECG TEST RESULTS' -> 'ECG Test Results',
+         'INCLUSION/EXCLUSION CRITERIA NOT MET' -> 'Inclusion/Exclusion Criteria Not Met'.
+    """
+    import re
+
+    small_words = {"or", "of", "and", "the", "in", "to", "for", "a", "an"}
+    state = {"first": True}
+
+    def _cap(m: "re.Match") -> str:
+        w = m.group(0)
+        is_first = state["first"]
+        state["first"] = False
+        if w.upper() in _HEADER_ACRONYMS:
+            return w.upper()
+        if not is_first and w.lower() in small_words:
+            return w.lower()
+        return w[0].upper() + w[1:].lower()
+
+    return re.sub(r"[A-Za-z]+", _cap, name)
 
 
 # =============================================================================
 # Style Configuration
 # =============================================================================
 
+# Arial is the SDTM-MSG v2.0 recommended font (Section 3.1.2). PyMuPDF's base-14
+# "helv"/"hebo" are the Helvetica/Arial-equivalent substitutes and render
+# identically in every viewer.
 _FONT_NAME = "helv"
 _FONT_NAME_BOLD = "hebo"
 
-_FONT_SIZE = 7.5
-_FONT_SIZE_DENSE = 6.5
-_HEADER_FONT_SIZE = 8.0
+# SDTM-MSG v2.0 recommends a 12-point font, allowing reduction to fit the page.
+# The AZ production aCRF uses 12pt bold for domain headers and 10pt for variable
+# annotations — matched here as the BASE sizes. Per-row whitespace fitting
+# (MSG §3.1.2 pt.4) reduces the font automatically only where space is tight.
+_FONT_SIZE = 10.0
+_FONT_SIZE_DENSE = 9.0
+_HEADER_FONT_SIZE = 12.0
 _LEGEND_FONT_SIZE = 8.0
 
 _BORDER_WIDTH = 0.6
@@ -56,10 +107,13 @@ _PAGE_TOP_MARGIN = 52.0
 _PAGE_BOTTOM_MARGIN = 28.0
 _DENSE_THRESHOLD = 14
 
-_TEXT_COLOUR = (0.05, 0.05, 0.05)
-_NOT_SUB_TEXT = (0.38, 0.38, 0.38)
-_NOT_SUB_BORDER = (0.55, 0.55, 0.55)
-_NOT_SUB_FILL = (0.96, 0.96, 0.96)
+# SDTM-MSG v2.0 (Section 3.1.2): annotation text is BLACK — bold for domain
+# headers, non-bold for variable annotations. Only the box border is coloured.
+_TEXT_COLOUR = (0.0, 0.0, 0.0)
+_ANNOT_TEXT_COLOUR = (0.0, 0.0, 0.0)
+_NOT_SUB_TEXT = (0.0, 0.0, 0.0)
+_NOT_SUB_BORDER = (0.50, 0.50, 0.50)
+_NOT_SUB_FILL = None  # transparent — MSG style uses no fill
 
 _HEADER_BAR_HEIGHT = 11.0
 
@@ -70,6 +124,12 @@ _FT_SIDE_INSET = 4.0
 
 # Horizontal stagger for overlapping annotations (different fields)
 _STAGGER_SHIFT_X = -120.0
+
+# Overlap-avoidance (SDTM-MSG v2.0 §3.1.2 pt.9 "avoid covering text" / pt.4
+# "reduce font size to accommodate"):
+_TEXT_CLEAR_GAP = 6.0     # gap left between CRF text and the annotation box
+_MIN_ANNOT_WIDTH = 70.0   # never push the box start past (page_width - this)
+_FONT_SIZE_MIN = 5.5      # smallest font when shrinking to fit the right margin
 
 # Navigation-note style
 _NOTE_FONT_SIZE = 9.0
@@ -84,15 +144,15 @@ _NOTE_TEXT = (0.18, 0.28, 0.48)
 
 _DOMAIN_NAMES: dict[str, str] = {
     "AE": "ADVERSE EVENTS", "BE": "BIOSPECIMEN EVENTS",
-    "CE": "CLINICAL EVENTS", "CM": "CONCOMITANT MEDICATIONS",
+    "CE": "CLINICAL EVENTS", "CM": "CONCOMITANT/PRIOR MEDICATIONS",
     "CO": "COMMENTS", "DD": "DEATH DETAILS",
     "DM": "DEMOGRAPHICS", "DS": "DISPOSITION",
     "EC": "EXPOSURE AS COLLECTED", "EG": "ECG TEST RESULTS",
-    "EX": "EXPOSURE", "FA": "FINDINGS ABOUT",
+    "EX": "EXPOSURE", "FA": "FINDINGS ABOUT EVENTS OR INTERVENTIONS",
     "FACE": "FINDINGS ABOUT – CLINICAL EVENTS",
     "FAHO": "FINDINGS ABOUT – HEALTHCARE ENCOUNTERS",
     "HO": "HEALTHCARE ENCOUNTERS",
-    "IE": "INCLUSION / EXCLUSION CRITERIA",
+    "IE": "INCLUSION/EXCLUSION CRITERIA NOT MET",
     "IS": "IMMUNOGENICITY SPECIMEN", "LB": "LABORATORY TEST RESULTS",
     "MB": "MICROBIOLOGY SPECIMEN", "MH": "MEDICAL HISTORY",
     "PC": "PHARMACOKINETICS CONCENTRATIONS",
@@ -138,13 +198,41 @@ def _domain_class(domain: str) -> str:
 
 def _get_domain_full_name(domain: str) -> str:
     d = domain.upper()
-    return _DOMAIN_NAMES.get(d, d)
+    name = _DOMAIN_NAMES.get(d, d)
+    if getattr(ANNOTATION_STYLE, "title_case_headers", True) and name != d:
+        return _title_case_name(name)
+    return name
 
 
 # =============================================================================
-# Domain Colour Map — UNIQUE colour per domain (border_rgb, fill_rgb)
+# SDTM-MSG v2.0 Colour Sequence (Section 3.1.2, point 7)
 # =============================================================================
+#
+# The MSG specifies a fixed, colour-blindness-tested sequence to be applied to
+# the domains appearing on a page (1st domain → blue, 2nd → yellow, 3rd → green,
+# 4th → orange). Colours are positional per page, NOT a fixed colour per domain.
+# These are the exact RGB values from the MSG sample (and the AZ production
+# aCRF): the colour is used for the box BORDER; the fill is transparent.
+_MSG_COLOUR_SEQUENCE: list[tuple[float, float, float]] = [
+    (191 / 255, 255 / 255, 255 / 255),  # 1. BLUE   191,255,255
+    (255 / 255, 255 / 255, 150 / 255),  # 2. YELLOW 255,255,150
+    (150 / 255, 255 / 255, 150 / 255),  # 3. GREEN  150,255,150
+    (255 / 255, 190 / 255, 155 / 255),  # 4. ORANGE 255,190,155
+]
 
+
+def _seq_colour(index: int) -> tuple[float, float, float]:
+    """Return the MSG sequence colour for a 0-based domain position on a page."""
+    return _MSG_COLOUR_SEQUENCE[index % len(_MSG_COLOUR_SEQUENCE)]
+
+
+def _build_page_colour_map(domains: list[str]) -> dict[str, tuple[float, float, float]]:
+    """Map each domain on a page to its positional MSG sequence colour."""
+    return {dom: _seq_colour(i) for i, dom in enumerate(domains)}
+
+
+# Retained for backward compatibility / the colour legend only. The live
+# annotation colours now come from the positional MSG sequence above.
 _DOMAIN_COLOURS: dict[str, tuple[tuple[float, float, float], tuple[float, float, float]]] = {
     "AE": ((0.80, 0.05, 0.05), (1.00, 0.85, 0.85)),
     "CE": ((0.75, 0.35, 0.00), (1.00, 0.90, 0.78)),
@@ -221,16 +309,28 @@ def _build_annotations_list(result: ResolutionResult) -> list[dict]:
     if not result.sdtm_domain or not result.sdtm_variable:
         return annotations
 
+    use_prefix = getattr(ANNOTATION_STYLE, "use_domain_prefix", False)
+    supp_fmt = getattr(ANNOTATION_STYLE, "supp_format", "in")
     domain = result.sdtm_domain.upper()
     is_supp = result.is_supplemental
     base_domain = domain[4:] if domain.startswith("SUPP") else domain
 
     if is_supp:
         prefix = domain if domain.startswith("SUPP") else f"SUPP{domain}"
-        primary_text = f"{prefix}.QVAL"
-        primary_qnam = result.sdtm_variable
-    else:
+        if supp_fmt == "qval":
+            # AZ house style: ``SUPPxx.QVAL where QNAM = <var>``.
+            primary_text = f"{prefix}.QVAL"
+            primary_qnam = result.sdtm_variable
+        else:
+            # MSG v2.0 §3.1.2 pt.5: ``<QNAM> in SUPPxx`` (e.g. AEACN01 in SUPPAE).
+            primary_text = f"{result.sdtm_variable} in {prefix}"
+            primary_qnam = ""
+    elif use_prefix:
         primary_text = f"{domain}.{result.sdtm_variable}"
+        primary_qnam = ""
+    else:
+        # AZ house style: standalone variable name, no DOMAIN. prefix.
+        primary_text = result.sdtm_variable
         primary_qnam = ""
 
     if result.codelist_code and not is_supp:
@@ -251,10 +351,17 @@ def _build_annotations_list(result: ResolutionResult) -> list[dict]:
 
         if add_is_supp:
             pfx = add_domain if add_domain.startswith("SUPP") else f"SUPP{add_domain}"
-            add_text = f"{pfx}.QVAL"
-            add_qnam = add_variable
-        else:
+            if supp_fmt == "qval":
+                add_text = f"{pfx}.QVAL"
+                add_qnam = add_variable
+            else:
+                add_text = f"{add_variable} in {pfx}"
+                add_qnam = ""
+        elif use_prefix:
             add_text = f"{add_domain}.{add_variable}"
+            add_qnam = ""
+        else:
+            add_text = add_variable
             add_qnam = ""
 
         if add_codelist and not add_is_supp:
@@ -270,6 +377,8 @@ def _build_annotations_list(result: ResolutionResult) -> list[dict]:
     is_derived = getattr(result, "is_derived", False)
     value_decode = getattr(result, "value_decode", "") or ""
 
+    emit_test = getattr(ANNOTATION_STYLE, "emit_test_assignment", True)
+
     for grp_index, ((grp_domain, grp_is_supp, grp_qnam), texts) in enumerate(groups.items()):
         combined_text = " / ".join(texts)
         if grp_is_supp:
@@ -279,6 +388,13 @@ def _build_annotations_list(result: ResolutionResult) -> list[dict]:
         else:
             wc = ""
 
+        # AZ-style companion test assignment (e.g. "VSTEST = Weight") for the
+        # primary Findings result so both the test name and the result variable
+        # are documented, per SDTM-MSG Findings annotation guidance.
+        test_assign = ""
+        if emit_test and wc and not grp_is_supp:
+            test_assign = _test_assignment_for(grp_domain, wc)
+
         annotations.append({
             "text": combined_text,
             "domain": grp_domain,
@@ -287,9 +403,47 @@ def _build_annotations_list(result: ResolutionResult) -> list[dict]:
             "where_clause": wc,
             "is_derived": is_derived,
             "value_decode": value_decode if grp_index == 0 else "",
+            "test_assign": test_assign,
         })
 
     return annotations
+
+
+def _entry_box_width(entry: dict, fs: float) -> float:
+    """Width of an annotation box for ``entry`` at font size ``fs``.
+
+    Mirrors the per-line width computation in the draw loop so placement and
+    font-fit logic agree with what is actually rendered.
+    """
+    tw = fitz.get_text_length(entry.get("text", "") or "", fontname=_FONT_NAME, fontsize=fs)
+    ta = entry.get("test_assign", "") or ""
+    if ta:
+        tw = max(tw, fitz.get_text_length(ta, fontname=_FONT_NAME, fontsize=fs))
+    wc = entry.get("where_clause", "") or ""
+    if wc:
+        kw = getattr(ANNOTATION_STYLE, "conditional_keyword", "when")
+        tw = max(tw, fitz.get_text_length(f"{kw} {wc}", fontname=_FONT_NAME, fontsize=fs))
+    vd = entry.get("value_decode", "") or ""
+    if vd:
+        tw = max(tw, fitz.get_text_length(f"({vd})", fontname=_FONT_NAME, fontsize=fs))
+    return tw + 2 * _BOX_PADDING_X + _FT_SIDE_INSET
+
+
+def _test_assignment_for(domain: str, where_clause: str) -> str:
+    """Build a ``--TEST = <Name>`` string from a TESTCD where-clause, if known.
+
+    Returns '' when the domain has no TEST variable or the code is unknown,
+    so generic/placeholder grids are never given a spurious test name.
+    """
+    import re
+    m = re.match(r"\s*([A-Z]+)TESTCD\s*=\s*\"?([A-Za-z0-9_]+)\"?", where_clause or "")
+    if not m:
+        return ""
+    dom, code = m.group(1), m.group(2)
+    name = test_name_for_code(dom, code)
+    if not name:
+        return ""
+    return f"{dom}TEST = {name}"
 
 
 # =============================================================================
@@ -333,6 +487,53 @@ _DOMAIN_HEADER_LEFT_X = 36.0
 _DOMAIN_HEADER_Y = 62.0
 
 
+def _draw_box_content(
+    page: fitz.Page,
+    rect: fitz.Rect,
+    text: str,
+    fontsize: float,
+    fontname: str,
+    text_color: tuple,
+    fill_color: tuple,
+    border_color: tuple,
+    border_width: float,
+    dashed: bool,
+) -> None:
+    """Draw a filled, bordered box + (multi-line) text on the page content
+    stream so colours render in every PDF viewer (browser and Adobe alike)."""
+    # Filled, bordered rectangle.
+    page.draw_rect(
+        rect,
+        color=border_color,
+        fill=fill_color,
+        width=border_width,
+        dashes="[2 2] 0" if dashed else None,
+        overlay=True,
+    )
+
+    # Lay out each text line from the top of the box.
+    lines = text.split("\n")
+    line_h = fontsize * _FT_LINE_FACTOR
+    x = rect.x0 + _BOX_PADDING_X
+    # Baseline of the first line (insert_text anchors at the baseline).
+    y = rect.y0 + _BOX_PADDING_Y + fontsize
+    for line in lines:
+        if y > rect.y1 + 1:
+            break
+        try:
+            page.insert_text(
+                fitz.Point(x, y),
+                line,
+                fontsize=fontsize,
+                fontname=fontname,
+                color=text_color,
+                overlay=True,
+            )
+        except Exception:
+            pass
+        y += line_h
+
+
 def _freetext(
     page: fitz.Page,
     rect: fitz.Rect,
@@ -346,9 +547,22 @@ def _freetext(
     dashed: bool = False,
 ) -> None:
     """
-    Create a real PDF FreeText annotation (selectable, extractable),
-    rendered exactly once.
+    Render an annotation box + text.
+
+    When ``ANNOTATION_STYLE.render_as_content`` is enabled (default) the box and
+    text are drawn directly onto the page content stream. FreeText annotation
+    appearance streams (fill/border colours) are frequently dropped by
+    browser-based PDF viewers (pdf.js / pdfium) even though Adobe Acrobat
+    renders them — drawing on the content stream guarantees the colours appear
+    identically in every viewer.
     """
+    if getattr(ANNOTATION_STYLE, "render_as_content", True):
+        _draw_box_content(
+            page, rect, text, fontsize, fontname,
+            text_color, fill_color, border_color, border_width, dashed,
+        )
+        return
+
     try:
         annot = page.add_freetext_annot(
             rect,
@@ -379,37 +593,48 @@ def _freetext(
         pass
 
 
-def _draw_domain_name_top_left(page: fitz.Page, domains: list[str]) -> None:
-    """Draw coloured domain-name boxes at the top-left of the page."""
+def _draw_domain_name_top_left(
+    page: fitz.Page,
+    domains: list[str],
+    colour_map: dict[str, tuple[float, float, float]] | None = None,
+) -> None:
+    """Draw domain-name header boxes at the top-left of the page.
+
+    Per SDTM-MSG v2.0: domain annotations are BLACK BOLD text in the format
+    ``XX = Domain Label`` (AZ house style), inside a box whose BORDER carries
+    the domain's positional MSG sequence colour; the fill is transparent.
+    """
     if not domains:
         return
 
+    colour_map = colour_map or _build_page_colour_map(domains)
+    fmt = getattr(ANNOTATION_STYLE, "domain_header_format", "paren")
     y = _DOMAIN_HEADER_Y
     for domain in domains:
         full_name = _get_domain_full_name(domain)
-        label_text = f"{domain} = {full_name}"
-        border_c, fill_c = _get_domain_colours(domain)
-
-        bar_fill = (
-            max(0.0, fill_c[0] - 0.06),
-            max(0.0, fill_c[1] - 0.06),
-            max(0.0, fill_c[2] - 0.06),
-        )
+        # MSG v2.0 §3.1.2 pt.5: "DM (Demographics)". "equals" is the legacy
+        # v1.0 / AZ form "DM = Demographics".
+        if fmt == "equals":
+            label_text = f"{domain} = {full_name}"
+        else:
+            label_text = f"{domain} ({full_name})"
+        border_c = colour_map.get(domain) or _seq_colour(0)
 
         tw = fitz.get_text_length(label_text, fontname=_FONT_NAME_BOLD, fontsize=_HEADER_FONT_SIZE)
+        box_h = _HEADER_FONT_SIZE * _FT_LINE_FACTOR + 2 * _BOX_PADDING_Y
         box_rect = fitz.Rect(
             _DOMAIN_HEADER_LEFT_X - 2,
-            y - _HEADER_BAR_HEIGHT + 1,
-            _DOMAIN_HEADER_LEFT_X + tw + 6,
+            y - box_h + 1,
+            _DOMAIN_HEADER_LEFT_X + tw + 2 * _BOX_PADDING_X + _FT_SIDE_INSET,
             y + 2,
         )
         _freetext(
             page, box_rect, label_text,
             fontsize=_HEADER_FONT_SIZE, fontname=_FONT_NAME_BOLD,
-            text_color=border_c, fill_color=bar_fill, border_color=border_c,
-            border_width=0.9,
+            text_color=_TEXT_COLOUR, fill_color=None, border_color=border_c,
+            border_width=1.0,
         )
-        y += _HEADER_BAR_HEIGHT + 2.0
+        y += box_h + 2.0
 
 
 def _draw_note(page: fitz.Page, text: str, ann_x: float, y_top: float) -> None:
@@ -478,6 +703,31 @@ class _PlacementTracker:
                 return _STAGGER_SHIFT_X
         return 0.0
 
+    def find_free_y(
+        self, page_idx: int, top: float, bottom: float, max_bottom: float
+    ) -> float:
+        """
+        Return a (possibly lowered) box-top so the box does not overlap an
+        already-placed annotation. Nudges DOWN into free whitespace rather than
+        shifting left over CRF text (SDTM-MSG v2.0 §3.1.2 pt.9). If no free slot
+        fits above ``max_bottom``, returns the original top unchanged.
+        """
+        h = bottom - top
+        cur_top = top
+        guard = 0
+        moved = True
+        while moved and guard < 300:
+            moved = False
+            guard += 1
+            for (ot, ob) in self._occupied[page_idx]:
+                if cur_top < ob and (cur_top + h) > ot:
+                    cur_top = ob + 1.5
+                    moved = True
+                    break
+        if cur_top + h > max_bottom:
+            return top
+        return cur_top
+
     def mark_occupied(self, page_idx: int, box_top: float, box_bottom: float) -> None:
         """Record the vertical span of a placed annotation."""
         self._occupied[page_idx].append((box_top, box_bottom))
@@ -488,67 +738,76 @@ class _PlacementTracker:
 # =============================================================================
 
 def _append_legend_page(doc: fitz.Document, page_width: float, page_height: float):
-    """Append a colour-legend page at the end of the PDF."""
+    """Append an annotation-conventions legend page following SDTM-MSG v2.0."""
     page = doc.new_page(width=page_width, height=page_height)
 
-    page.insert_text(fitz.Point(36, 44), "SDTM Annotation Colour Legend",
-                     fontsize=14, fontname=_FONT_NAME_BOLD, color=(0.10, 0.10, 0.10))
+    page.insert_text(fitz.Point(36, 44), "Annotation Conventions (SDTM-MSG v2.0)",
+                     fontsize=14, fontname=_FONT_NAME_BOLD, color=(0.0, 0.0, 0.0))
     page.insert_text(fitz.Point(36, 56),
-                     "Colour coding applied to annotated CRF (aCRF) variable annotations by SDTM domain class",
+                     "Annotations follow the CDISC SDTM Metadata Submission Guidelines v2.0, Section 3.1.2.",
                      fontsize=8, fontname=_FONT_NAME, color=(0.40, 0.40, 0.40))
     page.draw_line(fitz.Point(36, 60), fitz.Point(page_width - 36, 60),
                    color=(0.70, 0.70, 0.70), width=0.5)
 
-    col_x = [38.0, 310.0]
-    row_height = 16.0
-    box_w, box_h = 18.0, 10.0
-    y, col = 76.0, 0
-    class_label_written: set[str] = set()
+    x = 38.0
+    box_w, box_h = 26.0, 12.0
+    row_height = 20.0
+    y = 84.0
 
-    for cls_name, members in _DOMAIN_CLASSES.items():
-        if cls_name not in class_label_written:
-            x = col_x[col]
-            page.insert_text(fitz.Point(x, y), cls_name.upper(),
-                             fontsize=8, fontname=_FONT_NAME_BOLD, color=(0.20, 0.20, 0.20))
-            y += row_height * 0.7
-            class_label_written.add(cls_name)
+    page.insert_text(fitz.Point(x, y), "Domain colour sequence (applied per page)",
+                     fontsize=9, fontname=_FONT_NAME_BOLD, color=(0.0, 0.0, 0.0))
+    y += row_height
+    seq_labels = [
+        "1st domain on page", "2nd domain on page",
+        "3rd domain on page", "4th domain on page",
+    ]
+    rgb_labels = ["191, 255, 255", "255, 255, 150", "150, 255, 150", "255, 190, 155"]
+    for i, colour in enumerate(_MSG_COLOUR_SEQUENCE):
+        swatch = fitz.Rect(x, y - box_h + 1, x + box_w, y + 1)
+        page.draw_rect(swatch, color=colour, fill=None, width=1.0)
+        page.insert_text(fitz.Point(x + box_w + 8, y),
+                         f"{seq_labels[i]}   (RGB {rgb_labels[i]})",
+                         fontsize=8.5, fontname=_FONT_NAME, color=(0.0, 0.0, 0.0))
+        y += row_height
 
-        for domain in members:
-            if y > page_height - 50:
-                col = min(col + 1, len(col_x) - 1)
-                y = 76.0
-            x = col_x[col]
-            border_c, fill_c = _get_domain_colours(domain)
-            swatch_rect = fitz.Rect(x, y - box_h + 1, x + box_w, y + 1)
-            page.draw_rect(swatch_rect, color=border_c, fill=fill_c, width=0.7)
-            full = _get_domain_full_name(domain)
-            page.insert_text(fitz.Point(x + box_w + 5, y), f"{domain}  —  {full}",
-                             fontsize=7.5, fontname=_FONT_NAME, color=(0.10, 0.10, 0.10))
-            y += row_height
-        y += row_height * 0.5
+    y += row_height * 0.4
+    page.insert_text(fitz.Point(x, y), "Annotation styles", fontsize=9,
+                     fontname=_FONT_NAME_BOLD, color=(0.0, 0.0, 0.0))
+    y += row_height
 
-    x = col_x[col]
-    if y > page_height - 50:
-        col = min(col + 1, len(col_x) - 1)
-        y = 76.0
-        x = col_x[col]
-    page.insert_text(fitz.Point(x, y), "OTHER", fontsize=8, fontname=_FONT_NAME_BOLD,
-                     color=(0.20, 0.20, 0.20))
-    y += row_height * 0.7
-    ns_rect = fitz.Rect(x, y - box_h + 1, x + box_w, y + 1)
-    page.draw_rect(ns_rect, color=_NOT_SUB_BORDER, fill=_NOT_SUB_FILL, width=0.7, dashes="[2 2] 0")
-    page.insert_text(fitz.Point(x + box_w + 5, y),
-                     "[NOT SUBMITTED]  —  Field not collected / derived / internal",
-                     fontsize=7.5, fontname=_FONT_NAME, color=(0.10, 0.10, 0.10))
+    # Domain header sample
+    page.insert_text(fitz.Point(x, y), "XX = Domain Label",
+                     fontsize=9, fontname=_FONT_NAME_BOLD, color=(0.0, 0.0, 0.0))
+    page.insert_text(fitz.Point(x + 160, y),
+                     "Domain annotation — black, bold (XX = Domain Label).",
+                     fontsize=8.5, fontname=_FONT_NAME, color=(0.0, 0.0, 0.0))
+    y += row_height
+    page.insert_text(fitz.Point(x, y), "VARIABLE",
+                     fontsize=9, fontname=_FONT_NAME, color=(0.0, 0.0, 0.0))
+    page.insert_text(fitz.Point(x + 160, y),
+                     "Variable annotation — black, non-bold, coloured box border.",
+                     fontsize=8.5, fontname=_FONT_NAME, color=(0.0, 0.0, 0.0))
+    y += row_height
+    ns_rect = fitz.Rect(x, y - box_h + 1, x + box_w + 40, y + 1)
+    page.draw_rect(ns_rect, color=_NOT_SUB_BORDER, fill=None, width=0.8, dashes="[2 2] 0")
+    page.insert_text(fitz.Point(x + box_w + 48, y),
+                     "Dashed border — [NOT SUBMITTED] or non-collected / derived variable.",
+                     fontsize=8.5, fontname=_FONT_NAME, color=(0.0, 0.0, 0.0))
+    y += row_height
 
-    page.draw_line(fitz.Point(36, page_height - 42), fitz.Point(page_width - 36, page_height - 42),
+    page.draw_line(fitz.Point(36, page_height - 56), fitz.Point(page_width - 36, page_height - 56),
                    color=(0.75, 0.75, 0.75), width=0.4)
-    page.insert_text(fitz.Point(36, page_height - 32),
-                     "Supplemental Qualifier variables are annotated with the SUPP-prefixed dataset name (e.g. SUPPVS.QVAL).",
-                     fontsize=7, fontname=_FONT_NAME, color=(0.45, 0.45, 0.45))
-    page.insert_text(fitz.Point(36, page_height - 22),
-                     "This aCRF was generated automatically. Verify all annotations against the study SDTM specification.",
-                     fontsize=7, fontname=_FONT_NAME, color=(0.45, 0.45, 0.45))
+    notes = [
+        "Variables and dataset codes are capitalised; multiple variables are separated by \" / \".",
+        "Supplemental Qualifier variables are annotated as SUPPxx.QVAL where QNAM = <variable>.",
+        "Findings use the \"--ORRES where --TESTCD = <value>\" format; explicit values are not quoted.",
+        "This aCRF was generated automatically — verify all annotations against the study SDTM specification.",
+    ]
+    ny = page_height - 46
+    for n in notes:
+        page.insert_text(fitz.Point(36, ny), n, fontsize=7,
+                         fontname=_FONT_NAME, color=(0.45, 0.45, 0.45))
+        ny += 10
 
 
 # =============================================================================
@@ -726,6 +985,36 @@ def annotate_pdf(
                 _seen_visit_form.add(key)
                 form_visits[fc].append((visit, field.page_index))
 
+    # Precompute the positional MSG colour for every domain on every page so
+    # the header box and each field annotation share a consistent colour.
+    page_colour_maps: dict[int, dict[str, tuple[float, float, float]]] = {}
+    for pi in page_results:
+        fc_set = page_form_codes.get(pi, set())
+        page_fc = next(iter(fc_set)) if len(fc_set) == 1 else ""
+        doms = _get_all_domains_for_page(page_results.get(pi, []), form_code=page_fc)
+        page_colour_maps[pi] = _build_page_colour_map(doms)
+
+    # Precompute the CRF's own text spans for every page to be annotated (BEFORE
+    # any annotation is drawn, so we capture only the blank-CRF text). Used to
+    # place annotation boxes in whitespace to the right of the CRF text rather
+    # than over it (SDTM-MSG v2.0 §3.1.2 pt.9).
+    page_text_spans: dict[int, list[tuple[float, float, float, float]]] = {}
+    for pi in page_results:
+        spans: list[tuple[float, float, float, float]] = []
+        try:
+            for blk in doc[pi].get_text("dict").get("blocks", []):
+                if blk.get("type") != 0:
+                    continue
+                for ln in blk.get("lines", []):
+                    for sp in ln.get("spans", []):
+                        if not sp.get("text", "").strip():
+                            continue
+                        bx0, by0, bx1, by1 = sp["bbox"]
+                        spans.append((bx0, by0, bx1, by1))
+        except Exception:
+            pass
+        page_text_spans[pi] = spans
+
     domain_header_written: set[int] = set()
     see_page_written: set[str] = set()
 
@@ -756,7 +1045,9 @@ def annotate_pdf(
                 page_results.get(page_idx, []), form_code=page_fc
             )
             if page_doms:
-                _draw_domain_name_top_left(page, page_doms)
+                _draw_domain_name_top_left(
+                    page, page_doms, page_colour_maps.get(page_idx)
+                )
             # "Continued from page X" on subsequent pages of multi-page form
             if fid:
                 prev_idx = form_continued_from.get(fid, {}).get(page_idx)
@@ -783,6 +1074,8 @@ def annotate_pdf(
 
         def _entry_height(entry: dict) -> float:
             n_lines = 1
+            if entry.get("test_assign"):
+                n_lines += 1
             if entry.get("where_clause"):
                 n_lines += 1
             if entry.get("value_decode"):
@@ -797,9 +1090,56 @@ def annotate_pdf(
         box_top_for_field = slot_y - eff_fs - _BOX_PADDING_Y
         box_bottom_for_field = box_top_for_field + max_entry_h
 
-        # ─── Check stagger for overlap with OTHER fields' annotations ───
-        x_offset = tracker.get_x_offset(page_idx, box_top_for_field, box_bottom_for_field)
-        base_x = max(36.0, ann_x + x_offset)
+        # ─── Place in the row's whitespace GAP, not over CRF text (MSG pt.9) ───
+        # Look at the blank-CRF text overlapping this box's vertical band, find
+        # the empty horizontal gaps at/after the annotation column, and choose
+        # the earliest gap wide enough for the box (keeping a consistent column
+        # per MSG pt.1a). If nothing fits, the widest gap is used and the font is
+        # reduced to fit it (MSG pt.4) so the box never spills off the page.
+        spans = page_text_spans.get(page_idx, [])
+        floor_x = ann_x
+        right_limit = pw - 8.0
+        band_intervals = sorted(
+            (sx0, sx1) for (sx0, sy0, sx1, sy1) in spans
+            if sy0 < box_bottom_for_field and sy1 > box_top_for_field and sx1 > floor_x
+        )
+        gaps: list[tuple[float, float]] = []
+        cursor = floor_x
+        for (sx0, sx1) in band_intervals:
+            if sx0 - cursor > 8.0:
+                gaps.append((cursor + _TEXT_CLEAR_GAP if cursor > floor_x else cursor, sx0 - 2.0))
+            cursor = max(cursor, sx1)
+        if right_limit - cursor > 8.0:
+            gaps.append((cursor + _TEXT_CLEAR_GAP if cursor > floor_x else cursor, right_limit))
+
+        needed_w = max(_entry_box_width(e, eff_fs) for e in ann_entries)
+
+        base_x = floor_x
+        avail_w = right_limit - floor_x
+        if gaps:
+            fitting = [g for g in gaps if (g[1] - g[0]) >= needed_w]
+            chosen = min(fitting, key=lambda g: g[0]) if fitting else max(gaps, key=lambda g: g[1] - g[0])
+            base_x = chosen[0]
+            avail_w = chosen[1] - chosen[0]
+
+        base_x = min(max(36.0, base_x), pw - _MIN_ANNOT_WIDTH)
+
+        # ─── Fit font to the chosen gap (MSG pt.4) ───
+        if needed_w > avail_w and avail_w > 24.0:
+            eff_fs = max(_FONT_SIZE_MIN, eff_fs * (avail_w / needed_w))
+            max_entry_h = max(_entry_height(e) for e in ann_entries)
+            box_top_for_field = slot_y - eff_fs - _BOX_PADDING_Y
+            box_bottom_for_field = box_top_for_field + max_entry_h
+
+        # ─── Nudge DOWN (not left) to avoid covering another annotation ───
+        free_top = tracker.find_free_y(
+            page_idx, box_top_for_field, box_bottom_for_field, ph - _PAGE_BOTTOM_MARGIN
+        )
+        if free_top != box_top_for_field:
+            shift = free_top - box_top_for_field
+            slot_y += shift
+            box_top_for_field += shift
+            box_bottom_for_field += shift
 
         # ─── Draw entries SIDE BY SIDE horizontally ───
         x_cursor = base_x
@@ -809,6 +1149,7 @@ def annotate_pdf(
             ann_text = entry["text"]
             where_clause = entry.get("where_clause", "") or ""
             value_decode = entry.get("value_decode", "") or ""
+            test_assign = entry.get("test_assign", "") or ""
             is_derived = entry.get("is_derived", False)
 
             if not ann_text:
@@ -820,6 +1161,10 @@ def annotate_pdf(
 
             this_h = _entry_height(entry)
 
+            # SDTM-MSG v2.0: variable annotations are BLACK, non-bold text in a
+            # box whose BORDER carries the domain's positional colour; the fill
+            # is transparent. Non-collected / derived annotations get a dashed
+            # border (MSG Section 3.1.2, point 8 + Findings guidance).
             if entry["is_not_submitted"]:
                 border_c = _NOT_SUB_BORDER
                 fill_c = _NOT_SUB_FILL
@@ -828,15 +1173,22 @@ def annotate_pdf(
                 use_dash = True
                 stats["not_submitted"] += 1
             else:
-                border_c, fill_c = _get_domain_colours(entry["domain"])
-                text_c = border_c
-                font_n = _FONT_NAME_BOLD
+                border_c = page_colour_maps.get(page_idx, {}).get(
+                    entry["domain"]
+                ) or _seq_colour(0)
+                fill_c = None
+                text_c = _ANNOT_TEXT_COLOUR
+                font_n = _FONT_NAME
                 use_dash = is_derived
 
             tw = fitz.get_text_length(ann_text, fontname=font_n, fontsize=eff_fs)
+            if test_assign:
+                tw = max(tw, fitz.get_text_length(test_assign, fontname=font_n, fontsize=eff_fs))
             wc_text = ""
             if where_clause:
-                wc_text = f"where {where_clause}"
+                # MSG v2.0 §3.1.2 pt.15: conditional clauses use "when".
+                kw = getattr(ANNOTATION_STYLE, "conditional_keyword", "when")
+                wc_text = f"{kw} {where_clause}"
                 tw = max(tw, fitz.get_text_length(wc_text, fontname=_FONT_NAME, fontsize=eff_fs))
             if value_decode:
                 vd_text = f"({value_decode})"
@@ -857,7 +1209,9 @@ def annotate_pdf(
                 box_top + this_h,
             )
 
-            full_content = ann_text
+            # Test assignment is shown first (e.g. "VSTEST = Weight") followed
+            # by the result variable, matching the AZ Findings annotation order.
+            full_content = f"{test_assign}\n{ann_text}" if test_assign else ann_text
             if where_clause:
                 full_content += f"\n{wc_text}"
             if value_decode:

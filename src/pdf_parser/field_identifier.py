@@ -22,6 +22,8 @@ import re
 from dataclasses import dataclass, field
 from enum import Enum, auto
 
+import fitz  # PyMuPDF
+
 
 class LineRole(Enum):
     """Role of a text line in the CRF page structure."""
@@ -474,6 +476,122 @@ def _clean_value_options(options: list[str]) -> list[str]:
             continue
         cleaned.append(opt)
     return cleaned
+
+
+# Footer / page-id fragments seen in non-AZ-EDC exports (e.g. "25 (328)").
+_RE_PAGE_ID = re.compile(r"^\d+\s*\(\d+\)\s*$")
+_RE_STUDY_FRAGMENT = re.compile(r"^D\d{3,}[A-Z]\d+", re.IGNORECASE)
+
+
+def page_has_field_numbers(lines: list[str]) -> bool:
+    """True if the page uses AZ-EDC standalone numeric field anchors."""
+    return any(_RE_FIELD_NUMBER.match(ln.strip()) for ln in lines if ln.strip())
+
+
+def identify_fields_by_position(
+    page: "fitz.Page",
+    page_index: int = 0,
+    form_code: str = "",
+    form_name: str = "",
+    folder: str = "",
+) -> list[CRFField]:
+    """
+    Position-aware field extraction for CRFs WITHOUT numeric field anchors
+    (e.g. non-AZ "All Blank CRF" / DB exports).
+
+    Such forms lay out each field as a left-margin LABEL with its checkbox
+    value options indented to the right on the same or following rows, e.g.::
+
+        Sex            Male
+                       Female
+        Ethnicity      Hispanic or Latino
+                       Not Hispanic or Latino
+
+    The discriminator is the x-coordinate: text at the left-margin column is a
+    field label (and starts a new field); text indented to the right is a value
+    option belonging to the current label. This keeps single-word labels such
+    as "Sex"/"Race" (which the word-count fallback dropped) and prevents value
+    options like "Hispanic or Latino" from being mistaken for fields.
+    """
+    page_height = page.rect.height
+    blocks = page.get_text("dict", flags=fitz.TEXT_PRESERVE_WHITESPACE, sort=True)["blocks"]
+
+    plines: list[tuple[float, float, float, float, str]] = []
+    for b in blocks:
+        if b.get("type") != 0:
+            continue
+        for ln in b.get("lines", []):
+            spans = ln.get("spans", [])
+            text = "".join(s.get("text", "") for s in spans).strip()
+            if not text:
+                continue
+            x0 = min(s["bbox"][0] for s in spans)
+            y0 = min(s["bbox"][1] for s in spans)
+            x1 = max(s["bbox"][2] for s in spans)
+            y1 = max(s["bbox"][3] for s in spans)
+            plines.append((x0, y0, x1, y1, text))
+
+    if not plines:
+        return []
+
+    plines.sort(key=lambda p: (round(p[1], 1), p[0]))
+
+    # Keep only data-content lines (drop headers, footers, page-id fragments,
+    # version lines, and anything in the top/bottom page margins).
+    top_margin = max(150.0, page_height * 0.05)
+    bottom_margin = page_height - max(28.0, page_height * 0.04)
+    content: list[tuple[float, float, float, float, str]] = []
+    for x0, y0, x1, y1, text in plines:
+        if y1 >= bottom_margin or y0 <= top_margin:
+            continue
+        if _RE_FOOTER.match(text) or _RE_PAGE_ID.match(text):
+            continue
+        if _RE_STUDY_FRAGMENT.match(text) or _RE_VERSION_LINE.match(text):
+            continue
+        if _RE_FORMAT_HINT.match(text):
+            continue
+        content.append((x0, y0, x1, y1, text))
+
+    if not content:
+        return []
+
+    # The label column is the left-most x band; anything materially indented
+    # beyond it is a value option.
+    label_x = min(c[0] for c in content)
+    x_tol = 60.0
+
+    fields: list[CRFField] = []
+    cur: CRFField | None = None
+    for x0, y0, x1, y1, text in content:
+        is_label = x0 <= label_x + x_tol
+        if is_label:
+            if cur is not None:
+                fields.append(cur)
+            cur = CRFField(
+                field_label=text,
+                x=x0, y=y1, width=x1 - x0, height=y1 - y0,
+                page_index=page_index, form_code=form_code,
+                form_name=form_name, folder=folder,
+                is_instruction=_is_instruction(text),
+            )
+        else:
+            if cur is None:
+                cur = CRFField(
+                    field_label=text,
+                    x=x0, y=y1, width=x1 - x0, height=y1 - y0,
+                    page_index=page_index, form_code=form_code,
+                    form_name=form_name, folder=folder,
+                    is_instruction=_is_instruction(text),
+                )
+            else:
+                cur.value_options.append(text)
+    if cur is not None:
+        fields.append(cur)
+
+    for f in fields:
+        f.value_options = _clean_value_options(f.value_options)
+
+    return fields
 
 
 def _extract_fields_without_numbers(
