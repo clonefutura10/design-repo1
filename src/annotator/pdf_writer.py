@@ -555,14 +555,17 @@ def _freetext(
     """
     Render an annotation box + text.
 
-    When ``ANNOTATION_STYLE.render_as_content`` is enabled (default) the box and
-    text are drawn directly onto the page content stream. FreeText annotation
-    appearance streams (fill/border colours) are frequently dropped by
-    browser-based PDF viewers (pdf.js / pdfium) even though Adobe Acrobat
-    renders them — drawing on the content stream guarantees the colours appear
-    identically in every viewer.
+    By default this creates a real PDF **FreeText annotation** with a baked
+    appearance stream (fill + border + text). This matches the reference aCRFs:
+    the boxes are selectable / movable / text-editable in Adobe Acrobat, and —
+    because the fill is baked into the appearance stream (``… re f``) rather than
+    left to the ``/IC`` interior-colour property — the colours also render in
+    browser PDF viewers (pdf.js / pdfium).
+
+    Set ``ANNOTATION_STYLE.render_as_content = True`` to instead draw the box
+    onto the page content stream (not editable); kept only as a fallback.
     """
-    if getattr(ANNOTATION_STYLE, "render_as_content", True):
+    if getattr(ANNOTATION_STYLE, "render_as_content", False):
         _draw_box_content(
             page, rect, text, fontsize, fontname,
             text_color, fill_color, border_color, border_width, dashed,
@@ -579,24 +582,19 @@ def _freetext(
             fill_color=fill_color,
             align=fitz.TEXT_ALIGN_LEFT,
         )
-    except Exception:
-        page.draw_rect(rect, color=text_color, fill=fill_color, width=border_width,
-                       dashes="[2 2] 0" if dashed else None, overlay=True)
-        page.insert_text(fitz.Point(rect.x0 + _BOX_PADDING_X, rect.y1 - _BOX_PADDING_Y),
-                         text, fontsize=fontsize, fontname=fontname, color=text_color)
-        return
-
-    try:
+        # Black border (matches the reference aCRFs' `0 G` stroke). dashed for
+        # [NOT SUBMITTED] / non-collected variables.
         if dashed:
             annot.set_border(width=border_width, dashes=[2, 2])
         else:
             annot.set_border(width=border_width)
-    except Exception:
-        pass
-    try:
         annot.update()
     except Exception:
-        pass
+        # Fallback: draw on the content stream so a box still appears.
+        _draw_box_content(
+            page, rect, text, fontsize, fontname,
+            text_color, fill_color, border_color, border_width, dashed,
+        )
 
 
 def _draw_domain_name_top_left(

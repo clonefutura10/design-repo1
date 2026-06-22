@@ -214,11 +214,12 @@ class AnnotationStyleConfig:
     # ``--TEST = <Name>`` companion is an AZ extension and is OFF for strict MSG.
     emit_test_assignment: bool = False
 
-    # Render annotation boxes onto the page content stream (instead of as
-    # FreeText annotations) so the colours render identically in browser PDF
-    # viewers (pdf.js / pdfium), not just Adobe Acrobat. MSG pt.13 only requires
-    # that flattened text remain searchable, which content rendering preserves.
-    render_as_content: bool = True
+    # Render annotations as real, editable FreeText annotations (default) — they
+    # are selectable / movable / text-editable in Adobe Acrobat like the
+    # reference aCRFs, and because the fill is baked into the appearance stream
+    # they also render in browser PDF viewers. Set True only to flatten the
+    # boxes onto the page content stream (not editable) as a fallback.
+    render_as_content: bool = False
 
     # MSG §3.1.2 pt.5 (and the v1.0→v2.0 rationale on p.9): domain headers use
     # the ``DM (Demographics)`` parenthesis form, NOT the v1.0 ``DM = ...`` form.
