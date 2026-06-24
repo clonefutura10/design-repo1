@@ -25,3 +25,4 @@ tqdm
 # ── LangChain / LangGraph (resolution pipeline) ───────────────────────────────
 langchain-core
 langgraph
+pytest  # dev: test suite
