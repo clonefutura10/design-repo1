@@ -347,6 +347,8 @@ def run_pipeline(input_pdf_path: Path, original_filename: str = "unknown.pdf") -
         "not_submitted_count": counters["tier1"],
         "duplicates_skipped": write_stats.get("duplicates_skipped", 0),
         "skipped_no_position": write_stats.get("skipped_no_position", 0),
+        "write_failures": write_stats.get("write_failures", 0),
+        "provenance": write_stats.get("provenance", {}),
         "tier0_regex": counters["tier0_regex"],
         "tier0_standards": counters["tier0_standards"],
         "tier0_az_spec": counters["tier0_az_spec"],

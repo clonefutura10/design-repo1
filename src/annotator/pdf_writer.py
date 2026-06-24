@@ -48,6 +48,11 @@ logger = get_logger(__name__)
 # Acronyms that must stay upper-cased when Title-Casing domain full names.
 _HEADER_ACRONYMS = {"ECG", "PK"}
 
+# Collects annotations that could not be drawn at all (both the FreeText and the
+# content-stream fallback failed). Reset per annotate_pdf call and surfaced in
+# stats so a silent annotation loss is impossible.
+_DRAW_FAILURES: list[tuple[str, str]] = []
+
 
 def _title_case_name(name: str) -> str:
     """Title-Case a domain full name while preserving known acronyms.
@@ -589,12 +594,16 @@ def _freetext(
         else:
             annot.set_border(width=border_width)
         annot.update()
-    except Exception:
-        # Fallback: draw on the content stream so a box still appears.
-        _draw_box_content(
-            page, rect, text, fontsize, fontname,
-            text_color, fill_color, border_color, border_width, dashed,
-        )
+    except Exception as annot_err:
+        # Fallback: draw on the content stream so a box still appears. If even
+        # that fails, record it — never let an annotation vanish silently.
+        try:
+            _draw_box_content(
+                page, rect, text, fontsize, fontname,
+                text_color, fill_color, border_color, border_width, dashed,
+            )
+        except Exception as draw_err:
+            _DRAW_FAILURES.append((text[:40], f"{annot_err} / {draw_err}"))
 
 
 def _draw_domain_name_top_left(
@@ -939,6 +948,8 @@ def annotate_pdf(
         raise ValueError(f"results ({len(results)}) and fields ({len(fields)}) length mismatch")
 
     doc = fitz.open(str(input_pdf_path))
+
+    _DRAW_FAILURES.clear()
 
     stats: dict = {
         "total_annotations": 0,
@@ -1330,7 +1341,28 @@ def annotate_pdf(
         except Exception as e:
             logger.warning(f"Could not set TOC: {e}")
 
+    # Stamp provenance into the PDF metadata so the output is reproducible /
+    # auditable (tool version, MSG standard, rule-set fingerprints, timestamp).
+    try:
+        from config.version import provenance, TOOL_VERSION, MSG_VERSION
+        prov = provenance()
+        doc.set_metadata({
+            "title": f"Annotated CRF (aCRF){' — ' + study_id if study_id else ''}",
+            "subject": f"SDTM annotations per {MSG_VERSION}",
+            "creator": f"aCRF Annotation Engine {TOOL_VERSION}",
+            "producer": f"aCRF Annotation Engine {TOOL_VERSION}",
+            "keywords": "; ".join(f"{k}={v}" for k, v in prov.items()),
+        })
+        stats["provenance"] = prov
+    except Exception as e:
+        logger.warning(f"Could not stamp PDF provenance: {e}")
+
     stats["pages_annotated"] = len(stats["pages_annotated"])
+    stats["write_failures"] = len(_DRAW_FAILURES)
+    if _DRAW_FAILURES:
+        stats["write_failure_samples"] = _DRAW_FAILURES[:10]
+        logger.error("%d annotations failed to render: %s",
+                     len(_DRAW_FAILURES), _DRAW_FAILURES[:5])
     output_pdf_path.parent.mkdir(parents=True, exist_ok=True)
     doc.save(str(output_pdf_path), deflate=True, garbage=4)
     doc.close()
