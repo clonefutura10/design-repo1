@@ -189,6 +189,47 @@ _RE_MEDICATION_CLASS = re.compile(
 _MIN_FIELD_LENGTH = 3  # Minimum characters for a valid field label
 
 
+# ─── Category 7: EDC / DB raw-export scaffolding ──────────────────────────────
+# DB/Raw CRFs print the underlying EDC database layout (variable names,
+# codelists, SAS lengths) on the page. These are EDC identifiers, NOT CRF
+# questions, and must NOT receive SDTM annotations (they are distinguished from
+# SDTM annotations by being left un-annotated). Patterns are deliberately
+# specific so natural-language CRF labels are never caught.
+
+# Numbered EDC variable definition: "30 MEDPREF7", "32 MEDGROUP $200"
+_RE_EDC_VAR_DEF = re.compile(r"^\d+\s+[A-Z][A-Z0-9_]{1,}(\s+\$\d+)?$")
+
+# SAS field-length specifier anywhere: "$200"
+_RE_SAS_LENGTH = re.compile(r"\$\d+\b")
+
+# Codelist value definition: "1 = Yes", "6 = Optional ...", "C49671 = kg/m2"
+_RE_CODELIST_DEF = re.compile(r"^(C\d{3,}|\d{1,3})\s*=\s*\S")
+
+# SAS / EDC variable name with underscore: "Z_SPCBEDB", "RFTERM_STD"
+_RE_SAS_VARNAME_US = re.compile(r"^[A-Z][A-Z0-9]*(_[A-Z0-9]+)+$")
+
+# Bare upper-case EDC variable name (no spaces, length >= 5): "CMSPID",
+# "DRGDICTV", "MEDGEN1". Natural CRF labels are Title/sentence case, so an
+# all-caps single token of this length is an EDC identifier, not a question.
+_RE_SAS_VARNAME_BARE = re.compile(r"^[A-Z][A-Z0-9]{4,}$")
+
+
+def _is_edc_scaffolding(label: str) -> bool:
+    """True for EDC/DB raw-export identifiers that must not be annotated."""
+    if _RE_EDC_VAR_DEF.match(label):
+        return True
+    if _RE_SAS_LENGTH.search(label):
+        return True
+    if _RE_CODELIST_DEF.match(label):
+        return True
+    if " " not in label:
+        if _RE_SAS_VARNAME_US.match(label):
+            return True
+        if _RE_SAS_VARNAME_BARE.match(label):
+            return True
+    return False
+
+
 # ═══════════════════════════════════════════════════════════════════════════════
 # MAIN FILTER FUNCTION
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -261,6 +302,10 @@ def is_noise_field(field: CRFField) -> bool:
 
     # ── Category 6: "Concomitant Medications for NCFBE (CM1)" page." fragments ──
     if label.endswith('" page.') or label.endswith("\" page."):
+        return True
+
+    # ── Category 7: EDC / DB raw-export scaffolding ──
+    if _is_edc_scaffolding(label):
         return True
 
     # ── Not noise — proceed to resolution ──
