@@ -24,6 +24,7 @@ from src.resolution.tier0_rules import (
 from src.resolution.tier1_not_submitted import Tier1NotSubmitted
 from src.resolution.tier3_llm import Tier3LLM
 from src.annotator.pdf_writer import annotate_pdf
+from src.annotator.mapping_export import write_mapping_csv
 from src.resolution.models import ResolutionResult, ResolutionTier
 from src.resolution.findings_qualifier import FindingsQualifierResolver
 from src.utils.logging_config import get_logger
@@ -39,6 +40,7 @@ class PipelineResult:
     output_pdf_path: Path
     input_pdf_path: Path                              # kept for re-annotation on edits
     stats: dict[str, Any]
+    mapping_csv_path: Path | None = None              # mapping-spec export
     all_results: list[ResolutionResult] = field(default_factory=list)   # unique results (display/edit)
     data_fields: list[CRFField] = field(default_factory=list)           # unique fields (display/edit)
     all_data_fields: list[CRFField] = field(default_factory=list)       # ALL occurrences (PDF annotation)
@@ -318,6 +320,17 @@ def run_pipeline(input_pdf_path: Path, original_filename: str = "unknown.pdf") -
     )
 
     # ══════════════════════════════════════════════════════════
+    # STEP 4.5: Write mapping-spec CSV (traceability + human review)
+    # One row per unique (form, field) mapping.
+    # ══════════════════════════════════════════════════════════
+    mapping_csv_path = output_dir / f"aCRF_mapping_{job_id}.csv"
+    try:
+        write_mapping_csv(_unique_results, _unique_fields, mapping_csv_path)
+    except Exception as e:
+        logger.warning("Mapping CSV export failed", job_id=job_id, error=str(e))
+        mapping_csv_path = None
+
+    # ══════════════════════════════════════════════════════════
     # Build Stats
     # ══════════════════════════════════════════════════════════
     stats = {
@@ -339,6 +352,16 @@ def run_pipeline(input_pdf_path: Path, original_filename: str = "unknown.pdf") -
         "tier0_az_spec": counters["tier0_az_spec"],
         "tier3_llm": counters["tier3_llm"],
         "llm_enabled": tier3.enabled,
+        # Review-triage counts: how many mappings warrant a human look.
+        "low_confidence_count": sum(
+            1 for r in _unique_results
+            if r.resolved and not r.is_not_submitted and 0 < r.confidence < 0.90
+        ),
+        "review_required_count": sum(
+            1 for r in _unique_results
+            if (not r.resolved and not r.is_not_submitted)
+            or (r.resolved and not r.is_not_submitted and 0 < r.confidence < 0.90)
+        ),
     }
 
     # UI display uses unique results only
@@ -351,6 +374,7 @@ def run_pipeline(input_pdf_path: Path, original_filename: str = "unknown.pdf") -
         output_pdf_path=output_pdf_path,
         input_pdf_path=input_pdf_path,
         stats=stats,
+        mapping_csv_path=mapping_csv_path,
         all_results=_unique_results,      # unique results for edits/display
         data_fields=_unique_fields,      # unique fields aligned with unique_results
         all_data_fields=data_fields,     # ALL field occurrences for PDF annotation

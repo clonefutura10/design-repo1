@@ -187,6 +187,18 @@ def main():
         print(f"         ({skipped_no_pos} skipped — no position data)")
 
     # ══════════════════════════════════════════════════════════
+    # STEP 5: Write mapping-spec CSV (traceability + human review)
+    # ══════════════════════════════════════════════════════════
+    from src.annotator.mapping_export import write_mapping_csv
+    csv_path = output_path.with_suffix(".mapping.csv")
+    try:
+        n_rows = write_mapping_csv(results, data_fields, csv_path)
+        print(f"[5/5] Mapping spec → {csv_path} ({n_rows} rows)")
+    except Exception as e:
+        logger.error(f"Mapping CSV export failed: {e}", exc_info=True)
+        csv_path = None
+
+    # ══════════════════════════════════════════════════════════
     # Summary
     # ══════════════════════════════════════════════════════════
     print(f"\n{'═' * 60}")
@@ -195,6 +207,8 @@ def main():
     print(f"  Resolution Rate: {resolution_rate}%")
     print(f"  Annotations:     {annotations_written}")
     print(f"  Output:          {output_path}")
+    if csv_path:
+        print(f"  Mapping spec:    {csv_path}")
     print(f"{'═' * 60}\n")
 
 

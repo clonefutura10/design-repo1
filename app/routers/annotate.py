@@ -96,6 +96,22 @@ async def download_pdf(job_id: str):
     )
 
 
+@router.get("/annotate/{job_id}/mapping.csv")
+async def download_mapping_csv(job_id: str):
+    """Download the field-to-SDTM mapping spec (CSV) for traceability/review."""
+    result = get_job(job_id)
+    if not result:
+        raise HTTPException(404, detail=f"Job '{job_id}' not found")
+    if not result.mapping_csv_path or not result.mapping_csv_path.exists():
+        raise HTTPException(410, detail="Mapping CSV not available or expired")
+
+    return FileResponse(
+        path=str(result.mapping_csv_path),
+        media_type="text/csv",
+        filename=f"aCRF_mapping_{job_id}.csv",
+    )
+
+
 @router.get("/annotate/{job_id}/stats", response_model=AnnotationResponse)
 async def get_stats(job_id: str):
     """Retrieve statistics for a completed job."""
