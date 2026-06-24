@@ -60,6 +60,15 @@ class CRFParseResult:
     forms_detected: dict[str, int] = field(default_factory=dict)
 
 
+def _is_spec_table_page(raw_text: str) -> bool:
+    """True if a page is an EDC database spec table (Field Name / Data Type /
+    SAS Format / SAS Label columns), as opposed to a real CRF data screen."""
+    has_field_name = "Field Name" in raw_text
+    has_data_type = "Data Type" in raw_text
+    has_sas = ("SAS Format" in raw_text) or ("SAS Label" in raw_text)
+    return has_field_name and has_data_type and has_sas
+
+
 def extract_crf(filepath: Path | None = None) -> CRFParseResult:
     """
     Parse an entire AZ Blank CRF PDF.
@@ -88,6 +97,8 @@ def extract_crf(filepath: Path | None = None) -> CRFParseResult:
     result = CRFParseResult(total_pdf_pages=total_pages)
     all_fields: list[CRFField] = []
     form_page_counts: dict[str, int] = {}
+    spec_table_pages: set[int] = set()   # EDC DB spec-table pages
+    form_screen_pages: set[int] = set()  # real CRF data-entry pages
 
     for page_idx in range(total_pages):
         page = doc[page_idx]
@@ -97,6 +108,15 @@ def extract_crf(filepath: Path | None = None) -> CRFParseResult:
 
         if not raw_text.strip():
             continue
+
+        # Classify the page: a DB/Raw spec table prints the EDC database layout
+        # ("Field Name / Data Type / SAS Format / SAS Label" columns). When the
+        # casebook ALSO contains the real CRF data screens, those spec tables are
+        # a redundant second representation and must not be annotated.
+        if _is_spec_table_page(raw_text):
+            spec_table_pages.add(page_idx)
+        elif "Form:" in raw_text:
+            form_screen_pages.add(page_idx)
 
         # Parse header
         header = parse_page_header(raw_text, pdf_page_index=page_idx)
@@ -156,6 +176,21 @@ def extract_crf(filepath: Path | None = None) -> CRFParseResult:
             )
 
     doc.close()
+
+    # ── Drop EDC spec-table pages when the casebook also has real CRF screens ──
+    # A DB/Raw CRF often contains BOTH the database specification tables and the
+    # actual data-entry screens for the same forms. The spec tables are the
+    # "EDC variable pages" — annotating them duplicates the annotations already
+    # placed on the real screens, so they are excluded here. If the document is
+    # ONLY spec tables (no screens), they are kept so something is annotated.
+    if spec_table_pages and form_screen_pages:
+        before = len(all_fields)
+        all_fields = [f for f in all_fields if f.page_index not in spec_table_pages]
+        result.pages = [p for p in result.pages if p.pdf_page_index not in spec_table_pages]
+        logger.info(
+            f"  Excluded {before - len(all_fields)} fields on "
+            f"{len(spec_table_pages)} EDC spec-table pages (real CRF screens present)"
+        )
 
     # Build unique form-field index
     unique_form_fields = _build_unique_form_fields(all_fields)
