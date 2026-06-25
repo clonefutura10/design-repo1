@@ -104,6 +104,11 @@ _LEGEND_FONT_SIZE = 8.0
 _BORDER_WIDTH = 0.6
 _BOX_PADDING_X = 3.0
 _BOX_PADDING_Y = 2.0
+# Tighter vertical geometry for dense pages: AZ CRF grids pack rows ~15pt apart,
+# so a full-height box (≈18pt) overlaps its neighbour and the overlap-avoidance
+# nudge cascades down the page. On dense pages we shrink the box height to fit
+# within the row pitch so boxes align with their field row and never collide.
+_BOX_PADDING_Y_DENSE = 1.0
 _MULTI_BOX_H_GAP = 4.0  # horizontal gap between side-by-side boxes
 
 _ANNOTATION_X_RATIO = 0.56
@@ -131,6 +136,7 @@ _HEADER_BAR_HEIGHT = 11.0
 _LINE_SPACING = 1.5
 
 _FT_LINE_FACTOR = 1.45
+_FT_LINE_FACTOR_DENSE = 1.18   # tighter line height on dense pages (see above)
 _FT_SIDE_INSET = 4.0
 
 # Horizontal stagger for overlapping annotations (different fields)
@@ -727,13 +733,19 @@ class _PlacementTracker:
         return 0.0
 
     def find_free_y(
-        self, page_idx: int, top: float, bottom: float, max_bottom: float
+        self, page_idx: int, top: float, bottom: float, max_bottom: float,
+        max_drift: float = 1e9,
     ) -> float:
         """
         Return a (possibly lowered) box-top so the box does not overlap an
         already-placed annotation. Nudges DOWN into free whitespace rather than
         shifting left over CRF text (SDTM-MSG v2.0 §3.1.2 pt.9). If no free slot
         fits above ``max_bottom``, returns the original top unchanged.
+
+        ``max_drift`` caps how far down a box may be nudged from its field row:
+        once the shift would exceed it, the box stays on its row instead of
+        cascading further down (the box geometry on dense pages already prevents
+        the overlaps that caused the cascade; this is a safety net).
         """
         h = bottom - top
         cur_top = top
@@ -747,6 +759,8 @@ class _PlacementTracker:
                     cur_top = ob + 1.5
                     moved = True
                     break
+            if cur_top - top > max_drift:
+                return top
         if cur_top + h > max_bottom:
             return top
         return cur_top
@@ -1136,7 +1150,13 @@ def annotate_pdf(
                 _draw_see_page_reference(page, first_inst, ph, ann_x)
             continue
 
-        eff_fs = _FONT_SIZE_DENSE if page_ann_count.get(page_idx, 0) > _DENSE_THRESHOLD else font_size
+        is_dense = page_ann_count.get(page_idx, 0) > _DENSE_THRESHOLD
+        eff_fs = _FONT_SIZE_DENSE if is_dense else font_size
+        # Dense pages use tighter line height + padding so a single-line box fits
+        # within the CRF's ~15pt row pitch and doesn't trigger the cascading
+        # overlap nudge that pushed annotations off their field row.
+        line_factor = _FT_LINE_FACTOR_DENSE if is_dense else _FT_LINE_FACTOR
+        pad_y = _BOX_PADDING_Y_DENSE if is_dense else _BOX_PADDING_Y
 
         ann_entries = _build_annotations_list(result)
         if not ann_entries:
@@ -1153,14 +1173,14 @@ def annotate_pdf(
                 n_lines += 1
             if entry.get("value_decode"):
                 n_lines += 1
-            return n_lines * (eff_fs * _FT_LINE_FACTOR) + 2 * _BOX_PADDING_Y
+            return n_lines * (eff_fs * line_factor) + 2 * pad_y
 
         # ─── PLACEMENT: Direct at field Y, clamped to page bounds ───
         slot_y = max(_PAGE_TOP_MARGIN + _entry_height(ann_entries[0]), min(y, ph - _PAGE_BOTTOM_MARGIN))
 
         # ─── Determine max height across all entries (for overlap tracking) ───
         max_entry_h = max(_entry_height(e) for e in ann_entries)
-        box_top_for_field = slot_y - eff_fs - _BOX_PADDING_Y
+        box_top_for_field = slot_y - eff_fs - pad_y
         box_bottom_for_field = box_top_for_field + max_entry_h
 
         # ─── Place in the row's whitespace GAP, not over CRF text (MSG pt.9) ───
@@ -1201,12 +1221,15 @@ def annotate_pdf(
         if needed_w > avail_w and avail_w > 24.0:
             eff_fs = max(_FONT_SIZE_MIN, eff_fs * (avail_w / needed_w))
             max_entry_h = max(_entry_height(e) for e in ann_entries)
-            box_top_for_field = slot_y - eff_fs - _BOX_PADDING_Y
+            box_top_for_field = slot_y - eff_fs - pad_y
             box_bottom_for_field = box_top_for_field + max_entry_h
 
         # ─── Nudge DOWN (not left) to avoid covering another annotation ───
+        # Cap the nudge to ~1.5 row pitches so a box can step over a genuine
+        # neighbour but never cascade far from its own field row.
         free_top = tracker.find_free_y(
-            page_idx, box_top_for_field, box_bottom_for_field, ph - _PAGE_BOTTOM_MARGIN
+            page_idx, box_top_for_field, box_bottom_for_field,
+            ph - _PAGE_BOTTOM_MARGIN, max_drift=max_entry_h * 1.5,
         )
         if free_top != box_top_for_field:
             shift = free_top - box_top_for_field
@@ -1282,7 +1305,7 @@ def annotate_pdf(
             if draw_x + box_width > pw - 6.0:
                 draw_x = max(36.0, pw - 6.0 - box_width)
 
-            box_top = slot_y - eff_fs - _BOX_PADDING_Y
+            box_top = slot_y - eff_fs - pad_y
             box_rect = fitz.Rect(
                 draw_x,
                 box_top,
