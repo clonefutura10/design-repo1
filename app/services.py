@@ -114,13 +114,10 @@ def run_pipeline(input_pdf_path: Path, original_filename: str = "unknown.pdf") -
     # ══════════════════════════════════════════════════════════
     # STEP 2: Filter Noise
     # ══════════════════════════════════════════════════════════
-    # Drop noise AND derived dictionary fields (MedDRA / WHO-Drug / ATC codes &
-    # dictionary text) — the latter are never annotated on an aCRF, so they are
-    # excluded entirely (not counted, not drawn) rather than marked NOT SUBMITTED.
-    data_fields = [
-        f for f in all_fields
-        if not is_noise_field(f) and not is_derived_dictionary_field(f.field_label)
-    ]
+    # Drop only true noise. MedDRA / WHO-Drug / ATC dictionary fields are KEPT
+    # so the resolver can annotate them as derived SDTM coded variables
+    # (e.g. AEDECOD / AEBODSYS) with a dashed border.
+    data_fields = [f for f in all_fields if not is_noise_field(f)]
     fields_after_filter = len(data_fields)
     noise_removed = total_fields - fields_after_filter
 

@@ -459,6 +459,60 @@ _DERIVED_FIELD_PATTERNS: list[str] = [
 ]
 
 
+# Derived / assigned SDTM variables — not directly collected. Per SDTM-MSG v2.0
+# these are annotated with a DASHED border to signal they are not collected data.
+_DERIVED_VARIABLE_EXACT: frozenset[str] = frozenset({
+    "AGE", "AGEU", "BMI", "BSA", "EPOCH", "DTHFL",
+})
+_DERIVED_VARIABLE_SUFFIX: tuple[str, ...] = (
+    "DECOD", "BODSYS", "BDSYCD", "LLT", "LLTCD", "PTCD",
+    "HLT", "HLTCD", "HLGT", "HLGTCD", "SOC", "SOCCD",
+    "CLAS", "CLASCD",
+)
+
+
+def _is_derived_variable(variable: str) -> bool:
+    """True for SDTM variables that are derived/assigned, not collected."""
+    v = (variable or "").upper()
+    if not v:
+        return False
+    if v in _DERIVED_VARIABLE_EXACT:
+        return True
+    if v.endswith(_DERIVED_VARIABLE_SUFFIX):
+        return True
+    if len(v) >= 5 and v.endswith("DY"):       # study-day variables (--STDY/--ENDY)
+        return True
+    return False
+
+
+# MedDRA / WHO-Drug / ATC dictionary fields -> the SDTM coded variable suffix.
+# These resolve to <DOMAIN><suffix> with a derived (dashed) annotation rather
+# than being dropped, so the coded terms are still traceable on the aCRF.
+_DICTIONARY_FIELD_SUFFIX: list[tuple[str, str]] = [
+    ("meddra lowest level term name", "LLT"),
+    ("meddra lowest level term code", "LLTCD"),
+    ("meddra preferred term name", "DECOD"),
+    ("meddra preferred term code", "PTCD"),
+    ("meddra high level group term name", "HLGT"),
+    ("meddra high level group term code", "HLGTCD"),
+    ("meddra high level term name", "HLT"),
+    ("meddra high level term code", "HLTCD"),
+    ("meddra system organ class abbreviation", "SOC"),
+    ("meddra system organ class name", "BODSYS"),
+    ("meddra system organ class code", "SOCCD"),
+    ("medication dictionary text", "DECOD"),
+    ("preferred name", "DECOD"),
+    ("active ingredient", "DECOD"),
+    ("atc dictionary text", "CLAS"),
+    ("atc code", "CLASCD"),
+]
+
+# Dictionary metadata fields that are genuinely not submitted.
+_DICTIONARY_VERSION_PATTERNS: tuple[str, ...] = (
+    "meddra version", "drug dictionary version", "pref. grouping term",
+)
+
+
 def is_derived_dictionary_field(label: str) -> bool:
     """
     Detect MedDRA/WHO-Drug/ATC dictionary-coded fields that are DERIVED.
@@ -481,9 +535,10 @@ class Tier0Rules:
         if not form_code or not field_label:
             return None
 
-        # Skip derived dictionary fields entirely (no annotation)
+        # Dictionary-coded (MedDRA / WHO-Drug / ATC) fields: annotate them as
+        # the derived SDTM coded variable (dashed border) instead of dropping.
         if is_derived_dictionary_field(field_label):
-            return None
+            return self._resolve_dictionary_field(form_code, field_label, form_name)
 
         norm_label = normalize_label_for_lookup(field_label)
         form_upper = form_code.upper().strip()
@@ -860,9 +915,52 @@ class Tier0Rules:
             codelist_code=chosen.get("codelist_code", "") or "",
         )
 
+    def _resolve_dictionary_field(
+        self, form_code: str, field_label: str, form_name: str = ""
+    ) -> ResolutionResult | None:
+        """Map a MedDRA/WHO-Drug/ATC dictionary field to its derived SDTM coded
+        variable (dashed border), or NOT SUBMITTED for version metadata."""
+        label_lower = field_label.strip().lower()
+
+        # Dictionary version/metadata -> NOT SUBMITTED.
+        if any(label_lower.startswith(p) for p in _DICTIONARY_VERSION_PATTERNS):
+            return ResolutionResult(
+                form_code=form_code, field_label=field_label,
+                resolved=True, tier=ResolutionTier.TIER0_EXACT, confidence=0.90,
+                is_not_submitted=True, not_submitted_reason="dictionary version metadata",
+            )
+
+        suffix = None
+        for pattern, suf in _DICTIONARY_FIELD_SUFFIX:
+            if label_lower.startswith(pattern):
+                suffix = suf
+                break
+        if not suffix:
+            return None
+
+        # Determine the parent domain for the coded variable.
+        domain = _get_domain_for_form(form_code)
+        if not domain:
+            inf = infer_domains_cached(form_code, form_name)
+            domain = inf.domains[0].upper() if (inf and inf.domains and inf.confidence >= 0.70) else ""
+        if not domain or domain.startswith("SUPP"):
+            return None
+
+        return ResolutionResult(
+            form_code=form_code, field_label=field_label,
+            sdtm_domain=domain, sdtm_variable=f"{domain}{suffix}",
+            resolved=True, tier=ResolutionTier.TIER0_EXACT, confidence=0.90,
+            is_derived=True,                  # dashed border — derived, not collected
+        )
+
     def _enrich_with_multi_mappings(self, result: ResolutionResult) -> ResolutionResult:
         if not result.resolved or result.is_not_submitted:
             return result
+
+        # Mark derived/assigned variables (AGE, AGEU, --DECOD, --DY, ...) so the
+        # PDF writer draws them with a dashed border (SDTM-MSG v2.0).
+        if not result.is_derived and _is_derived_variable(result.sdtm_variable):
+            result.is_derived = True
 
         key = (result.sdtm_domain, result.sdtm_variable)
         if key not in _MULTI_MAP_TABLE:
