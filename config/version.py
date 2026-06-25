@@ -32,7 +32,7 @@ def _file_fingerprint(path: Path) -> str:
 
 def _json_version(path: Path) -> str:
     try:
-        return str(json.loads(path.read_text()).get("version", ""))
+        return str(json.loads(path.read_text(encoding="utf-8")).get("version", ""))
     except Exception:
         return ""
 

@@ -38,7 +38,7 @@ def _norm_dom(d: str) -> str:
 
 def load_truth(limit: int | None) -> list[tuple[str, str, dict]]:
     """Return (form_or_domain_prefix, label, truth_mapping) triples."""
-    data = json.loads((CACHE_DIR / "learned_mappings.json").read_text())
+    data = json.loads((CACHE_DIR / "learned_mappings.json").read_text(encoding="utf-8"))
     triples: list[tuple[str, str, dict]] = []
     for key, val in data.get("mappings", {}).items():
         prefix, _, label = key.partition("|")

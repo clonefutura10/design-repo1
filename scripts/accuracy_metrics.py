@@ -295,7 +295,7 @@ def main():
     # Save JSON
     # Convert sets to lists for JSON serialization
     OUTPUT_METRICS.parent.mkdir(parents=True, exist_ok=True)
-    with open(OUTPUT_METRICS, "w") as f:
+    with open(OUTPUT_METRICS, "w", encoding="utf-8") as f:
         json.dump(report, f, indent=2, default=list)
     print(f"\n  Metrics saved: {OUTPUT_METRICS}")
 
