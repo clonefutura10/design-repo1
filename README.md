@@ -76,6 +76,53 @@ blank_crf.pdf
 
 ---
 
+## Testing & Accuracy
+
+### Running the test suite
+```bash
+python -m pytest          # 77 tests, ~40s
+```
+
+The suite locks down the annotation rules so a future change can't silently
+break SDTM-MSG v2.0 compliance. Each file guards a specific behaviour:
+
+| Test file | What it verifies | Why it matters |
+|---|---|---|
+| `test_noise_filter.py` | EDC scaffolding (SAS var defs, codelist defs, length specs) is dropped | Keeps machine plumbing out of the aCRF |
+| `test_findings_qualifier.py` | `--TESTCD` assignment and **unquoted** `when` where-clauses | MSG findings convention |
+| `test_annotation_format.py` | 4-colour page sequence, `DM (Demographics)` headers, `X in SUPPxx`, TOC hierarchy | MSG §3.1.2 visual rules |
+| `test_extractor.py` | Parser routing — numbered vs. position vs. spec-table CRFs; spec pages skipped when real screens exist | Robust DB/Raw CRF support |
+| `test_mapping_export.py` | 16-column traceability CSV + `review_flag` | Audit / reviewer handoff |
+| `test_provenance.py` | Tool/MSG version + rule fingerprints stamped into PDF metadata; write failures surfaced | Reproducibility |
+| `test_derived_and_meddra.py` | AGE/AGEU/`--DECOD` flagged derived (dashed border); MedDRA/WHO-Drug fields re-annotated as coded variables | MSG derived-variable convention |
+| `test_regression.py` | End-to-end golden invariants | Catches cross-cutting regressions |
+
+### Accuracy harness
+```bash
+python scripts/accuracy_report.py                  # generalisation (learned table OFF)
+python scripts/accuracy_report.py --with-learned   # reproduction (learned table ON)
+```
+
+Scores the deterministic resolver against curated ground truth in
+`cache/learned_mappings.json` (extracted from human-annotated reference aCRFs).
+
+| Mode | Exact (domain+variable) | What it means |
+|---|---|---|
+| Reproduction (`--with-learned`) | **96.0%** | Operational accuracy on previously-seen studies — what the tool produces in practice |
+| Generalisation (default) | **8.2%** | Pure rule/standard/spec coverage on *unseen* labels, with memorised answers disabled |
+
+Measured over **5,073** ground-truth fields. The large gap is expected and
+honest: the tool's day-to-day accuracy leans on the learned table built from
+reference aCRFs. The generalisation number is the stable regression metric —
+re-run it after any rule change to see whether the deterministic engine moved.
+
+### Where these are useful
+- **CI gate** — run `pytest` on every PR so annotation-rule regressions fail the build.
+- **Pre-submission QA** — the mapping CSV's `review_flag` (`UNRESOLVED` / `LOW_CONFIDENCE`, confidence < 0.90) gives reviewers a worklist instead of eyeballing the whole PDF.
+- **Regression after onboarding a new study** — add its mappings, re-run the accuracy harness, and confirm the generalisation number didn't drop.
+
+---
+
 ## API Endpoints
 
 | Method | Path | Description |
@@ -84,6 +131,7 @@ blank_crf.pdf
 | `GET` | `/api/v1/annotate/{id}/download` | Download annotated PDF |
 | `GET` | `/api/v1/annotate/{id}/stats` | Job statistics |
 | `GET` | `/api/v1/annotate/{id}/details` | Full field mapping table |
+| `GET` | `/api/v1/annotate/{id}/mapping.csv` | 16-column traceability CSV (with review flags) |
 | `GET` | `/api/v1/jobs` | List all jobs |
 | `GET` | `/health` | Health check |
 | `GET` | `/docs` | Swagger UI |
