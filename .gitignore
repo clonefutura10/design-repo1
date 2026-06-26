@@ -5,3 +5,4 @@ __pycache__/
 
 # Generated annotation outputs
 output/
+frontend/node_modules/
