@@ -448,14 +448,28 @@ _DERIVED_FIELD_PATTERNS: list[str] = [
     "meddra system organ class name",
     "meddra system organ class abbreviation",
     "meddra version",
+    # Standard CDISC MedDRA column wordings (no "meddra" prefix) that appear on
+    # older CRFs which display the dictionary-coding columns directly.
+    "dictionary-derived term",
+    "lowest level term",
+    "preferred term",
+    "high level group term",
+    "high level term",
+    "primary system organ class",
+    "system organ class",
+    "body system or organ class",
     "medication code",
     "medication dictionary text",
     "atc code",
     "atc dictionary text",
     "preferred name",
     "pref. grouping term",
+    "preferred grouping term",
     "active ingredient",
     "drug dictionary version",
+    "who drug dictionary version",
+    "whodrug version",
+    "azm dictionary version",
 ]
 
 
@@ -500,16 +514,52 @@ _DICTIONARY_FIELD_SUFFIX: list[tuple[str, str]] = [
     ("meddra system organ class abbreviation", "SOC"),
     ("meddra system organ class name", "BODSYS"),
     ("meddra system organ class code", "SOCCD"),
+    # Standard CDISC MedDRA column wordings (no "meddra" prefix). Order matters:
+    # the iteration uses startswith, so the "... code"/"... name" variants must
+    # precede the bare prefix they share.
+    ("dictionary-derived term", "DECOD"),
+    ("lowest level term name", "LLT"),
+    ("lowest level term code", "LLTCD"),
+    ("lowest level term", "LLT"),
+    ("preferred term name", "DECOD"),
+    ("preferred term code", "PTCD"),
+    ("high level group term name", "HLGT"),
+    ("high level group term code", "HLGTCD"),
+    ("high level group term", "HLGT"),
+    ("high level term name", "HLT"),
+    ("high level term code", "HLTCD"),
+    ("high level term", "HLT"),
+    ("body system or organ class code", "BDSYCD"),
+    ("body system or organ class", "BODSYS"),
+    ("primary system organ class code", "SOCCD"),
+    ("primary system organ class", "SOC"),
+    ("system organ class code", "SOCCD"),
+    ("system organ class name", "BODSYS"),
+    ("system organ class abbreviation", "SOC"),
     ("medication dictionary text", "DECOD"),
     ("preferred name", "DECOD"),
     ("active ingredient", "DECOD"),
     ("atc dictionary text", "CLAS"),
     ("atc code", "CLASCD"),
+    ("medication code", "CD"),
 ]
 
-# Dictionary metadata fields that are genuinely not submitted.
-_DICTIONARY_VERSION_PATTERNS: tuple[str, ...] = (
-    "meddra version", "drug dictionary version", "pref. grouping term",
+# Dictionary version fields. Per SDTM-MSG these ARE submitted, as a supplemental
+# qualifier (e.g. SUPPAE.MEDDRAV / SUPPCM.WHODRGV), not "[NOT SUBMITTED]".
+# Mapped to <DOMAIN> + the QNAM, flagged supplemental + derived. Order matters
+# (startswith): longer patterns first.
+_DICTIONARY_VERSION_QUALIFIER: list[tuple[str, str]] = [
+    ("who drug dictionary version", "WHODRGV"),
+    ("whodrug dictionary version", "WHODRGV"),
+    ("whodrug version", "WHODRGV"),
+    ("drug dictionary version", "WHODRGV"),
+    ("azm dictionary version", "AZMVERS"),
+    ("meddra version", "MEDDRAV"),
+]
+
+# WHO-Drug grouping terms -> supplemental grouping qualifier (e.g. SUPPCM.CMGROUP).
+_DICTIONARY_GROUPING_PATTERNS: tuple[str, ...] = (
+    "preferred grouping term", "pref. grouping term", "pref grouping term",
 )
 
 
@@ -919,16 +969,38 @@ class Tier0Rules:
         self, form_code: str, field_label: str, form_name: str = ""
     ) -> ResolutionResult | None:
         """Map a MedDRA/WHO-Drug/ATC dictionary field to its derived SDTM coded
-        variable (dashed border), or NOT SUBMITTED for version metadata."""
+        variable (dashed border). Version fields map to the SUPP-- qualifier and
+        grouping terms to the SUPP-- grouping qualifier (both derived)."""
         label_lower = field_label.strip().lower()
 
-        # Dictionary version/metadata -> NOT SUBMITTED.
-        if any(label_lower.startswith(p) for p in _DICTIONARY_VERSION_PATTERNS):
-            return ResolutionResult(
-                form_code=form_code, field_label=field_label,
-                resolved=True, tier=ResolutionTier.TIER0_EXACT, confidence=0.90,
-                is_not_submitted=True, not_submitted_reason="dictionary version metadata",
-            )
+        domain = _get_domain_for_form(form_code)
+        if not domain:
+            inf = infer_domains_cached(form_code, form_name)
+            domain = inf.domains[0].upper() if (inf and inf.domains and inf.confidence >= 0.70) else ""
+
+        # Dictionary version -> supplemental qualifier (SUPP<DOMAIN>.<QNAM>).
+        for pattern, qnam in _DICTIONARY_VERSION_QUALIFIER:
+            if label_lower.startswith(pattern):
+                if not domain or domain.startswith("SUPP"):
+                    return None
+                return ResolutionResult(
+                    form_code=form_code, field_label=field_label,
+                    sdtm_domain=domain, sdtm_variable=qnam,
+                    resolved=True, tier=ResolutionTier.TIER0_EXACT, confidence=0.90,
+                    is_supplemental=True, is_derived=True,
+                )
+
+        # WHO-Drug grouping term -> supplemental grouping qualifier.
+        for pattern in _DICTIONARY_GROUPING_PATTERNS:
+            if label_lower.startswith(pattern):
+                if not domain or domain.startswith("SUPP"):
+                    return None
+                return ResolutionResult(
+                    form_code=form_code, field_label=field_label,
+                    sdtm_domain=domain, sdtm_variable=f"{domain}GROUP",
+                    resolved=True, tier=ResolutionTier.TIER0_EXACT, confidence=0.90,
+                    is_supplemental=True, is_derived=True,
+                )
 
         suffix = None
         for pattern, suf in _DICTIONARY_FIELD_SUFFIX:
@@ -938,11 +1010,6 @@ class Tier0Rules:
         if not suffix:
             return None
 
-        # Determine the parent domain for the coded variable.
-        domain = _get_domain_for_form(form_code)
-        if not domain:
-            inf = infer_domains_cached(form_code, form_name)
-            domain = inf.domains[0].upper() if (inf and inf.domains and inf.confidence >= 0.70) else ""
         if not domain or domain.startswith("SUPP"):
             return None
 

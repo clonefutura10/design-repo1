@@ -57,6 +57,21 @@ def test_med_dictionary_text_to_decod():
     assert r.is_derived is True
 
 
-def test_dictionary_version_not_submitted():
+def test_dictionary_version_maps_to_supp_qualifier():
+    # Dictionary version is submitted as a SUPP-- qualifier (Origin = Assigned),
+    # not "[NOT SUBMITTED]".
     r = _resolver().resolve(form_code="AE", field_label="MedDRA version")
-    assert r is not None and r.is_not_submitted is True
+    assert r is not None
+    assert r.is_not_submitted is False
+    assert r.sdtm_variable == "MEDDRAV"
+    assert r.is_supplemental is True
+    assert r.is_derived is True
+
+
+def test_meddra_standard_wordings_to_coded_variables():
+    # Older CRFs display dictionary-coding columns with the standard CDISC
+    # wordings (no "meddra" prefix); these map to the derived coded variables.
+    res = _resolver()
+    assert res.resolve(form_code="AE", field_label="Dictionary-Derived Term").sdtm_variable == "AEDECOD"
+    assert res.resolve(form_code="AE", field_label="Lowest Level Term").sdtm_variable == "AELLT"
+    assert res.resolve(form_code="MH", field_label="Body System or Organ Class").sdtm_variable == "MHBODSYS"
