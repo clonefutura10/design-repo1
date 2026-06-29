@@ -52,18 +52,60 @@ async def annotate_crf(
     if len(content) == 0:
         raise HTTPException(400, detail="Uploaded file is empty")
     if len(content) > 150 * 1024 * 1024:
-        raise HTTPException(400, detail="File exceeds 150MB limit")
+        size_mb = len(content) / 1024 / 1024
+        raise HTTPException(
+            400, detail=f"File is {size_mb:.0f} MB, which exceeds the 150 MB limit."
+        )
 
     # ── Save to temp ──
     tmp_dir = Path(tempfile.mkdtemp(prefix="acrf_in_"))
     input_path = tmp_dir / "input.pdf"
     input_path.write_bytes(content)
 
+    # ── Pre-flight: confirm the PDF is openable, unlocked, and text-based ──
+    # Friendly, actionable messages for the common bad-input cases so the UI
+    # never shows a raw stack trace.
+    try:
+        import fitz  # PyMuPDF
+        with fitz.open(input_path) as _doc:
+            if _doc.needs_pass:
+                raise HTTPException(
+                    422,
+                    detail="This PDF is password-protected. Please upload an "
+                    "unlocked copy of the blank CRF.",
+                )
+            if _doc.page_count == 0:
+                raise HTTPException(422, detail="This PDF has no pages.")
+            sample = min(_doc.page_count, 15)
+            extractable = sum(1 for i in range(sample) if _doc[i].get_text("text").strip())
+        if extractable == 0:
+            raise HTTPException(
+                422,
+                detail="No selectable text was found — this looks like a scanned "
+                "or image-only PDF. Please upload a text-based blank CRF.",
+            )
+    except HTTPException:
+        raise
+    except Exception:
+        raise HTTPException(
+            422,
+            detail="This file could not be opened as a PDF. It may be corrupt "
+            "or not a valid PDF.",
+        )
+
     # ── Run pipeline ──
     try:
         result = run_pipeline(input_path, original_filename=filename)
     except Exception as e:
         raise HTTPException(500, detail=f"Pipeline error: {str(e)}")
+
+    # ── Guard: a valid PDF that yielded no CRF fields (e.g. a non-CRF document) ──
+    if result.stats.get("total_fields_extracted", 0) == 0:
+        raise HTTPException(
+            422,
+            detail="No data-entry fields were detected. Please confirm this is a "
+            "blank CRF rather than another kind of document.",
+        )
 
     stats = AnnotationStats(**result.stats)
 

@@ -1,12 +1,24 @@
-import { useState, useCallback } from "react";
-import { useDropzone } from "react-dropzone";
+import { useState, useCallback, useEffect, useRef } from "react";
+import { useDropzone, type FileRejection } from "react-dropzone";
 import { useNavigate } from "react-router-dom";
 import {
-  UploadCloud, FileText, Loader2, AlertCircle,
+  UploadCloud, FileText, Loader2, AlertCircle, Check,
   Database, Cpu, FileSearch, Layers, PenTool,
 } from "lucide-react";
 import { clsx } from "clsx";
 import { annotate } from "../api/client";
+
+// Action-oriented phases shown while the backend processes the PDF. The bar is
+// indeterminate (we can't get true server progress over a single request), so
+// we advance the highlight on an elapsed timer to show the engine is alive.
+const PROCESS_PHASES = [
+  "Reading pages & detecting forms",
+  "Filtering EDC scaffolding noise",
+  "Mapping fields to SDTM variables",
+  "Writing FreeText annotations",
+  "Finalising PDF & traceability export",
+];
+const MAX_UPLOAD_MB = 150;
 
 const PIPELINE_STEPS = [
   {
@@ -52,30 +64,79 @@ export default function UploadPage() {
   const [progress, setProgress] = useState(0);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  // "upload" while bytes are in flight; "process" once the server is working.
+  const [phase, setPhase] = useState<"upload" | "process">("upload");
+  const [elapsed, setElapsed] = useState(0);
+  const timerRef = useRef<number | null>(null);
 
-  const onDrop = useCallback((accepted: File[]) => {
-    setError(null);
-    if (accepted[0]) setFile(accepted[0]);
-  }, []);
+  const onDrop = useCallback(
+    (accepted: File[], rejections: FileRejection[]) => {
+      setError(null);
+      if (rejections.length > 0) {
+        const r = rejections[0];
+        const code = r.errors[0]?.code;
+        if (code === "file-too-large") {
+          const mb = (r.file.size / 1024 / 1024).toFixed(0);
+          setError(`"${r.file.name}" is ${mb} MB — the limit is ${MAX_UPLOAD_MB} MB.`);
+        } else if (code === "file-invalid-type") {
+          setError(`"${r.file.name}" isn't a PDF. Please upload a CRF in PDF format.`);
+        } else if (code === "too-many-files") {
+          setError("Please upload one CRF PDF at a time.");
+        } else {
+          setError(r.errors[0]?.message ?? "That file could not be accepted.");
+        }
+        return;
+      }
+      if (accepted[0]) setFile(accepted[0]);
+    },
+    []
+  );
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
     accept: { "application/pdf": [".pdf"] },
     maxFiles: 1,
-    maxSize: 150 * 1024 * 1024,
+    maxSize: MAX_UPLOAD_MB * 1024 * 1024,
   });
+
+  // Drive the elapsed-time counter while processing so the user sees progress.
+  useEffect(() => {
+    if (loading && phase === "process") {
+      timerRef.current = window.setInterval(() => setElapsed((s) => s + 1), 1000);
+    }
+    return () => {
+      if (timerRef.current) {
+        window.clearInterval(timerRef.current);
+        timerRef.current = null;
+      }
+    };
+  }, [loading, phase]);
+
+  // Advance the highlighted phase over time. Slows down near the end so it
+  // never claims to be "finished" before the server actually responds.
+  const activePhase = Math.min(
+    PROCESS_PHASES.length - 1,
+    Math.floor(elapsed / 6) + Math.floor(Math.max(0, elapsed - 24) / 15)
+  );
 
   const handleSubmit = async () => {
     if (!file) return;
     setLoading(true);
     setError(null);
+    setProgress(0);
+    setElapsed(0);
+    setPhase("upload");
     try {
-      const { data } = await annotate(file, setProgress);
+      const { data } = await annotate(file, (pct) => {
+        setProgress(pct);
+        if (pct >= 100) setPhase("process");
+      });
       navigate(`/jobs/${data.job_id}`, { state: data });
     } catch (e: any) {
       setError(e?.response?.data?.detail ?? e.message ?? "Unexpected error");
     } finally {
       setLoading(false);
+      setPhase("upload");
     }
   };
 
@@ -130,20 +191,67 @@ export default function UploadPage() {
 
       {/* Progress */}
       {loading && (
-        <div>
-          <div className="flex justify-between text-xs mb-1" style={{ color: "#6B6B6B" }}>
-            <span>Uploading & processing…</span>
-            <span>{progress}%</span>
-          </div>
-          <div className="w-full rounded-full h-2" style={{ background: "#E5E5E5" }}>
-            <div
-              className="h-2 rounded-full transition-all duration-300"
-              style={{ width: `${progress}%`, background: "#6B2D88" }}
-            />
-          </div>
-          <p className="text-xs mt-2 text-center" style={{ color: "#6B6B6B" }}>
-            Annotation may take 30–90 seconds for large PDFs…
-          </p>
+        <div className="rounded-card border border-az-border p-4" style={{ background: "#FFFFFF" }}>
+          {phase === "upload" ? (
+            <>
+              <div className="flex justify-between text-xs mb-1" style={{ color: "#6B6B6B" }}>
+                <span>Uploading “{file?.name}”…</span>
+                <span>{progress}%</span>
+              </div>
+              <div className="w-full rounded-full h-2" style={{ background: "#E5E5E5" }}>
+                <div
+                  className="h-2 rounded-full transition-all duration-300"
+                  style={{ width: `${progress}%`, background: "#6B2D88" }}
+                />
+              </div>
+            </>
+          ) : (
+            <>
+              <div className="flex justify-between text-xs mb-3" style={{ color: "#6B6B6B" }}>
+                <span className="flex items-center gap-1.5">
+                  <Loader2 className="w-3.5 h-3.5 animate-spin" style={{ color: "#6B2D88" }} />
+                  Processing on the server…
+                </span>
+                <span>{elapsed}s elapsed</span>
+              </div>
+              {/* Indeterminate bar */}
+              <div className="w-full rounded-full h-1.5 overflow-hidden mb-4" style={{ background: "#EDE0F5" }}>
+                <div className="h-1.5 rounded-full animate-pulse" style={{ width: "100%", background: "#6B2D88", opacity: 0.5 }} />
+              </div>
+              {/* Live staged checklist */}
+              <ul className="space-y-2">
+                {PROCESS_PHASES.map((label, i) => {
+                  const done = i < activePhase;
+                  const active = i === activePhase;
+                  return (
+                    <li key={i} className="flex items-center gap-2.5 text-sm">
+                      <span
+                        className="shrink-0 w-5 h-5 rounded-full flex items-center justify-center"
+                        style={{
+                          background: done ? "#00843D" : active ? "#EDE0F5" : "#F2F2F2",
+                          border: active ? "1px solid #6B2D88" : "none",
+                        }}
+                      >
+                        {done ? (
+                          <Check className="w-3 h-3 text-white" />
+                        ) : active ? (
+                          <Loader2 className="w-3 h-3 animate-spin" style={{ color: "#6B2D88" }} />
+                        ) : (
+                          <span className="w-1.5 h-1.5 rounded-full" style={{ background: "#C4C4C4" }} />
+                        )}
+                      </span>
+                      <span style={{ color: done || active ? "#1A1A1A" : "#9A9A9A", fontWeight: active ? 600 : 400 }}>
+                        {label}
+                      </span>
+                    </li>
+                  );
+                })}
+              </ul>
+              <p className="text-xs mt-3" style={{ color: "#9A9A9A" }}>
+                Large CRFs (hundreds of pages) can take a minute or two — this page will open the results automatically when done.
+              </p>
+            </>
+          )}
         </div>
       )}
 
