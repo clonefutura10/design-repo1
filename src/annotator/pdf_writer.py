@@ -116,6 +116,13 @@ _ANNOTATION_X_RATIO = 0.56
 _PAGE_TOP_MARGIN = 52.0
 _PAGE_BOTTOM_MARGIN = 28.0
 _DENSE_THRESHOLD = 14
+# A page is also treated as dense (tight box geometry) when its field rows are
+# pitched closer than this, regardless of annotation count. Findings forms
+# (e.g. pulmonary function, lab panels) pack many short rows ~15pt apart; the
+# normal box height (~17pt) overlaps them and the overlap-avoidance nudge then
+# cascades boxes down off their rows. Compact geometry (~13pt) fits the pitch
+# and removes the cascade at its source.
+_DENSE_PITCH_THRESHOLD = 17.5
 
 # SDTM-MSG v2.0 (Section 3.1.2, point 7/8): the domain colour is applied as the
 # box FILL/background, with a darker frame of the same colour and BLACK text
@@ -1020,6 +1027,7 @@ def annotate_pdf(
         form_continued_from[fid] = continued
 
     page_ann_count: dict[int, int] = defaultdict(int)
+    page_field_ys: dict[int, list[float]] = defaultdict(list)
     for field, result in zip(fields, results):
         pi = field.page_index
         if pi is None:
@@ -1029,6 +1037,17 @@ def annotate_pdf(
             continue
         if result.resolved or result.is_not_submitted:
             page_ann_count[pi] += 1
+            if field.y is not None:
+                page_field_ys[pi].append(float(field.y))
+
+    # Per-page minimum row pitch: the smallest gap between consecutive (distinct)
+    # annotated field rows. Drives pitch-based dense detection (see _DENSE_PITCH_*).
+    page_min_pitch: dict[int, float] = {}
+    for pi, ys in page_field_ys.items():
+        uniq = sorted(ys)
+        gaps = [b - a for a, b in zip(uniq, uniq[1:]) if (b - a) > 2.0]
+        if gaps:
+            page_min_pitch[pi] = min(gaps)
 
     form_first_page: dict[str, tuple[int, str]] = {}
     form_names: dict[str, str] = {}
@@ -1150,7 +1169,10 @@ def annotate_pdf(
                 _draw_see_page_reference(page, first_inst, ph, ann_x)
             continue
 
-        is_dense = page_ann_count.get(page_idx, 0) > _DENSE_THRESHOLD
+        is_dense = (
+            page_ann_count.get(page_idx, 0) > _DENSE_THRESHOLD
+            or page_min_pitch.get(page_idx, 1e9) < _DENSE_PITCH_THRESHOLD
+        )
         eff_fs = _FONT_SIZE_DENSE if is_dense else font_size
         # Dense pages use tighter line height + padding so a single-line box fits
         # within the CRF's ~15pt row pitch and doesn't trigger the cascading
